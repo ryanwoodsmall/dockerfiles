@@ -30,7 +30,7 @@ RUN sleep 1 \
     && tar -zxf ${siabfile} \
     && cd ${siabdir} \
     && autoreconf -fiv \
-    && ./configure --prefix=${siabinst} --disable-utmp \
+    && env CONFIG_SHELL=/bin/ash ./configure --prefix=${siabinst} --disable-utmp \
     && make \
     && make install \
     && mkdir ${siabcss} \

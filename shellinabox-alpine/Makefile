@@ -12,4 +12,4 @@ run:
 	docker run -i -t --rm -p $(PORT):$(PORT) $(IMAGENAME):$(TAG) || echo -n
 
 clean:
-	docker image ls | grep -q $(IMAGENAME):$(TAG) && docker rmi $(IMAGENAME):$(TAG) || echo -n
+	docker image ls | grep -q "$(IMAGENAME).*$(TAG)" && docker rmi $(IMAGENAME):$(TAG) || echo -n

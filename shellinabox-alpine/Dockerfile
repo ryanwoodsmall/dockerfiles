@@ -1,7 +1,7 @@
 FROM alpine
 
 ENV siabuser  shellinabox
-ENV siabshell /bin/bash
+ENV siabshell /bin/ash
 ENV siabport  4200
 ENV siabname  ${siabuser}
 ENV siabtop   /opt/${siabname}
@@ -20,7 +20,7 @@ ADD ${siaburl} /tmp/${siabfile}
 RUN sleep 1 \
     && apk update \
     && apk upgrade \
-    && apk add bash sudo \
+    && apk add sudo \
     && apk add autoconf automake gcc libtool linux-pam-dev make musl-dev openssl-dev zlib-dev \
     && mkdir -p ${siabtop} \
     && adduser -h ${siabhome} -s ${siabshell} -D ${siabuser} \
@@ -40,7 +40,7 @@ RUN sleep 1 \
     && rm -rf /tmp/${siabdir} /tmp/${siabfile} \
     && apk del autoconf automake gcc libtool linux-pam-dev make musl-dev openssl-dev zlib-dev \
     && chown -R ${siabuser}:${siabuser} ${siabtop} \
-    && echo "#!/bin/bash" > ${siabep} \
+    && echo "#!/bin/sh" > ${siabep} \
     && echo "${siabtop}/current/bin/shellinaboxd \\" >> ${siabep} \
     && echo "  --user-css='Normal:+${siabcss}/white-on-black.css,Reverse:-${siabcss}/black-on-white.css' \\" >> ${siabep} \
     && echo "  --port=${siabport} \\" >> ${siabep} \

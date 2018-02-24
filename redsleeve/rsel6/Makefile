@@ -11,7 +11,7 @@ IMAGEFILE  = $(shell basename $(IMAGEURL))
 
 all:
 	curl -k -L -o $(IMAGEFILE) $(IMAGEURL)
-	docker build --force-rm --tag $(IMAGEVENDOR)/$(IMAGENAME):$(IMAGEVER) --tag $(IMAGEVENDOR)/$(IMAGENAME):$(IMAGEVERNO) .
+	docker build --force-rm --tag $(IMAGEVENDOR)/$(IMAGENAME):$(IMAGEVER) --tag $(IMAGEVENDOR)/$(IMAGENAME):$(IMAGEVERNO) --tag $(IMAGEVENDOR)/$(IMAGENAME):latest .
 
 clean:
 	rm -f $(IMAGEFILE)

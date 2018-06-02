@@ -1,0 +1,48 @@
+#
+# run with:
+#   docker run -d --privileged --network host --name $NAME --volume /lib/modules:/lib/modules:ro $IMG
+#
+#
+# XXX - does NOT really run as non-root user
+#       /var/lib/docker and /var/run/docker perms...
+#
+
+FROM alpine:latest
+
+ARG contpass=alpine
+ARG dockerip=0.0.0.0
+ARG dockerport=2375 
+ARG sshport=22222
+
+ENV contuser root
+ENV ep /entrypoint.sh
+
+USER root
+
+RUN apk update \
+    && apk upgrade \
+    && apk add \
+           bash \
+           docker \
+           dropbear \
+           dropbear-convert \
+           dropbear-dbclient \
+           openssh-client \
+           openssh-keygen \
+           openssh-sftp-server \
+           shadow \
+           tini-static \
+    && getent passwd ${contuser} || useradd -m ${contuser} \
+    && usermod -G docker -a ${contuser} \
+    && chsh -s /bin/bash ${contuser} \
+    && echo "${contuser}:${contpass}" | chpasswd \
+    && mkdir -p /etc/dropbear \
+    && touch /var/log/lastlog \
+    && rm -rf /var/cache/apk/* \
+    && echo '#!/bin/sh' > ${ep} \
+    && echo "/usr/sbin/dropbear -R -E -p ${sshport}" >> ${ep} \
+    && echo "/usr/bin/dockerd -H unix:///var/run/docker.sock -H tcp://${dockerip}:${dockerport} -s vfs" >> ${ep} \
+    && chmod 755 ${ep}
+
+ENTRYPOINT ["/sbin/tini-static","-s","-g"]
+CMD ${ep}

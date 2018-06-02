@@ -36,6 +36,10 @@ RUN apk update \
     && usermod -G docker -a ${contuser} \
     && chsh -s /bin/bash ${contuser} \
     && echo "${contuser}:${contpass}" | chpasswd \
+    && hd=`getent passwd ${contuser} | cut -f6 -d:` \
+    && mkdir -p ${hd}/.ssh \
+    && chmod 700 ${hd}/.ssh \
+    && chown ${contuser}:${contuser} ${hd}/.ssh \
     && mkdir -p /etc/dropbear \
     && touch /var/log/lastlog \
     && rm -rf /var/cache/apk/* \

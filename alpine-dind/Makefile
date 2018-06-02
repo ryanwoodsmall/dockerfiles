@@ -14,7 +14,7 @@ run:
 	docker run -d --privileged --network host --name $(IMAGENAME) --volume /lib/modules:/lib/modules:ro $(FULLTAG)
 
 build:
-	docker build --pull --tag $(FULLTAG) .
+	docker build --compress --pull --force-rm --tag $(FULLTAG) .
 
 clean:
 	docker stop $(IMAGENAME) || true

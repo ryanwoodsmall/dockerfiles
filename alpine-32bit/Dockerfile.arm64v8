@@ -1,3 +1,4 @@
 FROM arm32v6/alpine:latest
 
-CMD ["/bin/linux32","/bin/sh"]
+ENTRYPOINT ["/bin/linux32"]
+CMD ["/bin/sh"]

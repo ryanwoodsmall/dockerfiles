@@ -7,4 +7,5 @@ RUN echo i386 > /etc/yum/vars/basearch \
     && yum clean all \
     && rm -rf /var/cache/yum/*
 
-CMD ["/usr/bin/setarch","i686","/bin/bash"]
+ENTRYPOINT ["/usr/bin/setarch","i686"]
+CMD ["/bin/bash"]

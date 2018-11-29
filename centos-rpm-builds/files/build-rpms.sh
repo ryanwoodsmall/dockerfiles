@@ -2,7 +2,7 @@
 
 set -eux
 
-rpmarch="$(rpm --eval '%{_target_cpu}')"
+rpmarch="$(rpm --eval '%{_host}' | cut -f1 -d-)"
 
 yum -y install deltarpm
 yum clean all

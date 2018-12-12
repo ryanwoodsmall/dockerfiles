@@ -13,6 +13,7 @@ COPY files/rpm/oracle-database-xe-18c-1.0-1.x86_64.rpm /orainst/
 COPY files/scripts/startup.sh /
 COPY files/scripts/configure.sh /
 
+# XXX - need to set a hostname - like oraxe18c - bind to 127.0.0.1 in /etc/hosts and set in /etc/hostname
 RUN chmod 755 /startup.sh /configure.sh \
     && yum clean all \
     && yum -y update \

@@ -3,6 +3,10 @@ include ../common/common.mak
 IMAGENAME = $(shell basename $(PWD))
 IMAGETAG  = latest
 
+CONFIGURENAME = $(IMAGENAME)-configure
+
+BUILDTAG = $(IMAGEVENDOR)/$(IMAGENAME)-build:$(IMAGETAG)
+CONFIGURETAG = $(IMAGEVENDOR)/$(CONFIGURENAME):$(IMAGETAG)
 FULLTAG = $(IMAGEVENDOR)/$(IMAGENAME):$(IMAGETAG)
 
 ORACLEVER = 18c
@@ -25,8 +29,18 @@ all:
 run:
 	docker run --detach --privileged --name $(IMAGENAME) --volume /dev/shm:/dev/shm --publish $(ORACLEPORT):$(ORACLEPORT) --publish $(ORACLEHTTPPORT):$(ORACLEHTTPPORT) $(FULLTAG)
 
+# XXX - need to split out configure/stop/start stuff
+#  docker stop $(CONFIGURENAME) || true
+#  docker kill $(CONFIGURENAME) || true
+#  docker rm $(CONFIGURENAME) || true
+#  docker image rm $(BUILDTAG) || true
+#  docker image rm $(CONFIGURETAG) || true
+#  docker build --compress --pull --force-rm --tag $(BUILDTAG) .
+#  docker run --privileged --volume /dev/shm:/dev/shm --name $(CONFIGURENAME) $(BUILDTAG) /configure.sh
+#  docker commit --change='CMD ["/startup.sh"]' $(FULLTAG) $(CONFIGURENAME)
 build: verify
-	docker build --compress --pull --force-rm --tag $(FULLTAG) . # - < Dockerfile
+	# - < Dockerfile
+	docker build --compress --pull --force-rm --tag $(FULLTAG) .
 
 verify:
 	sha256sum files/rpm/oracle-database-preinstall-$(ORACLEVER)-$(ORACLERPMVER)-$(ORACLERPMREL).$(ORACLEDIST).$(ORACLEARCH).rpm | grep -q '^$(ORACLEPREINSTALLSHA256) '

@@ -6,8 +6,9 @@ IMAGETAG  = latest
 CONFIGURENAME = $(IMAGENAME)-configure
 
 BUILDTAG = $(IMAGEVENDOR)/$(IMAGENAME)-build:$(IMAGETAG)
-CONFIGURETAG = $(IMAGEVENDOR)/$(CONFIGURENAME):$(IMAGETAG)
 FULLTAG = $(IMAGEVENDOR)/$(IMAGENAME):$(IMAGETAG)
+
+DOCKERRUNOPTS = --privileged --shm-size=2gb
 
 ORACLEVER = 18c
 ORACLEED = xe
@@ -22,26 +23,24 @@ ORACLEHTTPPORT = 5500
 
 all:
 	@echo make build - builds $(FULLTAG) image
+	@echo make clean - cleans up intermediate tags ($(BUILDTAG)) and containers ($(CONFIGURENAME))
 	@echo make run - build $(FULLTAG) and run $(IMAGENAME) detached
 	@echo make verify - verify rpms
 
-# XXX - use --shm-size=2gb or similar here?
 run:
-	docker run --detach --privileged --name $(IMAGENAME) --volume /dev/shm:/dev/shm --publish $(ORACLEPORT):$(ORACLEPORT) --publish $(ORACLEHTTPPORT):$(ORACLEHTTPPORT) $(FULLTAG)
+	docker run --detach $(DOCKERRUNOPTS) --name $(IMAGENAME) --publish $(ORACLEPORT):$(ORACLEPORT) --publish $(ORACLEHTTPPORT):$(ORACLEHTTPPORT) $(FULLTAG)
 
-# XXX - need to split out configure/stop/start stuff
-#  docker stop $(CONFIGURENAME) || true
-#  docker kill $(CONFIGURENAME) || true
-#  docker rm $(CONFIGURENAME) || true
-#  docker image rm $(BUILDTAG) || true
-#  docker image rm $(CONFIGURETAG) || true
-#  docker build --compress --pull --force-rm --tag $(BUILDTAG) .
-#  docker run --privileged --volume /dev/shm:/dev/shm --name $(CONFIGURENAME) $(BUILDTAG) /configure.sh
-#  docker commit --change='CMD ["/startup.sh"]' $(FULLTAG) $(CONFIGURENAME)
-build: verify
-	# - < Dockerfile
-	docker build --compress --pull --force-rm --tag $(FULLTAG) .
+clean:
+	docker stop $(CONFIGURENAME) || true
+	docker kill $(CONFIGURENAME) || true
+	docker rm --force $(CONFIGURENAME) || true
+	docker image rm --force $(BUILDTAG) || true
 
 verify:
 	sha256sum files/rpm/oracle-database-preinstall-$(ORACLEVER)-$(ORACLERPMVER)-$(ORACLERPMREL).$(ORACLEDIST).$(ORACLEARCH).rpm | grep -q '^$(ORACLEPREINSTALLSHA256) '
 	sha256sum files/rpm/oracle-database-$(ORACLEED)-$(ORACLEVER)-$(ORACLERPMVER)-$(ORACLERPMREL).$(ORACLEARCH).rpm | grep -q '^$(ORACLEDBSHA256) '
+
+build: verify clean
+	docker build --compress --pull --force-rm --tag $(BUILDTAG) .
+	docker run $(DOCKERRUNOPTS) --name $(CONFIGURENAME) $(BUILDTAG) /configure.sh
+	docker commit --change='CMD ["/startup.sh"]' $(CONFIGURENAME) $(FULLTAG)

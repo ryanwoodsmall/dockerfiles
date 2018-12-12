@@ -1,13 +1,22 @@
 #!/bin/sh
 
-if [ -e /oracle-xe-18c_configure.out ] ; then
+cof="/oracle-xe-18c_configure.out"
+
+if [ -e "${cof}" ] ; then
   echo "/etc/init.d/oracle-xe-18c has already been run"
   exit 1
 fi
 
-if [ -z "${password}" ] ; then
-  password="oracle"
+if [ -z "${orapass}" ] ; then
+  orapass="oracle"
 fi
 
-{ echo "${password}" ; echo "${password}" ; } | /etc/init.d/oracle-xe-18c configure 2>&1 | tee /oracle-xe-18c_configure.out
+source /sethostname.sh
+
+{ echo "${orapass}" ; echo "${orapass}" ; } \
+| /etc/init.d/oracle-xe-18c configure 2>&1 \
+| tee "${cof}"
+
 /etc/init.d/oracle-xe-18c stop
+
+touch "${cof}"

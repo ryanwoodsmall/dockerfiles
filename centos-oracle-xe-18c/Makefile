@@ -28,6 +28,7 @@ all:
 	@echo make verify - verify rpms
 
 run:
+	docker image ls | awk '{print $$1":"$$2}' | grep "^$(FULLTAG)$$"
 	docker run --detach $(DOCKERRUNOPTS) --name $(IMAGENAME) --publish $(ORACLEPORT):$(ORACLEPORT) --publish $(ORACLEHTTPPORT):$(ORACLEHTTPPORT) $(FULLTAG)
 
 clean:
@@ -37,11 +38,10 @@ clean:
 	docker image rm --force $(BUILDTAG) || true
 
 verify:
-	sha256sum files/rpm/oracle-database-preinstall-$(ORACLEVER)-$(ORACLERPMVER)-$(ORACLERPMREL).$(ORACLEDIST).$(ORACLEARCH).rpm | grep -q '^$(ORACLEPREINSTALLSHA256) '
-	sha256sum files/rpm/oracle-database-$(ORACLEED)-$(ORACLEVER)-$(ORACLERPMVER)-$(ORACLERPMREL).$(ORACLEARCH).rpm | grep -q '^$(ORACLEDBSHA256) '
+	sha256sum files/rpm/oracle-database-preinstall-$(ORACLEVER)-$(ORACLERPMVER)-$(ORACLERPMREL).$(ORACLEDIST).$(ORACLEARCH).rpm | awk '{print $$1}' | grep -q '^$(ORACLEPREINSTALLSHA256)$$'
+	sha256sum files/rpm/oracle-database-$(ORACLEED)-$(ORACLEVER)-$(ORACLERPMVER)-$(ORACLERPMREL).$(ORACLEARCH).rpm | awk '{print $$1}' | grep -q '^$(ORACLEDBSHA256)$$'
 
-# XXX - docker export/import configure container to flatten it
 build: verify clean
 	docker build --compress --pull --force-rm --tag $(BUILDTAG) .
 	docker run $(DOCKERRUNOPTS) --name $(CONFIGURENAME) $(BUILDTAG) /configure.sh
-	docker commit --change='CMD ["/startup.sh"]' $(CONFIGURENAME) $(FULLTAG)
+	docker export $(CONFIGURENAME) | docker import --change='CMD ["/startup.sh"]' - $(FULLTAG)

@@ -40,6 +40,7 @@ verify:
 	sha256sum files/rpm/oracle-database-preinstall-$(ORACLEVER)-$(ORACLERPMVER)-$(ORACLERPMREL).$(ORACLEDIST).$(ORACLEARCH).rpm | grep -q '^$(ORACLEPREINSTALLSHA256) '
 	sha256sum files/rpm/oracle-database-$(ORACLEED)-$(ORACLEVER)-$(ORACLERPMVER)-$(ORACLERPMREL).$(ORACLEARCH).rpm | grep -q '^$(ORACLEDBSHA256) '
 
+# XXX - docker export/import configure container to flatten it
 build: verify clean
 	docker build --compress --pull --force-rm --tag $(BUILDTAG) .
 	docker run $(DOCKERRUNOPTS) --name $(CONFIGURENAME) $(BUILDTAG) /configure.sh

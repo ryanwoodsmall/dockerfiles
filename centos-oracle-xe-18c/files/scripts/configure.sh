@@ -15,7 +15,7 @@ fi
 
 # XXX - this doesn't work?
 if [ -z "${DBCA_TOTAL_MEMORY}" ] ; then
-  export DBCA_TOTAL_MEMORY="2047"
+  export DBCA_TOTAL_MEMORY="2048"
 fi
 
 source /sethostname.sh
@@ -26,7 +26,7 @@ sed -i.ORIG 's/SKIP_VALIDATIONS=false/SKIP_VALIDATIONS=true/g' "${oconf}"
 maxmem="$((($(free -g | awk '/^Mem:/{print $2}')/2)*(1024*1024)))"
 sed -i.ORIG "/^MAXIMUM_MEMORY=/s/^MAXIMUM_MEMORY=.*/MAXIMUM_MEMORY=${maxmem}/g" "${oinit}"
 # set pga/sga combined mem to 2GB-1MB to force split
-sed -i 's/memory=.*/memory=2047/g' "${oinit}"
+sed -i 's/memory=.*/memory=2048/g' "${oinit}"
 
 { echo "${orapass}" ; echo "${orapass}" ; } \
 | "${oinit}" configure 2>&1 \

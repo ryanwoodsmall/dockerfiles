@@ -4,6 +4,7 @@ EXPOSE 1521
 EXPOSE 5500
 
 ENV ORACLE_DOCKER_INSTALL=true
+ENV DBCA_TOTAL_MEMORY=2048
 
 # XXX - should probably be arguments
 ENV orapass=oracle

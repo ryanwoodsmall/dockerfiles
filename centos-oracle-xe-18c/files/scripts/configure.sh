@@ -13,6 +13,8 @@ fi
 
 source /sethostname.sh
 
+sed -i.ORIG 's/SKIP_VALIDATIONS=false/SKIP_VALIDATIONS=true/g' /etc/sysconfig/oracle-xe-18c.conf
+
 { echo "${orapass}" ; echo "${orapass}" ; } \
 | /etc/init.d/oracle-xe-18c configure 2>&1 \
 | tee "${cof}"

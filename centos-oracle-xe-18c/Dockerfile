@@ -19,6 +19,7 @@ COPY files/scripts/sethostname.sh /
 RUN chmod 755 /*.sh \
     && yum clean all \
     && yum -y update \
+    && yum -y less vim-enhanced \
     && yum -y install /orainst/oracle-database*.rpm \
     && yum clean all \
     && rm -rf /var/cache/yum \

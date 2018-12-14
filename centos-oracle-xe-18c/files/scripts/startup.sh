@@ -1,8 +1,10 @@
 #!/bin/sh
 
+# XXX - trap SIGTERM, run stop script
+#   https://stackoverflow.com/questions/41451159/how-to-execute-a-script-when-i-terminate-a-docker-container
+
 source /sethostname.sh
 
 /etc/init.d/oracle-xe-18c start
 
-#tail -f /dev/null
 tail -f /opt/oracle/diag/tnslsnr/${orahost}/listener/trace/listener.log

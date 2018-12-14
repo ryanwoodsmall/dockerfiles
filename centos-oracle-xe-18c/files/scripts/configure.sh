@@ -11,6 +11,10 @@ if [ -z "${orapass}" ] ; then
   orapass="oracle"
 fi
 
+if [ -z "${DBCA_TOTAL_MEMORY}" ] ; then
+  export DBCA_TOTAL_MEMORY="4096"
+fi
+
 source /sethostname.sh
 
 sed -i.ORIG 's/SKIP_VALIDATIONS=false/SKIP_VALIDATIONS=true/g' /etc/sysconfig/oracle-xe-18c.conf

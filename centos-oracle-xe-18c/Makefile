@@ -23,7 +23,7 @@ ORACLEHTTPPORT = 5500
 
 all:
 	@echo make build - builds $(FULLTAG) image
-	@echo make clean - cleans up intermediate tags ($(BUILDTAG)) and containers ($(CONFIGURENAME))
+	@echo make clean - cleans up intermediate tags $(BUILDTAG) and containers $(CONFIGURENAME)
 	@echo make run - build $(FULLTAG) and run $(IMAGENAME) detached
 	@echo make verify - verify rpms
 

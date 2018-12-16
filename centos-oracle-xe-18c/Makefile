@@ -1,3 +1,11 @@
+#
+# XXX
+#  need to limit cpu count to 2 or 3: --cpuset-cpus=0,1,2
+#  need to limit mem to first numa node: --cpuset-mems=0
+#
+# config works fine on a d-1541 (8c/16t) w/128GB, non numa
+# breaks setting pga/sga on a dual e5-2640v4 (2x10c/20t) w/128GB, numa
+#
 include ../common/common.mak
 
 IMAGENAME = $(shell basename $(PWD))

@@ -37,7 +37,7 @@ all:
 
 run:
 	docker image ls | awk '{print $$1":"$$2}' | grep "^$(FULLTAG)$$"
-	docker run --detach $(DOCKERRUNOPTS) --name $(IMAGENAME) --publish $(ORACLEPORT):$(ORACLEPORT) --publish $(ORACLEHTTPPORT):$(ORACLEHTTPPORT) $(FULLTAG)
+	docker run --restart always --detach $(DOCKERRUNOPTS) --name $(IMAGENAME) --publish $(ORACLEPORT):$(ORACLEPORT) --publish $(ORACLEHTTPPORT):$(ORACLEHTTPPORT) $(FULLTAG)
 
 clean:
 	docker stop $(CONFIGURENAME) || true

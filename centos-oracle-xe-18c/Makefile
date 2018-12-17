@@ -16,7 +16,7 @@ CONFIGURENAME = $(IMAGENAME)-configure
 BUILDTAG = $(IMAGEVENDOR)/$(IMAGENAME)-build:$(IMAGETAG)
 FULLTAG = $(IMAGEVENDOR)/$(IMAGENAME):$(IMAGETAG)
 
-DOCKERRUNOPTS = --privileged --shm-size=2gb
+DOCKERRUNOPTS = --privileged --shm-size=2gb --cpuset-cpus=0,1 --cpuset-mems=0
 
 ORACLEVER = 18c
 ORACLEED = xe

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# XXX - need to "sysctl -p"?
+
 cof="/oracle-xe-18c_configure.out"
 oconf="/etc/sysconfig/oracle-xe-18c.conf"
 oinit="/etc/init.d/oracle-xe-18c"

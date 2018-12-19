@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# XXX - need hacky "tail -f /dev/null" like the official oracle containers
 # XXX - need to "sysctl -p"
 
 orainitd="/etc/init.d/oracle-xe-18c"

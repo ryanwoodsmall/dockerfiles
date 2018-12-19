@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# XXX - need "set -eu" in here
 # XXX - need to "sysctl -p"?
 
 cof="/oracle-xe-18c_configure.out"

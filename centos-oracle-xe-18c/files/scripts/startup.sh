@@ -2,11 +2,20 @@
 
 # XXX - need to "sysctl -p"
 
-# XXX - trap SIGTERM, run stop script
-#   https://stackoverflow.com/questions/41451159/how-to-execute-a-script-when-i-terminate-a-docker-container
+orainitd="/etc/init.d/oracle-xe-18c"
+
+function stoporacle() {
+  echo "stopping oracle"
+  "${orainitd}" stop
+}
+
+trap stoporacle SIGINT
+trap stoporacle SIGTERM
 
 source /sethostname.sh
 
-/etc/init.d/oracle-xe-18c start
+"${orainitd}" start
 
-tail -f /opt/oracle/diag/tnslsnr/${orahost}/listener/trace/listener.log
+tail -f \
+  /opt/oracle/diag/tnslsnr/${orahost}/listener/trace/listener.log \
+  /opt/oracle/diag/rdbms/xe/XE/trace/alert_XE.log

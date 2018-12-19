@@ -5,6 +5,7 @@
 cof="/oracle-xe-18c_configure.out"
 oconf="/etc/sysconfig/oracle-xe-18c.conf"
 oinit="/etc/init.d/oracle-xe-18c"
+oprofd="/etc/profile.d/oracle-xe-18c.sh"
 
 if [ -e "${cof}" ] ; then
   echo "/etc/init.d/oracle-xe-18c has already been run"
@@ -41,6 +42,16 @@ sed -i 's/memory=.*/memory=2048/g' "${oinit}"
 { echo "${orapass}" ; echo "${orapass}" ; } \
 | "${oinit}" configure 2>&1 \
 | tee "${cof}"
+
+cat > "${oprofd}" << EOF
+export ORACLE_SID="XE"
+export ORAENV_ASK="NO"
+. /opt/oracle/product/18c/dbhomeXE/bin/oraenv
+export PATH
+EOF
+
+source "${oprofd}"
+sqlplus sys/${orapass} as sysdba <<<'exec dbms_xdb_config.setlistenerlocalaccess(false);'
 
 "${oinit}" stop
 

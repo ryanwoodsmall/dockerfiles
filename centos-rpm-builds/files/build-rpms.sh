@@ -78,6 +78,7 @@ done
 rm -f ~/rpmbuild/SOURCES/*
 for s in ~/rpmbuild/SPECS/*.spec ; do
   echo ${s}
+  # XXX - replace -C ... with -R
   spectool -g -A -C ~/rpmbuild/SOURCES/ ${s}
 done
 

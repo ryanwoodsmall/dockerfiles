@@ -8,6 +8,7 @@ set -eux
 # will be used for musl installation
 rpmarch="$(rpm --eval '%{_host}' | cut -f1 -d-)"
 
+# XXX - move yum installs to separate script/run from Dockerfile instead of every time we build
 # update everything, install some prereqs
 yum -y install deltarpm
 yum clean all

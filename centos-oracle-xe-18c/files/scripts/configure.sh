@@ -52,7 +52,51 @@ export PATH
 EOF
 
 source "${oprofd}"
+
+# listen on 0.0.0.0
 sqlplus sys/${orapass} as sysdba <<<'exec dbms_xdb_config.setlistenerlocalaccess(false);'
+
+# enable extended data types
+# https://oracle-base.com/articles/12c/extended-data-types-12cR1
+# https://docs.oracle.com/database/121/REFRN/GUID-D424D23B-0933-425F-BC69-9C0E6724693C.htm#REFRN10321
+# https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Data-Types.html#GUID-8EFA29E9-E8D8-40A6-A43E-954908C954A4
+edtf="/tmp/extended-data-types.sql"
+cat > "${edtf}" << EOF
+PURGE DBA_RECYCLEBIN;
+SHUTDOWN IMMEDIATE;
+STARTUP UPGRADE;
+ALTER SESSION SET CONTAINER=CDB\$ROOT;
+ALTER SYSTEM SET max_string_size=extended SCOPE=SPFILE;
+@?/rdbms/admin/utl32k.sql
+ALTER PLUGGABLE DATABASE ALL OPEN UPGRADE;
+EOF
+sqlplus sys/${orapass} as sysdba < "${edtf}"
+
+utl32kod="utl32k_cdb_pdbs_output"
+cd "${ORACLE_HOME}/rdbms/admin"
+mkdir -p "/tmp/${utl32kod}"
+${ORACLE_HOME}/perl/bin/perl \
+  ${ORACLE_HOME}/rdbms/admin/catcon.pl \
+  -u SYS/${orapass} \
+  -d ${ORACLE_HOME}/rdbms/admin \
+  -l /tmp \
+  -b ${utl32kod} \
+    utl32k.sql
+
+utlrpod="utlrp_cdb_pdbs_output"
+cd "${ORACLE_HOME}/rdbms/admin"
+mkdir -p "/tmp/${utlrpod}"
+${ORACLE_HOME}/perl/bin/perl \
+  ${ORACLE_HOME}/rdbms/admin/catcon.pl \
+  -u SYS/${orapass} \
+  -d ${ORACLE_HOME}/rdbms/admin \
+  -l /tmp \
+  -b ${utlrpod} \
+    utlrp.sql
+
+sqlplus sys/${orapass} as sysdba <<<'SHUTDOWN IMMEDIATE;'
+sqlplus sys/${orapass} as sysdba <<<'STARTUP;'
+#sqlplus sys/${orapass} as sysdba <<<'ALTER PLUGGABLE DATABASE ALL OPEN READ WRITE;'
 
 "${oinit}" stop
 

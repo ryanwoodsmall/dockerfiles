@@ -24,6 +24,3 @@ RUN chmod 755 /*.sh \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && rm -f /orainst/*.rpm
-
-# XXX - need to allow :5500 to listen/respond on 0.0.0.0
-# XXX - or put a proxy in front of it

@@ -32,8 +32,9 @@ ORACLEHTTPPORT = 5500
 all:
 	@echo make build - builds $(FULLTAG) image
 	@echo make clean - cleans up intermediate tags $(BUILDTAG) and containers $(CONFIGURENAME)
+	@echo make logs - tail logs in running $(IMAGENAME) container
 	@echo make run - build $(FULLTAG) and run $(IMAGENAME) detached
-	@echo make shell - start a shell in running $(FULLTAG) container
+	@echo make shell - start a shell in running $(IMAGENAME) container
 	@echo make verify - verify rpms
 
 run:
@@ -43,6 +44,10 @@ run:
 shell:
 	docker ps | awk '{print $$NF}' | grep "^$(IMAGENAME)$$"
 	docker exec -it $(IMAGENAME) bash -il
+
+logs:
+	docker ps | awk '{print $$NF}' | grep "^$(IMAGENAME)$$"
+	docker logs --follow $(IMAGENAME)
 
 clean:
 	docker stop $(CONFIGURENAME) || true

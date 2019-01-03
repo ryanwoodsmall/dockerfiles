@@ -57,46 +57,42 @@ source "${oprofd}"
 sqlplus sys/${orapass} as sysdba <<<'exec dbms_xdb_config.setlistenerlocalaccess(false);'
 
 # enable extended data types
-# https://oracle-base.com/articles/12c/extended-data-types-12cR1
-# https://docs.oracle.com/database/121/REFRN/GUID-D424D23B-0933-425F-BC69-9C0E6724693C.htm#REFRN10321
-# https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Data-Types.html#GUID-8EFA29E9-E8D8-40A6-A43E-954908C954A4
+#  https://oracle-base.com/articles/12c/extended-data-types-12cR1
+#  https://docs.oracle.com/database/121/REFRN/GUID-D424D23B-0933-425F-BC69-9C0E6724693C.htm#REFRN10321
+#  https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Data-Types.html#GUID-8EFA29E9-E8D8-40A6-A43E-954908C954A4
+# XXX - catcon stuff is sketchy on 18c+?
 edtf="/tmp/extended-data-types.sql"
-cat > "${edtf}" << EOF
-PURGE DBA_RECYCLEBIN;
-SHUTDOWN IMMEDIATE;
-STARTUP UPGRADE;
+cat > ${edtf} <<-EOF
 ALTER SESSION SET CONTAINER=CDB\$ROOT;
 ALTER SYSTEM SET max_string_size=extended SCOPE=SPFILE;
+SHUTDOWN IMMEDIATE;
+STARTUP UPGRADE;
 @?/rdbms/admin/utl32k.sql
-ALTER PLUGGABLE DATABASE ALL OPEN UPGRADE;
+@?/rdbms/admin/utlrp.sql
+
+ALTER PLUGGABLE DATABASE PDB\$SEED CLOSE;
+ALTER PLUGGABLE DATABASE PDB\$SEED OPEN UPGRADE;
+ALTER SESSION SET CONTAINER=PDB\$SEED;
+ALTER SYSTEM SET max_string_size=extended;
+@?/rdbms/admin/utl32k.sql
+@?/rdbms/admin/utlrp.sql
+
+ALTER SESSION SET CONTAINER=CDB\$ROOT;
+
+ALTER PLUGGABLE DATABASE XEPDB1 CLOSE;
+ALTER PLUGGABLE DATABASE XEPDB1 OPEN UPGRADE;
+ALTER SESSION SET CONTAINER=XEPDB1;
+ALTER SYSTEM SET max_string_size=extended;
+@?/rdbms/admin/utl32k.sql
+@?/rdbms/admin/utlrp.sql
+
+ALTER SESSION SET CONTAINER=CDB\$ROOT;
+
+SHUTDOWN IMMEDIATE;
+STARTUP;
+ALTER PLUGGABLE DATABASE ALL OPEN READ WRITE;
 EOF
 sqlplus sys/${orapass} as sysdba < "${edtf}"
-
-utl32kod="utl32k_cdb_pdbs_output"
-cd "${ORACLE_HOME}/rdbms/admin"
-mkdir -p "/tmp/${utl32kod}"
-${ORACLE_HOME}/perl/bin/perl \
-  ${ORACLE_HOME}/rdbms/admin/catcon.pl \
-  -u SYS/${orapass} \
-  -d ${ORACLE_HOME}/rdbms/admin \
-  -l /tmp \
-  -b ${utl32kod} \
-    utl32k.sql
-
-utlrpod="utlrp_cdb_pdbs_output"
-cd "${ORACLE_HOME}/rdbms/admin"
-mkdir -p "/tmp/${utlrpod}"
-${ORACLE_HOME}/perl/bin/perl \
-  ${ORACLE_HOME}/rdbms/admin/catcon.pl \
-  -u SYS/${orapass} \
-  -d ${ORACLE_HOME}/rdbms/admin \
-  -l /tmp \
-  -b ${utlrpod} \
-    utlrp.sql
-
-sqlplus sys/${orapass} as sysdba <<<'SHUTDOWN IMMEDIATE;'
-sqlplus sys/${orapass} as sysdba <<<'STARTUP;'
-#sqlplus sys/${orapass} as sysdba <<<'ALTER PLUGGABLE DATABASE ALL OPEN READ WRITE;'
 
 "${oinit}" stop
 

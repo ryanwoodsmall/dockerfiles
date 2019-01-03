@@ -33,11 +33,16 @@ all:
 	@echo make build - builds $(FULLTAG) image
 	@echo make clean - cleans up intermediate tags $(BUILDTAG) and containers $(CONFIGURENAME)
 	@echo make run - build $(FULLTAG) and run $(IMAGENAME) detached
+	@echo make shell - start a shell in running $(FULLTAG) container
 	@echo make verify - verify rpms
 
 run:
 	docker image ls | awk '{print $$1":"$$2}' | grep "^$(FULLTAG)$$"
 	docker run --restart always --detach $(DOCKERRUNOPTS) --name $(IMAGENAME) --publish $(ORACLEPORT):$(ORACLEPORT) --publish $(ORACLEHTTPPORT):$(ORACLEHTTPPORT) $(FULLTAG)
+
+shell:
+	docker ps | awk '{print $$NF}' | grep "^$(IMAGENAME)$$"
+	docker exec -it $(IMAGENAME) bash -il
 
 clean:
 	docker stop $(CONFIGURENAME) || true

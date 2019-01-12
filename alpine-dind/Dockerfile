@@ -11,7 +11,7 @@ FROM alpine:latest
 
 ARG contpass=alpine
 ARG dockerip=0.0.0.0
-ARG dockerport=2375 
+ARG dockerport=2375
 ARG sshport=22222
 
 ENV contuser root

@@ -1,6 +1,12 @@
 #
 # work in progress crosware bootstrap container
 #
+# XXX - more recipes needed?
+#   coreutils?
+#   openssl?
+#   socat?
+#   text browser with netbsdcurses?
+#
 
 # start from the musl busybox container
 FROM busybox:musl as BUSYBOX
@@ -12,15 +18,21 @@ RUN yum clean all \
     && mkdir -p /usr/local \
     && cd /usr/local \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
-    && /usr/local/crosware/bin/crosware bootstrap \
-    && /usr/local/crosware/bin/crosware install busybox toybox sbase ubase \
+    && cd crosware \
+    && ./bin/crosware bootstrap \
+    && ./bin/crosware install busybox toybox sbase ubase bash curl dropbear \
     && mkdir -p /stow \
-    && cp /usr/local/crosware/software/busybox/current/bin/busybox /stow/ \
-    && cp /usr/local/crosware/software/toybox/current/bin/toybox /stow/ \
-    && cp /usr/local/crosware/software/sbase/current/bin/sbase-box /stow/ \
-    && cp /usr/local/crosware/software/ubase/current/bin/ubase-box /stow/
+    && cp ./software/busybox/current/bin/busybox /stow/ \
+    && cp ./software/toybox/current/bin/toybox /stow/ \
+    && cp ./software/sbase/current/bin/sbase-box /stow/ \
+    && cp ./software/ubase/current/bin/ubase-box /stow/ \
+    && cp ./software/bash/current/bin/bash /stow/ \
+    && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
+    && cp ./software/dropbear/current/bin/dropbearmulti /stow/ \
+    && git clean -fdx || true
 
 # XXX - "git clean -fdx" in /usr/local/crosware so there's a clean checkout
+# XXX - COPY all of /usr/local/crosware below
 
 # get the busybox binary and install it as usual under /bin/ and as /bin/sh
 FROM scratch
@@ -38,11 +50,13 @@ RUN /bin/busybox mkdir -p /usr/bin \
     && /usr/bin/busybox rmdir /bin/ \
     && /usr/bin/busybox ln -s /usr/bin/ /bin \
     && /usr/bin/busybox ln -s /usr/bin/ /sbin \
-    && /usr/bin/busybox ln -s /usr/bin/ /usr/sbin \
-    && mkdir -p /home /root /tmp /var/spool/mail /var/www \
+    && /usr/bin/busybox ln -s /usr/bin/ /usr/sbin
+# dirs, perms, etc.
+RUN mkdir -p /home /root /tmp /var/spool/mail /var/www \
     && chmod 755 /home \
     && chmod 700 /root \
     && chmod 1777 /tmp \
+    && chmod 600 /etc/shadow \
     && rm -f /usr/bin/bash
 # XXX - needed?
 # - chown mail:mail /var/spool/mail
@@ -53,8 +67,17 @@ COPY --from=BUILDER /stow/sbase-box /usr/bin/
 COPY --from=BUILDER /stow/ubase-box /usr/bin/
 # toybox, sbase, ubase, etc.
 RUN for p in toybox sbase-box ubase-box ; do for a in $(${p}) ; do test -e /usr/bin/${a} || ln -s ${p} /usr/bin/${a} ; done ; done
+# bash
+COPY --from=BUILDER /stow/bash /usr/bin/
+RUN rm -f /usr/bin/sh \
+    && ln -s bash /usr/bin/sh
+# dropbear
+COPY --from=BUILDER /stow/dropbearmulti /usr/bin/
+RUN for a in $(dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'$" | tr -d "'" | sort) ; do test -e /usr/bin/${a} || ln -s dropbearmulti /usr/bin/${a} ; done
+# files to be copied with no setup
+COPY --from=BUILDER /stow/curl /usr/bin/
 
 # XXX - /etc/shells
 # XXX - /etc/profile (bashrc, bash_profile, profile.d/, etc.)
 
-CMD ["sh"]
+CMD ["bash","-il"]

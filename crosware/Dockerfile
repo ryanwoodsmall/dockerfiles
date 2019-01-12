@@ -26,9 +26,7 @@ RUN yum clean all \
 FROM scratch
 COPY --from=BUILDER /stow/busybox /bin/
 COPY --from=BUILDER /stow/busybox /bin/sh
-# copy all of /stow for more binaries
-COPY --from=BUILDER /stow /stow
-# get usr/group/password files
+# get /etc uesr/group passwd/shadow files
 COPY --from=BUSYBOX /etc/group /etc/
 COPY --from=BUSYBOX /etc/passwd /etc/
 COPY --from=BUSYBOX /etc/shadow /etc/
@@ -44,17 +42,19 @@ RUN /bin/busybox mkdir -p /usr/bin \
     && mkdir -p /home /root /tmp /var/spool/mail /var/www \
     && chmod 755 /home \
     && chmod 700 /root \
-    && chmod 1777 /tmp
-    && rm -f /stow/busybox /usr/bin/bash
+    && chmod 1777 /tmp \
+    && rm -f /usr/bin/bash
 # XXX - needed?
 # - chown mail:mail /var/spool/mail
 # - chown www-data:www-data /var/www
 # move binaries into place
-RUN for b in /stow/* ; do mv ${b} /usr/bin/ ; done \
-    && rmdir /stow
+COPY --from=BUILDER /stow/toybox /usr/bin/
+COPY --from=BUILDER /stow/sbase-box /usr/bin/
+COPY --from=BUILDER /stow/ubase-box /usr/bin/
 # toybox, sbase, ubase, etc.
-RUN for p in toybox sbase-box ubase-box ; do for a in $(${p}) ; do test -e /usr/bin/${a} || ln -s ${p} /usr/bin/${a} ; done ; done \
+RUN for p in toybox sbase-box ubase-box ; do for a in $(${p}) ; do test -e /usr/bin/${a} || ln -s ${p} /usr/bin/${a} ; done ; done
 
 # XXX - /etc/shells
+# XXX - /etc/profile (bashrc, bash_profile, profile.d/, etc.)
 
 CMD ["sh"]

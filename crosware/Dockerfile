@@ -31,6 +31,7 @@ RUN yum clean all \
     && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
     && cp ./software/dropbear/current/bin/dropbearmulti /stow/ \
     && cp ./software/coreutils/current/bin/coreutils /stow/ \
+    && cp ./software/openssl/current/bin/openssl /stow/ \
     && git clean -fdx || true
 
 # XXX - "git clean -fdx" in /usr/local/crosware so there's a clean checkout
@@ -81,8 +82,12 @@ COPY --from=BUILDER /stow/coreutils /usr/bin/
 RUN for a in $(coreutils --help 2>&1 | sed -n '/^Built-in programs:/,/^$/p' | grep -v ^Built-in) ; do test -e /usr/bin/${a} || ln -s coreutils /usr/bin/${a} ; done
 # files to be copied with no setup
 COPY --from=BUILDER /stow/curl /usr/bin/
-
-# XXX - /etc/shells
+COPY --from=BUILDER /stow/openssl /usr/bin/
+# final setup stuff
+RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
+    && echo '/bin/sh' > /etc/shells \
+    && echo '/bin/ash' >> /etc/shells \
+    && echo '/bin/bash' >> /etc/shells
 # XXX - /etc/profile (bashrc, bash_profile, profile.d/, etc.)
 
 CMD ["bash","-il"]

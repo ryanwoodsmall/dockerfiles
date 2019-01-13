@@ -1,6 +1,13 @@
 #
 # work in progress crosware bootstrap container
 #
+# should work ootb for x86_64/arm/aarch64
+#
+# can build x86 by (or arm32v6 on arm64v8)
+# - build x86_64
+# - running container with "setarch linux32 bash -il"
+# - build busybox/toybox/bash/curl and replace binaries in /usr/bin
+#
 # XXX - build a downloads/ mirror? share as a volume? hmm...
 # XXX - need (read-only?) git client that doesn't require java
 #
@@ -24,6 +31,8 @@ RUN yum clean all \
     && cp ./software/bash/current/bin/bash /stow/ \
     && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
     && rm -rf /usr/local/tmp/* \
+    && yum clean all \
+    && rm -rf /var/cache/yum \
     && git clean -fdx || true
 
 # get the busybox binary and install it as usual under /bin/ and as /bin/sh

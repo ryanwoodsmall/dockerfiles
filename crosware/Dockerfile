@@ -2,7 +2,6 @@
 # work in progress crosware bootstrap container
 #
 # XXX - more recipes needed?
-#   coreutils?
 #   openssl?
 #   socat?
 #   text browser with netbsdcurses?
@@ -22,7 +21,7 @@ RUN yum clean all \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox sbase ubase bash curl dropbear \
+    && ./bin/crosware install busybox toybox sbase ubase bash curl dropbear coreutils \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \
     && cp ./software/toybox/current/bin/toybox /stow/ \
@@ -31,6 +30,7 @@ RUN yum clean all \
     && cp ./software/bash/current/bin/bash /stow/ \
     && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
     && cp ./software/dropbear/current/bin/dropbearmulti /stow/ \
+    && cp ./software/coreutils/current/bin/coreutils /stow/ \
     && git clean -fdx || true
 
 # XXX - "git clean -fdx" in /usr/local/crosware so there's a clean checkout
@@ -76,6 +76,9 @@ RUN rm -f /usr/bin/sh \
 # dropbear
 COPY --from=BUILDER /stow/dropbearmulti /usr/bin/
 RUN for a in $(dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'$" | tr -d "'" | sort) ; do test -e /usr/bin/${a} || ln -s dropbearmulti /usr/bin/${a} ; done
+# coreutils
+COPY --from=BUILDER /stow/coreutils /usr/bin/
+RUN for a in $(coreutils --help 2>&1 | sed -n '/^Built-in programs:/,/^$/p' | grep -v ^Built-in) ; do test -e /usr/bin/${a} || ln -s coreutils /usr/bin/${a} ; done
 # files to be copied with no setup
 COPY --from=BUILDER /stow/curl /usr/bin/
 

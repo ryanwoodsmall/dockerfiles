@@ -16,7 +16,7 @@ RUN yum clean all \
     && cd /usr/local \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
-    && ./bin/crosware bootstrap \
+    && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
     && ./bin/crosware install busybox toybox bash curl \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \

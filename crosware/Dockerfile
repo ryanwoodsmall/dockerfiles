@@ -7,6 +7,8 @@
 #   socat?
 #   text browser with netbsdcurses?
 #
+# XXX - build a downloads/ mirror? share as a volume? hmm...
+#
 
 # start from the musl busybox container
 FROM busybox:musl as BUSYBOX

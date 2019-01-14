@@ -10,6 +10,7 @@
 #
 # XXX - build a downloads/ mirror? share as a volume? hmm...
 # XXX - need (read-only?) git client that doesn't require java
+# XXX - need to strip all binaries in /stow/ to squeeze a few MB out of the container
 #
 
 # start from the musl busybox container

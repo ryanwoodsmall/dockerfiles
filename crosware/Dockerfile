@@ -5,12 +5,14 @@
 #
 # can build x86 by (or arm32v6 on arm64v8)
 # - build x86_64
-# - running container with "setarch linux32 bash -il"
+# - running container with "setarch linux32 bash -il" (or just "linux32 bash -il")
 # - build busybox/toybox/bash/curl and replace binaries in /usr/bin
 #
 # XXX - build a downloads/ mirror? share as a volume? hmm...
 # XXX - need (read-only?) git client that doesn't require java
 # XXX - need to strip all binaries in /stow/ to squeeze a few MB out of the container
+# XXX - /etc/inputrc
+# XXX - ssl/tls certs???
 #
 
 # start from the musl busybox container

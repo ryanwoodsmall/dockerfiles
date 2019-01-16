@@ -86,9 +86,11 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo 'export CW_GIT_CMD=git' >> /etc/profile.d/crosware.sh \
     && echo 'export CW_USE_JAVA=false' >> /etc/profile.d/crosware.sh \
     && echo 'export CW_USE_JGIT=false' >> /etc/profile.d/crosware.sh \
+    && echo 'test -e /usr/local/crosware/etc/profile && . /usr/local/crosware/etc/profile' >> /etc/profile.d/crosware.sh \
     && echo '# XXX UGH' >> /etc/profile.d/crosware.sh \
     && echo 'export GIT_SSL_NO_VERIFY=1' >> /etc/profile.d/crosware.sh \
-    && echo 'test -e /usr/local/crosware/etc/profile && . /usr/local/crosware/etc/profile' >> /etc/profile.d/crosware.sh \
+    && echo '# USER KNOWS BEST' >> /etc/profile.d/crosware.sh \
+    && echo 'export PATH=${HOME}/bin:${PATH}' >> /etc/profile.d/crosware.sh \
     && sed -i 's/root::/root:*:/g' /etc/shadow
 
 # XXX - random password

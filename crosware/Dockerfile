@@ -13,8 +13,6 @@
 #     | sed 's#yum clean all#echo i386 > /etc/yum/vars/basearch ; yum clean all#g' \
 #     | sed 's#centos:latest#i386/centos:6#g' \
 #     | docker build --tag centos32 -
-# - to run that:
-#     sed '/sed.*CMD/,/centos32/!d;s/^#//g' Dockerfile | tr -s ' ' | bash
 #
 # XXX - build a downloads/ mirror? share as a volume? hmm...
 # XXX - need (read-only?) git client that doesn't require java

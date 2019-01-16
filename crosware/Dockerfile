@@ -7,6 +7,14 @@
 # - build x86_64
 # - running container with "setarch linux32 bash -il" (or just "linux32 bash -il")
 # - build busybox/toybox/bash/curl and replace binaries in /usr/bin
+# - or, i386 centos 6:
+#     sed '/CMD.*bash/s/"bash"/"setarch","linux32","bash"/g' Dockerfile \
+#     | sed '/crosware \(bootstrap\|install\)/s#\./bin/#setarch linux32 ./bin/#g' \
+#     | sed 's#yum clean all#echo i386 > /etc/yum/vars/basearch ; yum clean all#g' \
+#     | sed 's#centos:latest#i386/centos:6#g' \
+#     | docker build --tag centos32 -
+# - to run that:
+#     sed '/sed.*CMD/,/centos32/!d;s/^#//g' Dockerfile | tr -s ' ' | bash
 #
 # XXX - build a downloads/ mirror? share as a volume? hmm...
 # XXX - need (read-only?) git client that doesn't require java

@@ -50,7 +50,7 @@ RUN yum clean all \
 FROM scratch
 COPY --from=BUILDER /stow/busybox /bin/
 COPY --from=BUILDER /stow/busybox /bin/sh
-# get /etc uesr/group passwd/shadow files
+# get /etc user/group passwd/shadow files
 COPY --from=BUSYBOX /etc/group /etc/
 COPY --from=BUSYBOX /etc/passwd /etc/
 COPY --from=BUSYBOX /etc/shadow /etc/

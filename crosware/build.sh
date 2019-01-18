@@ -7,7 +7,17 @@
 #
 # gather:
 #   # using dbclient with keys exchanged
-#   for n in $(for h in amd64 i386/2222 arm32v6/222 arm64v8 ; do dbclient -y -y ${h} docker image ls | awk '/ryanwoodsmall\/crosware/{print $1":"$2}' | sed "s#^#${h}:#g" ; done) ; do
+#   # a better solution is to use a local registry
+#   # can forward a central (localhost:5000), tag as localhost:5000/ryanwoodsmall/crosware:arch, push, then tag and push
+#   # for i386:
+#   #   docker run -d -p 5000:5000 --restart always --name registry registry:2
+#   #   ssh -R 5000:localhost:5000 i386 docker image tag ryanwoodsmall/crosware:i386 localhost:5000/ryanwoodsmall/crosware:i386
+#   #   ssh -R 5000:localhost:5000 i386 docker image push localhost:5000/ryanwoodsmall/crosware:i386
+#   #   docker pull localhost:5000/ryanwoodsmall/crosware:i386
+#   #   docker tag localhost:5000/ryanwoodsmall/crosware:i386 ryanwoodsmall/crosware:i386
+#   #   docker push ryanwoodsmall/crosware:i386
+#   # manual:
+#   for n in $(for h in amd64 i386/2222 arm32v6/222 arm64v8 ; do dbclient -y -y ${h} docker image ls | awk '/ryanwoodsmall\/crosware:(amd64|arm32v6|arm64v8|i386)/{print $1":"$2}' | sed "s#^#${h}:#g" ; done) ; do
 #     dbclient -y -y ${n%%:*} docker save ${n#*:} | docker load
 #   done
 #

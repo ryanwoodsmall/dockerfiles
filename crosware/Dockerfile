@@ -27,21 +27,24 @@ FROM busybox:musl as BUSYBOX
 # build out some of our recipes
 FROM centos:latest as BUILDER
 RUN yum clean all \
-    && yum -y install bash bzip2 curl git \
+    && yum -y install bash bzip2 curl git file binutils \
     && mkdir -p /usr/local \
     && cd /usr/local \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash curl \
+    && ./bin/crosware install busybox toybox bash curl dropbear \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \
     && cp ./software/toybox/current/bin/toybox /stow/ \
     && cp ./software/bash/current/bin/bash /stow/ \
+    && cp .//software/dropbear/current/bin/dropbearmulti /stow/ \
     && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
     && rm -rf /usr/local/tmp/* \
     && yum clean all \
     && rm -rf /var/cache/yum \
+    && find /stow/ -type f | xargs file | grep 'ELF.*not stripped' | cut -f1 -d: | xargs strip --strip-all \
+    && file /stow/* \
     && git clean -fdx || true
 
 # get the busybox binary and install it as usual under /bin/ and as /bin/sh
@@ -74,6 +77,10 @@ RUN for p in toybox ; do for a in $(${p}) ; do test -e /usr/bin/${a} || ln -s ${
 COPY --from=BUILDER /stow/bash /usr/bin/
 RUN rm -f /usr/bin/sh \
     && ln -s bash /usr/bin/sh
+# dropbear
+COPY --from=BUILDER /stow/dropbearmulti /usr/bin/
+RUN for d in $(dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'" | tr -d "'" | sort) ; do ln -s dropbearmulti /usr/bin/${d} ; done \
+    && mkdir -p /usr/local/crosware/software/dropbear/etc
 # files/directories to be copied with no setup
 COPY --from=BUILDER /stow/curl /usr/bin/
 # crosware and permissions
@@ -88,7 +95,7 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo '/bin/bash' >> /etc/shells \
     && echo 'test -e /etc/profile.d && for scriptlet in /etc/profile.d/*.sh ; do . ${scriptlet} ; done ; unset scriptlet' > /etc/profile \
     && echo 'export PATH=${PATH}:/usr/local/crosware/bin' > /etc/profile.d/crosware.sh \
-    && echo 'export PS1="\u@crosware \W \$ "' >> /etc/profile.d/crosware.sh \
+    && echo 'export PS1="\u@crosware-$(uname -m) \W \$ "' >> /etc/profile.d/crosware.sh \
     && echo 'export CW_GIT_CMD=git' >> /etc/profile.d/crosware.sh \
     && echo 'export CW_USE_JAVA=false' >> /etc/profile.d/crosware.sh \
     && echo 'export CW_USE_JGIT=false' >> /etc/profile.d/crosware.sh \

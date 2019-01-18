@@ -19,6 +19,8 @@
 # XXX - need to strip all binaries in /stow/ to squeeze a few MB out of the container
 # XXX - /etc/inputrc
 # XXX - ssl/tls certs???
+# XXX - could exploit run-func to only do configure/build of mbedtls curl
+#       crosware install wolfssl zlib ; crosware run-func cw{fetch,extract}_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl
 #
 
 # start from the musl busybox container

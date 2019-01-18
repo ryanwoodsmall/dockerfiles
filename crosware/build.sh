@@ -25,6 +25,7 @@ set -eu
 
 v="ryanwoodsmall"
 c="crosware"
+b="${c}build"
 u="https://raw.githubusercontent.com/${v}/dockerfiles/master/${c}/Dockerfile"
 a="$(docker info | awk -F: '/Architecture/{print $2}' | tr -d ' ')"
 o="-c 'CMD [\"bash\",\"-il\"]'"
@@ -43,15 +44,17 @@ elif [[ ${a} =~ ^i.86 ]] ; then
 	o+="-c 'ENTRYPOINT [\"linux32\"]'"
 fi
 
-docker stop "${c}" || true
-docker kill "${c}" || true
-docker rm "${c}" || true
+docker stop "${b}" || true
+docker kill "${b}" || true
+docker rm "${b}" || true
 
-docker image rm "${c}" || true
+docker image rm "${b}" || true
 
-docker build --pull --tag "${c}" "${u}"
+docker build --pull --tag "${b}" "${u}"
 
-docker run --name "${c}" "${c}" uname -m
+docker run --name "${b}" "${b}" uname -m
 
-docker export ${c} \
+docker export "${b}" \
 | eval docker import "${o}" - "${v}/${c}:${t}"
+
+docker rm "${b}"

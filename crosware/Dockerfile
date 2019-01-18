@@ -16,11 +16,7 @@
 #
 # XXX - build a downloads/ mirror? share as a volume? hmm...
 # XXX - need (read-only?) git client that doesn't require java
-# XXX - need to strip all binaries in /stow/ to squeeze a few MB out of the container
-# XXX - /etc/inputrc
 # XXX - ssl/tls certs???
-# XXX - could exploit run-func to only do configure/build of mbedtls curl
-#       crosware install wolfssl zlib ; crosware run-func cw{fetch,extract}_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl
 #
 
 # start from the musl busybox container
@@ -35,7 +31,8 @@ RUN yum clean all \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash curl dropbear \
+    && ./bin/crosware install busybox toybox bash dropbear mbedtls zlib \
+    && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \
     && cp ./software/toybox/current/bin/toybox /stow/ \
@@ -95,6 +92,12 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo '/bin/sh' > /etc/shells \
     && echo '/bin/ash' >> /etc/shells \
     && echo '/bin/bash' >> /etc/shells \
+    && echo 'set bell-style none' > /etc/inputrc \
+    && echo 'set meta-flag on' >> /etc/inputrc \
+    && echo 'set input-meta on' >> /etc/inputrc \
+    && echo 'set convert-meta off' >> /etc/inputrc \
+    && echo 'set output-meta on' >> /etc/inputrc \
+    && echo 'set mark-symlinked-directories on' >> /etc/inputrc \
     && echo 'test -e /etc/profile.d && for scriptlet in /etc/profile.d/*.sh ; do . ${scriptlet} ; done ; unset scriptlet' > /etc/profile \
     && echo 'export PATH=${PATH}:/usr/local/crosware/bin' > /etc/profile.d/crosware.sh \
     && echo 'export PS1="\u@crosware-$(uname -m) \W \$ "' >> /etc/profile.d/crosware.sh \

@@ -37,7 +37,7 @@ RUN yum clean all \
     && cp ./software/busybox/current/bin/busybox /stow/ \
     && cp ./software/toybox/current/bin/toybox /stow/ \
     && cp ./software/bash/current/bin/bash /stow/ \
-    && cp .//software/dropbear/current/bin/dropbearmulti /stow/ \
+    && cp ./software/dropbear/current/bin/dropbearmulti /stow/ \
     && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
     && rm -rf /usr/local/tmp/* \
     && yum clean all \

@@ -34,7 +34,7 @@ RUN set -eu \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash dropbear zlib mbedtls \
+    && ./bin/crosware install busybox toybox bash zlib dropbear mbedtls \
     && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl \
     && rm -rf /stow \
     && mkdir -p /stow \

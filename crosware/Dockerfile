@@ -24,14 +24,16 @@ FROM busybox:musl as BUSYBOX
 
 # build out some of our recipes
 FROM centos:latest as BUILDER
-RUN yum clean all \
-    && yum -y install bash bzip2 curl git file binutils \
+RUN set -eu \
+    && yum clean all \
+    && yum -y install bash bzip2 curl git patch binutils file \
     && mkdir -p /usr/local \
     && cd /usr/local \
+    && rm -rf crosware \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash dropbear mbedtls zlib \
+    && ./bin/crosware install busybox toybox bash dropbear zlib mbedtls \
     && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl \
     && rm -rf /stow \
     && mkdir -p /stow \
@@ -40,12 +42,12 @@ RUN yum clean all \
     && cp ./software/bash/current/bin/bash /stow/ \
     && cp ./software/dropbear/current/bin/dropbearmulti /stow/ \
     && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
+    && find /stow/ -type f | xargs file | grep 'ELF.*stripped' | cut -f1 -d: | xargs strip --strip-all \
+    && file /stow/* \
     && rm -rf /usr/local/tmp/* \
     && yum clean all \
     && rm -rf /var/cache/yum \
-    && find /stow/ -type f | xargs file | grep 'ELF.*not stripped' | cut -f1 -d: | xargs strip --strip-all \
-    && file /stow/* \
-    && git clean -fdx || true
+    && git clean -fdx
 
 # get the busybox binary and install it as usual under /bin/ and as /bin/sh
 FROM scratch

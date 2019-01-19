@@ -23,6 +23,7 @@
 FROM busybox:musl as BUSYBOX
 
 # build out some of our recipes
+# XXX - busybox patch does *not* work for some of bash patches
 FROM centos:latest as BUILDER
 RUN set -eu \
     && yum clean all \

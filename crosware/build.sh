@@ -62,7 +62,7 @@ docker image rm "${b}" || true
 
 docker build --pull --tag "${b}" "${u}"
 
-docker run --name "${b}" "${b}" uname -m
+docker run --name "${b}" "${b}" bash -c 'uname -m ; bash --version ; set | egrep "(TYPE|BASH)"'
 
 docker export "${b}" \
 | eval docker import "${o}" - "${v}/${c}:${t}"

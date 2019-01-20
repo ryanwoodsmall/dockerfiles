@@ -115,7 +115,11 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo 'export PATH=${HOME}/bin:${PATH}' >> /etc/profile.d/crosware.sh \
     && sed -i 's/root::/root:*:/g' /etc/shadow
 
-# XXX - random password
-#   && chpasswd <<<"root:${RANDOM}$(date '+%Y%m%d%H%M%S')${RANDOM}"
+# XXX - include a toolchain? image goes from <8MB to 120MB+, but this helps immensely with constant downloads?
+#   && /usr/local/crosware/bin/crosware install statictoolchain \
+#   && rm -rf /usr/local/tmp/* \
+
+# XXX - random password, throw a base64 in here? "$(date | base64)"
+#   && chpasswd <<<"root:${RANDOM}$(date '+%Y%m%d%H%M%S')${RANDOM}" \
 
 CMD ["bash","-il"]

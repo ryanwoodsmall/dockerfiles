@@ -116,6 +116,8 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && sed -i 's/root::/root:*:/g' /etc/shadow
 
 # XXX - include a toolchain? image goes from <8MB to 120MB+, but this helps immensely with constant downloads?
+# XXX - this needs to be last since its a pretty big layer
+# XXX - move the chgrp/chmod/directory chmod to her to avoid another layer as well
 #   && /usr/local/crosware/bin/crosware install statictoolchain \
 #   && rm -rf /usr/local/tmp/* \
 

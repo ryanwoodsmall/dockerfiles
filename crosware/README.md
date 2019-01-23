@@ -10,9 +10,11 @@ the included userspace is completely static and consists of a handful of binarie
 - busybox
 - toybox
 - curl
+- dropbear
+
+additionally, a fully static gcc+binutils C/C++ toolchain is included.
 
 run ```crosware``` without an arguments to see usage.
-to install the base compiler, run ```crosare install statictoolchain```.
 
 ## links
 

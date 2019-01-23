@@ -23,7 +23,7 @@
 FROM busybox:musl as BUSYBOX
 
 # build out some of our recipes
-# XXX - busybox patch does *not* work for some of bash patches
+# XXX - busybox patch does *not* work for some bash patches
 FROM centos:latest as BUILDER
 RUN set -eu \
     && yum clean all \
@@ -88,9 +88,6 @@ RUN for d in $(dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'" | tr -d "'" | sor
 COPY --from=BUILDER /stow/curl /usr/bin/
 # crosware and permissions
 COPY --from=BUILDER /usr/local/crosware /usr/local/crosware
-RUN chgrp -R wheel /usr/local/crosware \
-    && chmod -R g+w /usr/local/crosware \
-    && find /usr/local/crosware -type d -exec chmod 2775 {} \;
 # final setup stuff
 RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo '/bin/sh' > /etc/shells \
@@ -113,13 +110,12 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo 'export GIT_SSL_NO_VERIFY=1' >> /etc/profile.d/crosware.sh \
     && echo '# USER KNOWS BEST' >> /etc/profile.d/crosware.sh \
     && echo 'export PATH=${HOME}/bin:${PATH}' >> /etc/profile.d/crosware.sh \
-    && sed -i 's/root::/root:*:/g' /etc/shadow
-
-# XXX - include a toolchain? image goes from <8MB to 120MB+, but this helps immensely with constant downloads?
-# XXX - this needs to be last since its a pretty big layer
-# XXX - move the chgrp/chmod/directory chmod to her to avoid another layer as well
-#   && /usr/local/crosware/bin/crosware install statictoolchain \
-#   && rm -rf /usr/local/tmp/* \
+    && sed -i 's/root::/root:*:/g' /etc/shadow \
+    && /usr/local/crosware/bin/crosware install statictoolchain \
+    && rm -rf /usr/local/tmp/* \
+    && chgrp -R wheel /usr/local/crosware \
+    && chmod -R g+w /usr/local/crosware \
+    && find /usr/local/crosware -type d -exec chmod 2775 {} \;
 
 # XXX - random password, throw a base64 in here? "$(date | base64)"
 #   && chpasswd <<<"root:${RANDOM}$(date '+%Y%m%d%H%M%S')${RANDOM}" \

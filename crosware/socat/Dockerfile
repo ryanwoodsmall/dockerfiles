@@ -7,7 +7,7 @@ RUN source /usr/local/crosware/etc/profile \
     && sed -i      's/openssl//g'         ${socatrecipe} \
     && sed -i      's/readline//g'        ${socatrecipe} \
     && diff -Naur ${socatrecipe}{.ORIG,} || true \
-    && crosware install statictoolchain socat \
+    && crosware install socat \
     && source /usr/local/crosware/etc/profile \
     && cat ${socatrecipe}.ORIG > ${socatrecipe} \
     && rm -f ${socatrecipe}.ORIG \

@@ -22,7 +22,7 @@ git clone https://github.com/richfelker/musl-cross-make.git >>${logfile} 2>&1
 cd musl-cross-make
 
 echo "getting Makefile.arch_indep"
-curl -kLO https://raw.githubusercontent.com/ryanwoodsmall/musl-misc/master/musl-cross-make-confs/Makefile.arch_indep
+curl -fkLO https://raw.githubusercontent.com/ryanwoodsmall/musl-misc/master/musl-cross-make-confs/Makefile.arch_indep
 
 echo "building compiler"
 ( date ; time ( make -f Makefile.arch_indep ; echo $? ) ; date ) >>${logfile} 2>&1

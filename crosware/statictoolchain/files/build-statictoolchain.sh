@@ -2,6 +2,8 @@
 
 set -eu
 
+st="$(date)"
+
 logfile="/tmp/musl-cross-make.out"
 echo "logging to ${logfile}"
 
@@ -9,7 +11,7 @@ source /etc/profile
 source /usr/local/crosware/etc/profile
 
 echo "installing prerequisites"
-crosware install git binutils >${logfile} 2>&1
+( time ( crosware install git binutils ) ) >${logfile} 2>&1
 source /usr/local/crosware/etc/profile
 cd
 
@@ -24,3 +26,7 @@ curl -kLO https://raw.githubusercontent.com/ryanwoodsmall/musl-misc/master/musl-
 
 echo "building compiler"
 ( date ; time ( make -f Makefile.arch_indep ; echo $? ) ; date ) >>${logfile} 2>&1
+
+et="$(date)"
+echo "started: ${st}"
+echo "finished: ${et}"

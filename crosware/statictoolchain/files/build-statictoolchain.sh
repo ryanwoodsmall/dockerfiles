@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 set -eu
+source /etc/profile
 source /usr/local/crosware/etc/profile
 crosware install git binutils
 source /usr/local/crosware/etc/profile
 cd
+export GIT_SSL_NO_VERIFY=1
 git clone https://github.com/richfelker/musl-cross-make.git
 cd musl-cross-make
 curl -kLO https://raw.githubusercontent.com/ryanwoodsmall/musl-misc/master/musl-cross-make-confs/Makefile.arch_indep

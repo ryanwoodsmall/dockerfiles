@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 source /usr/local/crosware/etc/profile
-crosware install make screen git binutils
+crosware install git binutils
 source /usr/local/crosware/etc/profile
 cd
 git clone https://github.com/richfelker/musl-cross-make.git

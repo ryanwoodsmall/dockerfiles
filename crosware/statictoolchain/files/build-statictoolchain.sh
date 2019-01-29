@@ -2,6 +2,8 @@
 
 set -eu
 
+export TS="$(date '+%Y%m%d%H%M')"
+
 st="$(date)"
 
 logfile="/tmp/musl-cross-make.out"

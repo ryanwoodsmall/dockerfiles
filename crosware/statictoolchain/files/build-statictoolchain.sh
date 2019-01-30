@@ -15,7 +15,9 @@ source /usr/local/crosware/etc/profile
 echo "installing prerequisites"
 ( time ( crosware install git binutils ) ) >${logfile} 2>&1
 source /usr/local/crosware/etc/profile
-cd
+
+cd ${cwtop}/tmp/
+pwd
 
 echo "cloning musl-cross-make"
 export GIT_SSL_NO_VERIFY=1

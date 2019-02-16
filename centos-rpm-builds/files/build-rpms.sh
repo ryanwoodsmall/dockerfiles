@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # XXX - ~/rpmbuild should be set from "rpm --eval '%{_topdir}'"
+# XXX - add ccache and setup musl-gcc in /usr/lib{,64}/ccache/
 
 # exit on failure and be verbose
 set -eux

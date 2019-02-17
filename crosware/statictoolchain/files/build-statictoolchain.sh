@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+#
+# XXX - does this belong with the crosware project? or musl-misc? or here?
+#
+
 set -eu
 
 export TS="$(date '+%Y%m%d%H%M')"

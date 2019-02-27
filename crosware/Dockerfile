@@ -69,11 +69,12 @@ RUN /bin/busybox mkdir -p /usr/bin \
     && /usr/bin/busybox ln -s /usr/bin/ /bin \
     && /usr/bin/busybox ln -s /usr/bin/ /sbin
 # dirs, perms, etc.
-RUN mkdir -p /home /root /tmp /var/spool/mail /var/www /etc/profile.d /usr/local/tmp /usr/local/bin /usr/local/sbin /usr/sbin \
+RUN mkdir -p /home /root /tmp /var/spool/mail /var/www /etc/profile.d /usr/local/tmp /usr/local/bin /usr/local/sbin /usr/sbin /var/tmp /var/lib /run \
     && chmod 755 /home \
     && chmod 700 /root \
-    && chmod 1777 /tmp /usr/local/tmp \
+    && chmod 1777 /tmp /usr/local/tmp /var/tmp \
     && chmod 600 /etc/shadow \
+    && ln -s /run /var/ \
     && rm -f /usr/bin/bash
 # toybox
 COPY --from=BUILDER /stow/toybox /usr/bin/

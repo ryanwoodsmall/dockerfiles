@@ -82,14 +82,15 @@ RUN for p in toybox ; do for a in $(${p}) ; do test -e /usr/bin/${a} || ln -s ${
 COPY --from=BUILDER /stow/bash /usr/bin/
 RUN rm -f /usr/bin/sh \
     && ln -s bash /usr/bin/sh
-# dropbear
-#COPY --from=BUILDER /stow/dropbearmulti /usr/bin/
-RUN for d in $(/usr/local/crosware/software/dropbear/current/bin/dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'" | tr -d "'" | sort) ; do ln -s dropbearmulti /usr/bin/${d} ; done \
-    && mkdir -p /usr/local/crosware/software/dropbear/etc
 # files/directories to be copied with no setup
 COPY --from=BUILDER /stow/curl /usr/bin/
 # crosware and permissions
 COPY --from=BUILDER /usr/local/crosware /usr/local/crosware
+# dropbear
+#COPY --from=BUILDER /stow/dropbearmulti /usr/bin/
+RUN ln -s /usr/local/crosware/software/dropbear/current/bin/dropbearmulti /usr/bin/ \
+    && for d in $(/usr/bin/dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'" | tr -d "'" | sort) ; do ln -s dropbearmulti /usr/bin/${d} ; done \
+    && mkdir -p /usr/local/crosware/software/dropbear/etc
 # final setup stuff
 RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo '/bin/sh' > /etc/shells \

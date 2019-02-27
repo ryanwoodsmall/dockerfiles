@@ -17,6 +17,7 @@
 # XXX - build a downloads/ mirror? share as a volume? hmm...
 # XXX - need (read-only?) git client that doesn't require java
 # XXX - ssl/tls certs???
+# XXX - downloads statictoolchain twice, but at least tests our bash/curl/userspace?
 #
 
 # start from the musl busybox container
@@ -35,7 +36,7 @@ RUN set -eu \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
     && ./bin/crosware install busybox toybox bash zlib dropbear mbedtls \
-    && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl \
+    && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
     && rm -rf /stow \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \
@@ -48,7 +49,8 @@ RUN set -eu \
     && rm -rf /usr/local/tmp/* \
     && yum clean all \
     && rm -rf /var/cache/yum \
-    && git clean -fdx
+    && ./bin/crosware list-installed | egrep -v '^dropbear : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
+    && for d in builds downloads ; do pushd $d ; git clean -fdx ; popd ; done
 
 # get the busybox binary and install it as usual under /bin/ and as /bin/sh
 FROM scratch
@@ -81,8 +83,8 @@ COPY --from=BUILDER /stow/bash /usr/bin/
 RUN rm -f /usr/bin/sh \
     && ln -s bash /usr/bin/sh
 # dropbear
-COPY --from=BUILDER /stow/dropbearmulti /usr/bin/
-RUN for d in $(dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'" | tr -d "'" | sort) ; do ln -s dropbearmulti /usr/bin/${d} ; done \
+#COPY --from=BUILDER /stow/dropbearmulti /usr/bin/
+RUN for d in $(/usr/local/crosware/software/dropbear/current/bin/dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'" | tr -d "'" | sort) ; do ln -s dropbearmulti /usr/bin/${d} ; done \
     && mkdir -p /usr/local/crosware/software/dropbear/etc
 # files/directories to be copied with no setup
 COPY --from=BUILDER /stow/curl /usr/bin/

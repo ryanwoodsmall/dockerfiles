@@ -30,11 +30,10 @@ RUN apk update \
            openssh-client \
            openssh-keygen \
            openssh-sftp-server \
-           shadow \
            tini-static \
     && getent passwd ${contuser} || useradd -m ${contuser} \
     && usermod -G docker -a ${contuser} \
-    && chsh -s /bin/bash ${contuser} \
+    && sed -i "/^${contuser}:/s/ash$/bash/g" /etc/passwd \
     && echo "${contuser}:${contpass}" | chpasswd \
     && hd=`getent passwd ${contuser} | cut -f6 -d:` \
     && mkdir -p ${hd}/.ssh \

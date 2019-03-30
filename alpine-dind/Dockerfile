@@ -30,6 +30,7 @@ RUN apk update \
            openssh-client \
            openssh-keygen \
            openssh-sftp-server \
+           shadow \
            tini-static \
     && getent passwd ${contuser} || useradd -m ${contuser} \
     && usermod -G docker -a ${contuser} \

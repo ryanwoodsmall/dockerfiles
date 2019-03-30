@@ -44,7 +44,7 @@ RUN apk update \
     && touch /var/log/lastlog \
     && rm -rf /var/cache/apk/* \
     && echo '#!/bin/sh' > ${ep} \
-    && echo 'rm -f /var/run/docker.pid /var/run/dropbear.pid' >> ${ep} \
+    && echo 'rm -f /var/run/docker.pid /var/run/dropbear.pid /run/docker/containerd/containerd.pid /run/dropbear.pid /run/docker.pid' >> ${ep} \
     && echo "/usr/sbin/dropbear -R -E -p ${sshport}" >> ${ep} \
     && echo "/usr/bin/dockerd -H unix:///var/run/docker.sock -H tcp://${dockerip}:${dockerport} -s vfs" >> ${ep} \
     && chmod 755 ${ep}

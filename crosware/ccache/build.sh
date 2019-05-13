@@ -21,5 +21,5 @@ docker pull ${basecon}
 docker kill ${ccachecon} || true
 docker rm ${ccachecon} || true
 docker run --name ${ccachecon} ${vopts} ${basecon} bash -l ${crosware} install ccache make ccache \
-&& docker commit -c 'CMD ["bash","-il"]' ${ccachecon} ${basecon}  \
+&& docker commit -c 'CMD ["bash","-il"]' ${ccachecon} ${basecon} \
 && docker rm ${ccachecon}

@@ -12,24 +12,31 @@ st="$(date)"
 
 logfile="/tmp/musl-cross-make.out"
 echo "logging to ${logfile}"
+echo "started: ${st}" >${logfile}
 
 source /etc/profile
 source /usr/local/crosware/etc/profile
 
 echo "installing prerequisites"
-crosware install ccache
+crosware install ccache >>${logfile} 2>&1
 source /usr/local/crosware/etc/profile
-( time ( crosware install git binutils ) ) >${logfile} 2>&1
+( time ( crosware install git binutils ) ) >>${logfile} 2>&1
 source /usr/local/crosware/etc/profile
 
 cd ${cwtop}/tmp/
 pwd
 
-echo "cloning musl-cross-make"
+echo "cloning/updating musl-cross-make"
 export GIT_SSL_NO_VERIFY=1
-git clone https://github.com/richfelker/musl-cross-make.git >>${logfile} 2>&1
-
-cd musl-cross-make
+export mcmd="musl-cross-make"
+if [ ! -e ${mcmd} ] ; then
+  git clone https://github.com/richfelker/musl-cross-make.git >>${logfile} 2>&1
+else
+  pushd ${mcmd} >/dev/null 2>&1
+  git pull >>${logfile} 2>&1
+  popd >/dev/null 2>&1
+fi
+cd ${mcmd}
 
 echo "getting Makefile.arch_indep"
 curl -fkLO https://raw.githubusercontent.com/ryanwoodsmall/musl-misc/master/musl-cross-make-confs/Makefile.arch_indep
@@ -38,5 +45,7 @@ echo "building compiler"
 ( date ; time ( make -f Makefile.arch_indep ; echo $? ) ; date ) >>${logfile} 2>&1
 
 et="$(date)"
+echo "finished: ${et}" >>${logfile}
+
 echo "started: ${st}"
 echo "finished: ${et}"

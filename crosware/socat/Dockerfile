@@ -1,3 +1,11 @@
+#
+# expose docker socket insecurely on tcp 2375:
+#   docker build --tag socat https://github.com/ryanwoodsmall/dockerfiles/raw/master/crosware/socat/Dockerfile
+#   docker run -it --rm -p 2375:2375 -v /var/run/docker.sock:/docker.sock socat -v -d -d tcp4-listen:2375,fork,reuseaddr unix-connect:/docker.sock
+#   curl -s --unix-socket /var/run/docker.sock http/info
+#   curl -kLs http://localhost:2375/info
+#
+
 FROM ryanwoodsmall/crosware:latest as SOCATBUILDER
 RUN source /usr/local/crosware/etc/profile \
     && socatrecipe="${cwtop}/recipes/socat/socat.sh" \
@@ -19,3 +27,5 @@ RUN source /usr/local/crosware/etc/profile \
 FROM scratch
 COPY --from=SOCATBUILDER /stow/socat /socat
 ENTRYPOINT ["/socat"]
+
+# vim: set ft=sh

@@ -1,5 +1,6 @@
-USERNAME  = ryanwoodsmall
-IMAGENAME = $(USERNAME)/$(shell basename $(PWD))
+include ../common/common.mak
+
+IMAGENAME = $(IMAGEVENDOR)/$(shell basename $(PWD))
 TAG       = latest
 PORT      = 4200
 

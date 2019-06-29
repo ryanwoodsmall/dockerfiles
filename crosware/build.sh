@@ -30,6 +30,11 @@
 #   docker manifest create ryanwoodsmall/crosware:{latest,arm64v8,arm32v6,amd64,i386}
 #   docker manifest push --purge ryanwoodsmall/crosware:latest
 #
+# useful volumes?
+#   crosware-ccache : /root/.ccache
+#   crosware-downloads : /usr/local/crosware/downloads
+#   crosware-tmp : /usr/local/crosware/tmp
+#
 
 set -eu
 

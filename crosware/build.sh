@@ -60,7 +60,7 @@ docker rm "${b}" || true
 
 docker image rm "${b}" || true
 
-docker build --pull --tag "${b}" "${u}"
+docker build --force-rm --no-cache --pull --tag "${b}" "${u}"
 
 docker run --name "${b}" "${b}" bash -c 'uname -m ; bash --version ; set | egrep "(TYPE|BASH)"'
 

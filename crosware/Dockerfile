@@ -35,22 +35,22 @@ RUN set -eu \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash zlib dropbear mbedtls \
+    && ./bin/crosware install busybox toybox bash zlib dropbear mbedtls rlwrap \
     && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
     && rm -rf /stow \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \
     && cp ./software/toybox/current/bin/toybox /stow/ \
     && cp ./software/bash/current/bin/bash /stow/ \
-    && cp ./software/dropbear/current/bin/dropbearmulti /stow/ \
     && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
     && find /stow/ -type f | xargs file | grep 'ELF.*stripped' | cut -f1 -d: | xargs strip --strip-all \
     && file /stow/* \
     && rm -rf /usr/local/tmp/* \
     && yum clean all \
     && rm -rf /var/cache/yum \
-    && ./bin/crosware list-installed | egrep -v '^dropbear : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
-    && for d in builds downloads ; do pushd $d ; git clean -fdx ; popd ; done
+    && ./bin/crosware list-installed | egrep -v '^(dropbear|rlwrap) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
+    && for d in builds downloads ; do pushd $d ; git clean -fdx ; popd ; done \
+    && find software/ -type f -exec file {} + | awk -F: '/:.*ELF/{print $1}' | xargs strip --strip-all
 
 # get the busybox binary and install it as usual under /bin/ and as /bin/sh
 FROM scratch
@@ -88,7 +88,6 @@ COPY --from=BUILDER /stow/curl /usr/bin/
 # crosware and permissions
 COPY --from=BUILDER /usr/local/crosware /usr/local/crosware
 # dropbear
-#COPY --from=BUILDER /stow/dropbearmulti /usr/bin/
 RUN ln -s /usr/local/crosware/software/dropbear/current/bin/dropbearmulti /usr/bin/ \
     && for d in $(/usr/bin/dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'" | tr -d "'" | sort) ; do ln -s dropbearmulti /usr/bin/${d} ; done \
     && mkdir -p /usr/local/crosware/software/dropbear/etc

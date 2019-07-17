@@ -4,6 +4,9 @@
 #   docker run -it --rm -p 2375:2375 -v /var/run/docker.sock:/docker.sock socat -v -d -d tcp4-listen:2375,fork,reuseaddr unix-connect:/docker.sock
 #   curl -s --unix-socket /var/run/docker.sock http/info
 #   curl -kLs http://localhost:2375/info
+# decap ssh encapsulated in https with openssl to defeat protocol checks:
+#   socat -d tcp4-listen:33333,fork,reuseaddr exec:'openssl s_client -connect remote.https-ssh.hostname\:443'
+#   # without local stunnel - fine for quick/dirty connections but heartbeat kills connection?
 #
 
 FROM ryanwoodsmall/crosware:latest as SOCATBUILDER

@@ -44,8 +44,12 @@ RUN uname -m | grep -q '^x86_64$'
 RUN source /etc/profile \
     && test -e /lib && rm -f /lib || true \
     && test -e /lib64 && rm -f /lib64 || true \
-    && ln -s ${cwsw}/statictoolchain/current/$(gcc -dumpmachine)/lib /lib \
-    && ln -s /lib /lib64
+    && test -e /usr/lib && rm -f /usr/lib || true \
+    && test -e /usr/lib64 && rm -f /usr/lib64 || true \
+    && ln -s ${cwsw}/statictoolchain/current/$(gcc -dumpmachine)/lib /usr/lib \
+    && ln -s /usr/lib /usr/lib64 \
+    && ln -s /usr/lib /lib \
+    && ln -s /usr/lib64 /lib64
 
 # setup profile
 RUN source /etc/profile \
@@ -81,4 +85,4 @@ RUN source /etc/profile \
     && tar -zxf ${cwdl}/zlib/${zlibfile}
 
 # chown everything
-RUN chown -R ${USER}:${GROUPS} ${zulutop}
+RUN chown -R ${UID}:${GROUPS} ${zulutop}

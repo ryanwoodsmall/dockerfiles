@@ -9,8 +9,8 @@ FROM ryanwoodsmall/crosware:latest
 # crosware
 ENV cwtop /usr/local/crosware
 ENV cwsw  ${cwtop}/software
-ENV cwdl  ${cwtop}/downloads
 ENV cwtmp ${cwtop}/tmp
+ENV ult   /usr/local/tmp
 
 # zulu
 ENV zulucdn    https://cdn.azul.com/zulu/bin
@@ -57,32 +57,30 @@ RUN source /etc/profile \
     && echo "export _JAVA_OPTIONS='-Djava.io.tmpdir=${cwtmp} -Djava.awt.headless=true'" >> ${zuluprofd} \
     && echo 'append_path "${JAVA_HOME}/bin"' >> ${zuluprofd}
 
+# setup libz.so
+# XXX - need to build zlib/sortix libz shared lib???
+RUN source /etc/profile \
+    && mkdir -p ${zulutop}/${zulu11dir} \
+    && cd ${zulutop}/${zulu11dir} \
+    && crosware run-func cwfetchcheck,${zliburl},${ult}/${zlibfile},${zlibsha} \
+    && tar -zxf ${ult}/${zlibfile} \
+    && find ${ult}/ -type f | xargs rm -f
+
 # install jgitsh and make sure it's default
 RUN source /etc/profile \
     && crosware install jgitsh \
     && sed -i s/CW_GIT_CMD=git/CW_GIT_CMD=jgitsh/g /etc/profile.d/crosware.sh \
-    && sed -i s/CW_USE_JGIT=false/CW_USE_JGIT=true/g /etc/profile.d/crosware.sh
+    && sed -i s/CW_USE_JGIT=false/CW_USE_JGIT=true/g /etc/profile.d/crosware.sh \
+    && find ${ult}/ -type f | xargs rm -f
 
-# fetch zulu
+# fetch and extract zulu
 RUN source /etc/profile \
-    && crosware run-func cwfetchcheck,${zulu8url},${cwdl}/zulu/${zulu8file},${zulu8sha} \
-                         cwfetchcheck,${zulu11url},${cwdl}/zulu/${zulu11file},${zulu11sha}
-
-# extract zulu
-RUN source /etc/profile \
-    && mkdir -p ${zulutop} \
-    && crosware run-func cwextract,${cwdl}/zulu/${zulu8file},${zulutop} \
-                         cwextract,${cwdl}/zulu/${zulu11file},${zulutop} \
+    && crosware run-func cwfetchcheck,${zulu8url},${ult}/${zulu8file},${zulu8sha} \
+                         cwfetchcheck,${zulu11url},${ult}/${zulu11file},${zulu11sha} \
+                         cwextract,${ult}/${zulu8file},${zulutop} \
+                         cwextract,${ult}/${zulu11file},${zulutop} \
     && ln -s ${zulutop}/${zulu8dir} ${zulutop}/zulu8 \
     && ln -s ${zulutop}/${zulu11dir} ${zulutop}/zulu11 \
-    && ln -s ${zulutop}/zulu${zuludefver} ${zulutop}/current
-
-# setup libz.so
-# XXX - need to build zlib/sortix libz shared lib???
-RUN source /etc/profile \
-    && cd ${zulutop}/zulu11 \
-    && crosware run-func cwfetchcheck,${zliburl},${cwdl}/zlib/${zlibfile},${zlibsha} \
-    && tar -zxf ${cwdl}/zlib/${zlibfile}
-
-# chown everything
-RUN chown -R ${UID}:${GROUPS} ${zulutop}
+    && ln -s ${zulutop}/zulu${zuludefver} ${zulutop}/current \
+    && chown -R ${UID}:${GROUPS} ${zulutop} \
+    && find ${ult}/ -type f | xargs rm -f

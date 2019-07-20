@@ -124,3 +124,5 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
 #   && chpasswd <<<"root:${RANDOM}$(date '+%Y%m%d%H%M%S')${RANDOM}" \
 
 CMD ["bash","-il"]
+
+# vim: set ft=sh:

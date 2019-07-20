@@ -31,4 +31,4 @@ FROM scratch
 COPY --from=SOCATBUILDER /stow/socat /socat
 ENTRYPOINT ["/socat"]
 
-# vim: set ft=sh
+# vim: set ft=sh:

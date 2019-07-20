@@ -84,3 +84,5 @@ RUN source /etc/profile \
     && ln -s ${zulutop}/zulu${zuludefver} ${zulutop}/current \
     && chown -R ${UID}:${GROUPS} ${zulutop} \
     && find ${ult}/ -type f | xargs rm -f
+
+# vim: set ft=sh:

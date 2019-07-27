@@ -8,8 +8,10 @@ FROM ryanwoodsmall/crosware:latest
 
 # crosware
 ENV cwtop /usr/local/crosware
+ENV cwdl  ${cwtop}/downloads
 ENV cwsw  ${cwtop}/software
 ENV cwtmp ${cwtop}/tmp
+ENV cwvar ${cwtop}/var
 ENV ult   /usr/local/tmp
 
 # zulu
@@ -68,10 +70,13 @@ RUN source /etc/profile \
 
 # install jgitsh and make sure it's default
 RUN source /etc/profile \
-    && crosware install jgitsh \
+    && crosware install jgitsh ccache \
     && sed -i s/CW_GIT_CMD=git/CW_GIT_CMD=jgitsh/g /etc/profile.d/crosware.sh \
     && sed -i s/CW_USE_JGIT=false/CW_USE_JGIT=true/g /etc/profile.d/crosware.sh \
-    && find ${ult}/ -type f | xargs rm -f
+    && sed -i s/CW_USE_JAVA=false/CW_USE_JAVA=true/g /etc/profile.d/crosware.sh \
+    && echo 'export CW_EXT_JAVA=true' >> /etc/profile.d/crosware.sh \
+    && find ${ult}/ -type f | xargs rm -f \
+    && rm -f ${cwdl}/{make,ccache}/*
 
 # fetch and extract zulu
 RUN source /etc/profile \
@@ -83,6 +88,7 @@ RUN source /etc/profile \
     && ln -s ${zulutop}/${zulu11dir} ${zulutop}/zulu11 \
     && ln -s ${zulutop}/zulu${zuludefver} ${zulutop}/current \
     && chown -R ${UID}:${GROUPS} ${zulutop} \
-    && find ${ult}/ -type f | xargs rm -f
+    && find ${ult}/ -type f | xargs rm -f \
+    && echo ${zuludefver} > ${cwvar}/inst/zulu
 
 # vim: set ft=sh:

@@ -92,7 +92,4 @@ RUN source /etc/profile \
     && find ${ult}/ -type f | xargs rm -f \
     && crosware update
 
-# XXX - this can conflict with system zulu, don't name them the same?
-# && echo ${zuludefver} > ${cwvar}/inst/zulu \
-
 # vim: set ft=sh:

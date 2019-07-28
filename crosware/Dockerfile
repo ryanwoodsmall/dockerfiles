@@ -123,6 +123,7 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
 # XXX - random password, throw a base64 in here? "$(date | base64)"
 #   && chpasswd <<<"root:${RANDOM}$(date '+%Y%m%d%H%M%S')${RANDOM}" \
 
+WORKDIR "/usr/local/crosware"
 CMD ["bash","-il"]
 
 # vim: set ft=sh:

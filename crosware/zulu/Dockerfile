@@ -7,12 +7,13 @@
 FROM ryanwoodsmall/crosware:latest
 
 # crosware
-ENV cwtop /usr/local/crosware
-ENV cwdl  ${cwtop}/downloads
-ENV cwsw  ${cwtop}/software
-ENV cwtmp ${cwtop}/tmp
-ENV cwvar ${cwtop}/var
-ENV ult   /usr/local/tmp
+ENV cwtop   /usr/local/crosware
+ENV cwdl    ${cwtop}/downloads
+ENV cwsw    ${cwtop}/software
+ENV cwtmp   ${cwtop}/tmp
+ENV cwvar   ${cwtop}/var
+ENV cwprofd /etc/profile.d/crosware.sh
+ENV ult     /usr/local/tmp
 
 # zulu
 ENV zulucdn    https://cdn.azul.com/zulu/bin
@@ -57,7 +58,7 @@ RUN source /etc/profile \
 RUN source /etc/profile \
     && echo "export JAVA_HOME=${zulutop}/current" > ${zuluprofd} \
     && echo "export _JAVA_OPTIONS='-Djava.io.tmpdir=${cwtmp} -Djava.awt.headless=true'" >> ${zuluprofd} \
-    && echo 'append_path "${JAVA_HOME}/bin"' >> ${zuluprofd}
+    && echo 'prepend_path "${JAVA_HOME}/bin"' >> ${zuluprofd}
 
 # setup libz.so
 # XXX - need to build zlib/sortix libz shared lib???
@@ -70,11 +71,11 @@ RUN source /etc/profile \
 
 # install jgitsh and make sure it's default
 RUN source /etc/profile \
-    && crosware install jgitsh ccache busybox toybox sed gawk \
-    && sed -i s/CW_GIT_CMD=git/CW_GIT_CMD=jgitsh/g /etc/profile.d/crosware.sh \
-    && sed -i s/CW_USE_JGIT=false/CW_USE_JGIT=true/g /etc/profile.d/crosware.sh \
-    && sed -i s/CW_USE_JAVA=false/CW_USE_JAVA=true/g /etc/profile.d/crosware.sh \
-    && echo 'export CW_EXT_JAVA=true' >> /etc/profile.d/crosware.sh \
+    && crosware install jgitsh ccache busybox toybox sed gawk byacc m4 flex pkgconfig \
+    && sed -i s/CW_GIT_CMD=git/CW_GIT_CMD=jgitsh/g ${cwprofd} \
+    && sed -i s/CW_USE_JGIT=false/CW_USE_JGIT=true/g ${cwprofd} \
+    && sed -i s/CW_USE_JAVA=false/CW_USE_JAVA=true/g ${cwprofd} \
+    && echo 'export CW_EXT_JAVA=true' >> ${cwprofd} \
     && find ${ult}/ -type f | xargs rm -f \
     && rm -f ${cwdl}/*/*
 
@@ -89,7 +90,9 @@ RUN source /etc/profile \
     && ln -s ${zulutop}/zulu${zuludefver} ${zulutop}/current \
     && chown -R ${UID}:${GROUPS} ${zulutop} \
     && find ${ult}/ -type f | xargs rm -f \
-    && echo ${zuludefver} > ${cwvar}/inst/zulu \
     && crosware update
+
+# XXX - this can conflict with system zulu, don't name them the same?
+# && echo ${zuludefver} > ${cwvar}/inst/zulu \
 
 # vim: set ft=sh:

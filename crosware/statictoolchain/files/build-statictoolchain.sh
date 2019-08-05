@@ -18,9 +18,13 @@ source /etc/profile
 source /usr/local/crosware/etc/profile
 
 echo "installing prerequisites"
-crosware install ccache >>${logfile} 2>&1
+crosware check-installed ccache || crosware install ccache >>${logfile} 2>&1
 source /usr/local/crosware/etc/profile
-( time ( crosware install git binutils ) ) >>${logfile} 2>&1
+for r in binutils git ; do
+  echo installing ${r}
+  ( time ( crosware check-installed ${r} || crosware install ${r} ) ) >>${logfile} 2>&1
+  source /usr/local/crosware/etc/profile
+done
 source /usr/local/crosware/etc/profile
 
 cd ${cwtop}/tmp/

@@ -4,9 +4,6 @@
 #   run: docker run --rm -it -v /tmp/$(date '+%Y%m%d%H%M')-statictoolchain-$(uname -m):/tmp ryanwoodsmall/crosware-statictoolchain
 # resulting compilers and build output located in /tmp/
 #
-# XXX - buildscript probably belongs in crosware's scripts/ directory
 #
 FROM ryanwoodsmall/crosware:latest
-COPY files/build-statictoolchain.sh /
-RUN chmod 755 /build-statictoolchain.sh
-CMD ["/build-statictoolchain.sh"]
+CMD ["bash","/usr/local/crosware/scripts/build-statictoolchain.sh"]

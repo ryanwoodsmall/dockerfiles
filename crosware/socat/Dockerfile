@@ -29,6 +29,9 @@ RUN source /usr/local/crosware/etc/profile \
 
 FROM scratch
 COPY --from=SOCATBUILDER /stow/socat /socat
+COPY --from=SOCATBUILDER /etc/group /etc/
+COPY --from=SOCATBUILDER /etc/passwd /etc/
+COPY --from=SOCATBUILDER /etc/shadow /etc/
 ENTRYPOINT ["/socat"]
 
 # vim: set ft=sh:

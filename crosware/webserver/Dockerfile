@@ -7,8 +7,6 @@ ENV BUSYBOX_HTTPD_CONF=/etc/httpd.conf.DEFAULT
 WORKDIR /tmp
 
 RUN . /etc/profile \
-    && s='/startup.sh' \
-    && bbver=`crosware run-func cwver_busybox` \
     && crosware install tini \
     && cp ${cwsw}/tini/current/sbin/tini /usr/sbin/ \
     && mkdir -p ${BUSYBOX_HTTPD_HOME}/cgi-bin \
@@ -16,14 +14,13 @@ RUN . /etc/profile \
     && curl -kLo httpd_indexcgi.c 'https://git.busybox.net/busybox/plain/networking/httpd_indexcgi.c?h=1_30_stable' \
     && gcc httpd_ssi.c -o httpd_ssi \
     && gcc httpd_indexcgi.c -o index.cgi \
-    && cp httpd_ssi index.cgi /usr/bin/ \
-    && cp index.cgi ${BUSYBOX_HTTPD_HOME}/cgi-bin/ \
-    && rm -f httpd_{ssi,indexcgi}.c httpd_ssi index.cgi \
-    && echo '#!/usr/bin/env bash' > ${s} \
-    && echo 'set -x' >> ${s} \
-    && echo '#set' >> ${s} \
-    && echo 'exec /usr/bin/httpd -f -vv -h ${BUSYBOX_HTTPD_HOME} -p ${BUSYBOX_HTTPD_PORT}' >> ${s} \
-    && chmod 755 ${s} \
+    && cp -a httpd_ssi index.cgi /usr/bin/ \
+    && cp -a index.cgi ${BUSYBOX_HTTPD_HOME}/cgi-bin/ \
+    && curl -kLo env.cgi https://github.com/ryanwoodsmall/busybox-misc/raw/master/httpd/cgi-bin/env.cgi \
+    && chmod 755 env.cgi \
+    && cp -a env.cgi /usr/bin/ \
+    && cp -a env.cgi ${BUSYBOX_HTTPD_HOME}/cgi-bin/ \
+    && rm -f httpd_{ssi,indexcgi}.c httpd_ssi index.cgi env.cgi \
     && echo "H:${BUSYBOX_HTTPD_HOME}" > ${BUSYBOX_HTTPD_CONF}
 
 WORKDIR /

@@ -2,7 +2,7 @@ FROM ryanwoodsmall/crosware
 
 ENV BUSYBOX_HTTPD_PORT=80
 ENV BUSYBOX_HTTPD_HOME=/data/http
-ENV BUSYBOX_HTTPD_CONF=/etc/httpd.conf
+ENV BUSYBOX_HTTPD_CONF=/etc/httpd.conf.DEFAULT
 
 WORKDIR /tmp
 
@@ -22,18 +22,14 @@ RUN . /etc/profile \
     && echo '#!/usr/bin/env bash' > ${s} \
     && echo 'set -x' >> ${s} \
     && echo '#set' >> ${s} \
-    && echo 'exec /usr/bin/httpd -f -vv -c ${BUSYBOX_HTTPD_CONF} -h ${BUSYBOX_HTTPD_HOME} -p ${BUSYBOX_HTTPD_PORT}' >> ${s} \
+    && echo 'exec /usr/bin/httpd -f -vv -h ${BUSYBOX_HTTPD_HOME} -p ${BUSYBOX_HTTPD_PORT}' >> ${s} \
     && chmod 755 ${s} \
     && echo "H:${BUSYBOX_HTTPD_HOME}" > ${BUSYBOX_HTTPD_CONF}
 
-# XXX - cgi-bin on a volume doesn't work on a :ro bind/base mount
-#VOLUME ${BUSYBOX_HTTPD_HOME}
-#VOLUME ${BUSYBOX_HTTPD_HOME}/cgi-bin
-
-WORKDIR ${BUSYBOX_HTTPD_HOME}
+WORKDIR /
 
 ENTRYPOINT ["/usr/sbin/tini","-gwvv","--"]
 
-CMD ["/usr/bin/bash","/startup.sh"]
+CMD /usr/bin/env -i /usr/bin/httpd -f -vv -h ${BUSYBOX_HTTPD_HOME} -p ${BUSYBOX_HTTPD_PORT}
 
 # vim: set ft=sh:

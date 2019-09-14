@@ -27,4 +27,4 @@ WORKDIR ${projdir}
 
 RUN pip3 install -r requirements.txt
 
-CMD ["env","FLASK_APP=docker-portwrangler.py","flask","run","--host=0.0.0.0","--reload"]
+CMD ["env","PYTHONDONTWRITEBYTECODE=true","FLASK_APP=docker-portwrangler.py","flask","run","--host=0.0.0.0","--reload"]

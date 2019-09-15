@@ -226,7 +226,6 @@ function clear() {
 }
 
 function reap() {
-set -x
   pidof xclip | xargs echo | xargs kill -KILL >/dev/null 2>&1 || true
 }
 

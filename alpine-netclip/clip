@@ -1,0 +1,187 @@
+#!/bin/bash -l
+
+set -eu
+
+pf="/etc/profile.d/clip.sh"
+test -e ${pf} && . ${pf} || true
+: ${clipdata:="/data/clip"}
+test -e ${clipdata}/clipscreen || {
+  echo "${0}: ${clipdata}/clipscreen not found" 1>&2
+  exit 1
+}
+export DISPLAY=":$(cat ${clipdata}/clipscreen)"
+user="$(cat ${clipdata}/user)"
+clipport="$(cat ${clipdata}/clipport)"
+sshdir="${HOME}/.ssh"
+sshauthkeys="${sshdir}/authorized_keys"
+cliphistory=0
+if [ ! -e ${clipdata}/history ] ; then
+  echo 0 > ${clipdata}/history
+else
+  cliphistory="$(cat ${clipdata}/history)"
+fi
+test -e ${clipdata}/logs || mkdir -p ${clipdata}/logs
+
+test -e ${sshdir} || mkdir -p ${sshdir}
+test -e ${sshauthkeys} || touch ${sshauthkeys}
+chmod 700 ${sshdir}
+chmod 600 ${sshauthkeys}
+
+declare -A cmdinfo
+cmdinfo["copy"]="copy stdin to the clipboard"
+cmdinfo["paste"]="paste the clipboard to stdout"
+cmdinfo["help"]="show this help"
+cmdinfo["sc"]="show network copy script"
+cmdinfo["sp"]="show network paste script"
+cmdinfo["addkey"]="add an ssh key from stdin"
+cmdinfo["showpass"]="show password"
+cmdinfo["setpass"]="read new password from stdin"
+cmdinfo["enhist"]="enable capturing clipboard history"
+cmdinfo["dishist"]="disable capturing clipboard history"
+cmdinfo["listkeys"]="show known ssh authorized keys"
+cmdinfo["delkey"]="read a key number from stdin and delete it"
+cmdinfo["netclip"]="show netclip control script"
+
+function usage() {
+  local cmdwidth=0
+  for cmd in ${!cmdinfo[@]} ; do
+    if [ $(echo -n ${cmd} | wc -c) -gt ${cmdwidth} ] ; then
+      cmdwidth="$(echo -n ${cmd} | wc -c)"
+    fi
+  done
+  echo "${0}: usage"
+  echo
+  echo "  ${0} [cmd]"
+  echo
+  echo "  commands:"
+  for cmd in $(echo ${!cmdinfo[@]} | tr ' ' '\n' | sort) ; do
+    printf "    %${cmdwidth}s: %s\n" "${cmd}" "${cmdinfo[${cmd}]}"
+  done
+  echo
+}
+
+function copy() {
+  local f
+  test ${cliphistory} -eq 1 && f="${clipdata}/logs/$(date +%s%N)" || f=/dev/null
+  cat /dev/stdin \
+  | tee -a ${f} \
+  | xclip -in -selection clipboard
+}
+
+function paste() {
+  xclip -verbose -out -selection clipboard 2>/dev/null || true
+}
+
+function sc() {
+  echo "#!/bin/bash
+: \${clipuser:=${user}}
+: \${clipport:=${clipport}}
+: \${cliphost:=$(hostname -f)}
+cat /dev/stdin | ssh -l \${clipuser} -p \${clipport} \${cliphost} ${0} copy
+" | dos2unix
+}
+
+function sp() {
+  echo "#!/bin/bash
+: \${clipuser:=${user}}
+: \${clipport:=${clipport}}
+: \${cliphost:=$(hostname -f)}
+ssh -l \${clipuser} -p \${clipport} \${cliphost} ${0} paste
+" | dos2unix
+}
+
+function netclip() {
+  echo "#!/bin/bash
+: \${clipuser:=${user}}
+: \${clipport:=${clipport}}
+: \${cliphost:=$(hostname -f)}
+ssh -l \${clipuser} -p \${clipport} \${cliphost} ${0} \"\${@}\"
+" | dos2unix
+}
+
+
+function addkey() {
+  local n="${sshdir}/newkey.pub"
+  cat /dev/stdin > ${n}
+  ssh-keygen -B -f ${n} > /dev/null
+  cat ${sshauthkeys} > ${sshauthkeys}.new
+  cat ${n} >> ${sshauthkeys}.new
+  cat ${sshauthkeys}.new | uniq > ${sshauthkeys}
+  rm -f ${sshauthkeys}.new ${n}
+  chmod 600 ${sshauthkeys}
+}
+
+function showpass() {
+  cat ${clipdata}/passwd
+}
+
+function setpass() {
+  local p="$(cat /dev/stdin | dos2unix)"
+  echo "${p}" > ${clipdata}/passwd
+  echo "${user}:${p}" | sudo chpasswd
+  x11vnc -storepasswd "${p}" ${HOME}/.vnc/passwd
+  #killall x11vnc
+}
+
+function enhist() {
+  echo 1 > ${clipdata}/history
+}
+
+function dishist() {
+  echo 0 > ${clipdata}/history
+}
+
+function listkeys() {
+  local c=0
+  cat ${sshauthkeys} | while IFS="$(printf '\n')" read -r l ; do
+    echo ${l} | fold -w 76 | sed "s/^/${c}: /g"
+    ((c+=1))
+    echo
+  done
+}
+
+function delkey() {
+  local n=$(cat /dev/stdin)
+  local c=0
+  if [[ ! ${n} =~ ^[0-9]+$ ]] ; then
+    echo "${0}: not a number" 1>&2
+    exit 1
+  fi
+  rm -f ${sshauthkeys}.mod
+  cat ${sshauthkeys} > ${sshauthkeys}.PRE-$(date +%Y%m%d)
+  cat ${sshauthkeys} | while IFS="$(printf '\n')" read -r l ; do
+    if [ ! ${n} -eq ${c} ] ; then
+      echo ${l}
+    fi
+    ((c+=1))
+  done > ${sshauthkeys}.mod
+  cat ${sshauthkeys}.mod > ${sshauthkeys}
+  chmod 600 ${sshauthkeys}
+}
+
+if [ ${#} -lt 1 ] ; then
+  echo "${0}: no command supplied" 1>&2
+  usage 1>&2
+  exit 1
+fi
+
+case "${1}" in
+  help) usage ;;
+  copy) copy ;;
+  paste) paste ;;
+  sc) sc ;;
+  sp) sp ;;
+  addkey) addkey ;;
+  showpass) showpass ;;
+  setpass) setpass ;;
+  enhist) enhist ;;
+  dishist) dishist ;;
+  listkeys) listkeys ;;
+  delkey) delkey ;;
+  netclip) netclip ;;
+  *)
+    echo "${0}: command ${1} not understood" 1>&2
+    usage 1>&2
+    exit 1
+    ;;
+esac

@@ -52,6 +52,7 @@ cmdinfo["gethist"]="read a history entry from stdin and show it"
 cmdinfo["delhist"]="read a history entry from stdin and delete it"
 cmdinfo["clearhist"]="clear all history entries"
 cmdinfo["clear"]="clear the contents of the clipboard"
+cmdinfo["reap"]="kill any lingering xclip processes"
 
 function usage() {
   local cmdwidth=0
@@ -220,8 +221,13 @@ function clearhist() {
   done
 }
 
-function clearclip() {
+function clear() {
   echo -n | xclip -in -selection clipboard 
+}
+
+function reap() {
+set -x
+  pidof xclip | xargs echo | xargs kill -KILL >/dev/null 2>&1 || true
 }
 
 if [ ${#} -lt 1 ] ; then
@@ -252,7 +258,8 @@ case "${1}" in
   gethist) gethist ;;
   delhist) delhist ;;
   clearhist) clearhist ;;
-  clear) clearclip ;;
+  clear) clear ;;
+  reap) reap ;;
   *)
     echo "${clipprog}: command ${1} not understood" 1>&2
     usage 1>&2

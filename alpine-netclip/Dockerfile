@@ -10,7 +10,6 @@
 # XXX - read-only flag? write-host check? "only host with IP #.#.#.# can copy"
 # XXX - or read-only user? read-only port?
 # XXX - lock down ssh command (requires openssh) similar to git
-# XXX - reap hung xclip processes
 #
 
 FROM alpine

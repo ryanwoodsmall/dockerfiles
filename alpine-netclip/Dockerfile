@@ -7,6 +7,7 @@
 #
 # XXX - debug environment var - run vs build time
 # XXX - watch a fifo?
+# XXX - read-only flag? write-host check? "only host with IP #.#.#.# can copy"
 #
 
 FROM alpine

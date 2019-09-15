@@ -72,13 +72,14 @@ that's it!
 ### usage
 
 ```
-$ ssh -l clippy -p 11922 localhost /clip help
+$ netclip help
 /clip: usage
 
   /clip [cmd]
 
   commands:
        addkey: add an ssh key from stdin
+        clear: clear the contents of the clipboard
     clearhist: clear all history entries
          copy: copy stdin to the clipboard
       delhist: read a history entry from stdin and delete it

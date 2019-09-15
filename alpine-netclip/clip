@@ -51,6 +51,7 @@ cmdinfo["listhist"]="list any existing history entries"
 cmdinfo["gethist"]="read a history entry from stdin and show it"
 cmdinfo["delhist"]="read a history entry from stdin and delete it"
 cmdinfo["clearhist"]="clear all history entries"
+cmdinfo["clear"]="clear the contents of the clipboard"
 
 function usage() {
   local cmdwidth=0
@@ -219,6 +220,10 @@ function clearhist() {
   done
 }
 
+function clearclip() {
+  echo -n | xclip -in -selection clipboard 
+}
+
 if [ ${#} -lt 1 ] ; then
   echo "${clipprog}: no command supplied" 1>&2
   usage 1>&2
@@ -247,6 +252,7 @@ case "${1}" in
   gethist) gethist ;;
   delhist) delhist ;;
   clearhist) clearhist ;;
+  clear) clearclip ;;
   *)
     echo "${clipprog}: command ${1} not understood" 1>&2
     usage 1>&2

@@ -1,12 +1,11 @@
 #
-# use ssh+xclip+xvnc+xvfb as a network-addressible clipboard
+# use ssh+xvfb+xclip+x11vnc as a network-addressible clipboard
 #
 # https://wiki.alpinelinux.org/wiki/Remote_Desktop_Server
 # https://github.com/danielguerra69/alpine-vnc
 # https://github.com/jkuri/alpine-xfce4
 #
 # XXX - debug environment var - run vs build time
-# XXX - log to ${clipdata}/history/ w/debug on - $(date +%s%N) for nanonsecond
 # XXX - watch a fifo?
 #
 
@@ -61,11 +60,13 @@ RUN chmod 755 /*.sh \
     && chown -R ${clipuser}:${clipuser} ${cliphome} ${clipdata} /etc/dropbear \
     && chmod 640 ${clipdata}/*
 
+## to debug x11/xvfb/xclip/vnc/x11vnc
 #EXPOSE ${vncport}
 #RUN openssl rand -base64 16 > ${clipdata}/debug \
 #    && adduser -D -S -G wheel -s /bin/bash debug \
 #    && echo "debug:$(cat ${clipdata}/debug)" | chpasswd \
-#    && chmod 640 ${clipdata}/*
+#    && chmod 640 ${clipdata}/* \
+#    && sed -i '/x11vnc/s/#//g' /startup.sh
 
 ENTRYPOINT ["/sbin/tini","-gwvv","--"]
 

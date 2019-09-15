@@ -5,8 +5,9 @@ set -eu
 pf="/etc/profile.d/clip.sh"
 test -e ${pf} && . ${pf} || true
 : ${clipdata:="/data/clip"}
+: ${clipprog:="/clip"}
 test -e ${clipdata}/clipscreen || {
-  echo "${0}: ${clipdata}/clipscreen not found" 1>&2
+  echo "${clipprog}: ${clipdata}/clipscreen not found" 1>&2
   exit 1
 }
 export DISPLAY=":$(cat ${clipdata}/clipscreen)"
@@ -15,12 +16,13 @@ clipport="$(cat ${clipdata}/clipport)"
 sshdir="${HOME}/.ssh"
 sshauthkeys="${sshdir}/authorized_keys"
 cliphistory=0
+cliplogs="${clipdata}/logs"
 if [ ! -e ${clipdata}/history ] ; then
   echo 0 > ${clipdata}/history
 else
   cliphistory="$(cat ${clipdata}/history)"
 fi
-test -e ${clipdata}/logs || mkdir -p ${clipdata}/logs
+test -e ${cliplogs} || mkdir -p ${cliplogs}
 
 test -e ${sshdir} || mkdir -p ${sshdir}
 test -e ${sshauthkeys} || touch ${sshauthkeys}
@@ -41,6 +43,14 @@ cmdinfo["dishist"]="disable capturing clipboard history"
 cmdinfo["listkeys"]="show known ssh authorized keys"
 cmdinfo["delkey"]="read a key number from stdin and delete it"
 cmdinfo["netclip"]="show netclip control script"
+cmdinfo["install"]="show install script for netclip/sc/sp"
+cmdinfo["showuser"]="show the ssh clipboard user"
+cmdinfo["showport"]="show the ssh clipboard port"
+cmdinfo["delpass"]="delete the stored password file"
+cmdinfo["listhist"]="list any existing history entries"
+cmdinfo["gethist"]="read a history entry from stdin and show it"
+cmdinfo["delhist"]="read a history entry from stdin and delete it"
+cmdinfo["clearhist"]="clear all history entries"
 
 function usage() {
   local cmdwidth=0
@@ -49,9 +59,9 @@ function usage() {
       cmdwidth="$(echo -n ${cmd} | wc -c)"
     fi
   done
-  echo "${0}: usage"
+  echo "${clipprog}: usage"
   echo
-  echo "  ${0} [cmd]"
+  echo "  ${clipprog} [cmd]"
   echo
   echo "  commands:"
   for cmd in $(echo ${!cmdinfo[@]} | tr ' ' '\n' | sort) ; do
@@ -62,7 +72,7 @@ function usage() {
 
 function copy() {
   local f
-  test ${cliphistory} -eq 1 && f="${clipdata}/logs/$(date +%s%N)" || f=/dev/null
+  test ${cliphistory} -eq 1 && f="${clipdata}/logs/$(date +%Y%m%d%H%M%S.%N)" || f=/dev/null
   cat /dev/stdin \
   | tee -a ${f} \
   | xclip -in -selection clipboard
@@ -77,7 +87,7 @@ function sc() {
 : \${clipuser:=${user}}
 : \${clipport:=${clipport}}
 : \${cliphost:=$(hostname -f)}
-cat /dev/stdin | ssh -l \${clipuser} -p \${clipport} \${cliphost} ${0} copy
+cat /dev/stdin | ssh -l \${clipuser} -p \${clipport} \${cliphost} ${clipprog} copy
 " | dos2unix
 }
 
@@ -86,7 +96,7 @@ function sp() {
 : \${clipuser:=${user}}
 : \${clipport:=${clipport}}
 : \${cliphost:=$(hostname -f)}
-ssh -l \${clipuser} -p \${clipport} \${cliphost} ${0} paste
+ssh -l \${clipuser} -p \${clipport} \${cliphost} ${clipprog} paste
 " | dos2unix
 }
 
@@ -95,10 +105,24 @@ function netclip() {
 : \${clipuser:=${user}}
 : \${clipport:=${clipport}}
 : \${cliphost:=$(hostname -f)}
-ssh -l \${clipuser} -p \${clipport} \${cliphost} ${0} \"\${@}\"
+ssh -l \${clipuser} -p \${clipport} \${cliphost} ${clipprog} \"\${@}\"
 " | dos2unix
 }
 
+function install() {
+  echo "#!/bin/bash
+: \${clipuser:=${user}}
+: \${clipport:=${clipport}}
+: \${cliphost:=$(hostname -f)}
+: \${clipinst:=\"\${HOME}/bin\"}
+mkdir -p \${clipinst}
+rm -f \${clipinst}/{netclip,s{c,p}}
+echo '$(netclip)' > \${clipinst}/netclip
+echo '$(sc)' > \${clipinst}/sc
+echo '$(sp)' > \${clipinst}/sp
+chmod 755 \${clipinst}/{netclip,s{c,p}}
+" | dos2unix
+}
 
 function addkey() {
   local n="${sshdir}/newkey.pub"
@@ -112,7 +136,15 @@ function addkey() {
 }
 
 function showpass() {
-  cat ${clipdata}/passwd
+  test -e ${clipdata}/passwd && cat ${clipdata}/passwd || true
+}
+
+function showuser() {
+  echo "${user}" | dos2unix
+}
+
+function showport() {
+  echo "${clipport}" | dos2unix
 }
 
 function setpass() {
@@ -121,6 +153,10 @@ function setpass() {
   echo "${user}:${p}" | sudo chpasswd
   x11vnc -storepasswd "${p}" ${HOME}/.vnc/passwd
   #killall x11vnc
+}
+
+function delpass() {
+  rm -f ${clipdata}/passwd
 }
 
 function enhist() {
@@ -144,7 +180,7 @@ function delkey() {
   local n=$(cat /dev/stdin)
   local c=0
   if [[ ! ${n} =~ ^[0-9]+$ ]] ; then
-    echo "${0}: not a number" 1>&2
+    echo "${clipprog}: not a number" 1>&2
     exit 1
   fi
   rm -f ${sshauthkeys}.mod
@@ -159,8 +195,32 @@ function delkey() {
   chmod 600 ${sshauthkeys}
 }
 
+function listhist() {
+  local h
+  for h in $(find ${cliplogs}/ -maxdepth 1 -mindepth 1 -type f | sort -n) ; do
+    echo "${h##*/}"
+  done
+}
+
+function delhist() {
+  local h="${cliplogs}/$(cat /dev/stdin)"
+  test -e ${h} && rm -f ${h} || true
+}
+
+function gethist() {
+  local h="${cliplogs}/$(cat /dev/stdin)"
+  test -e ${h} && cat ${h} || true
+}
+
+function clearhist() {
+  local h
+  for h in $(find ${cliplogs}/ -maxdepth 1 -mindepth 1 -type f | sort -n) ; do
+    rm -f "${h}"
+  done
+}
+
 if [ ${#} -lt 1 ] ; then
-  echo "${0}: no command supplied" 1>&2
+  echo "${clipprog}: no command supplied" 1>&2
   usage 1>&2
   exit 1
 fi
@@ -179,8 +239,16 @@ case "${1}" in
   listkeys) listkeys ;;
   delkey) delkey ;;
   netclip) netclip ;;
+  install) install ;;
+  showuser) showuser ;;
+  showport) showport ;;
+  delpass) delpass ;;
+  listhist) listhist ;;
+  gethist) gethist ;;
+  delhist) delhist ;;
+  clearhist) clearhist ;;
   *)
-    echo "${0}: command ${1} not understood" 1>&2
+    echo "${clipprog}: command ${1} not understood" 1>&2
     usage 1>&2
     exit 1
     ;;

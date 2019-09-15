@@ -59,6 +59,7 @@ for g in \
   https://github.com/ryanwoodsmall/dropbear-misc.git \
   https://github.com/ryanwoodsmall/jo-misc.git \
   https://github.com/ryanwoodsmall/jq-misc.git \
+  https://github.com/ryanwoodsmall/miller-misc.git \
   https://github.com/ryanwoodsmall/musl-misc.git \
   https://github.com/ryanwoodsmall/rc-misc.git \
   https://github.com/ryanwoodsmall/suckless-misc.git \

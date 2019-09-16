@@ -53,6 +53,7 @@ cmdinfo["delhist"]="read a history entry from stdin and delete it"
 cmdinfo["clearhist"]="clear all history entries"
 cmdinfo["clear"]="clear the contents of the clipboard"
 cmdinfo["reap"]="kill any lingering xclip processes"
+cmdinfo["dumpkeys"]="copy and paste ssh keys to stdout"
 
 function usage() {
   local cmdwidth=0
@@ -229,6 +230,11 @@ function reap() {
   pidof xclip | xargs echo | xargs kill -KILL >/dev/null 2>&1 || true
 }
 
+function dumpkeys() {
+  cat ${sshauthkeys} | copy
+  paste
+}
+
 if [ ${#} -lt 1 ] ; then
   echo "${clipprog}: no command supplied" 1>&2
   usage 1>&2
@@ -259,6 +265,7 @@ case "${1}" in
   clearhist) clearhist ;;
   clear) clear ;;
   reap) reap ;;
+  dumpkeys) dumpkeys ;;
   *)
     echo "${clipprog}: command ${1} not understood" 1>&2
     usage 1>&2

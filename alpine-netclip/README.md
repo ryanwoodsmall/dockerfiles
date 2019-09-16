@@ -184,7 +184,10 @@ done
 - ability to update: clip script, startup .sh scripts, and dropbear packages
 - peel out unnecessary/big packages
 - clear on read, i.e. delete the clipboard when paste
-- move clip to its own netclip git project/repo
+- move clip to its own netclip git project/repo? probably not for now
+- something more "enterprise-y" on centos/rhel w/auth (pam, ldap, kerberos, ...) stuff built in
+- service discovery for user/host/port (mdns? other broadcast?)
+- gui???
 
 ### links
 

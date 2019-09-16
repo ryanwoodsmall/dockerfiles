@@ -24,6 +24,7 @@ fi
 cliplogs="${clipdata}/logs"
 test -e ${cliplogs} || mkdir -p ${cliplogs}
 test -e ${clipdata}/autolock || echo 0 > ${clipdata}/autolock
+test -e ${clipdata}/locked || echo 0 > ${clipdata}/locked
 
 test -e ${sshdir} || mkdir -p ${sshdir}
 test -e ${sshauthkeys} || touch ${sshauthkeys}
@@ -277,23 +278,8 @@ function dumpkeys() {
   paste
 }
 
-function createlock() {
-  if [ ! -e ${clipdata}/locked ] ; then
-    echo 0 > ${clipdata}/locked
-  fi
-  true
-}
-
-# shell logic, 1: unlocked, 0: locked
 function cliplocked() {
-  local locked=0
-  local unlocked=1
-  createlock
-  local l="$(cat ${clipdata}/locked)"
-  if [[ $l == 1 ]] ; then
-    return ${locked}
-  fi
-  return ${unlocked}
+  cat ${clipdata}/locked | grep -q '^1$'
 }
 
 function lock() {
@@ -305,7 +291,6 @@ function unlock() {
 }
 
 function showlock() {
-  createlock
   cat ${clipdata}/locked
 }
 

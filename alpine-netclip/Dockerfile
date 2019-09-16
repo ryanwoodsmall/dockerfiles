@@ -1,16 +1,6 @@
 #
 # use ssh+xvfb+xclip+x11vnc as a network-addressible clipboard
 #
-# https://wiki.alpinelinux.org/wiki/Remote_Desktop_Server
-# https://github.com/danielguerra69/alpine-vnc
-# https://github.com/jkuri/alpine-xfce4
-#
-# XXX - debug environment var - run vs build time
-# XXX - watch a fifo?
-# XXX - read-only flag? write-host check? "only host with IP #.#.#.# can copy"
-# XXX - or read-only user? read-only port?
-# XXX - lock down ssh command (requires openssh) similar to git
-#
 
 FROM alpine
 

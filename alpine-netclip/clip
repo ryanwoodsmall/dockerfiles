@@ -23,6 +23,7 @@ else
 fi
 cliplogs="${clipdata}/logs"
 test -e ${cliplogs} || mkdir -p ${cliplogs}
+test -e ${clipdata}/autolock || echo 0 > ${clipdata}/autolock
 
 test -e ${sshdir} || mkdir -p ${sshdir}
 test -e ${sshauthkeys} || touch ${sshauthkeys}
@@ -58,6 +59,9 @@ cmdinfo["lock"]="mark the clipboard as read-only"
 cmdinfo["unlock"]="mark the clipboard as read-write"
 cmdinfo["showlock"]="show the clipboard lock status"
 cmdinfo["showhist"]="show the clipboard history status"
+cmdinfo["enautolock"]="enable autolocking the clipboard before copying"
+cmdinfo["disautolock"]="disable autolocking the clipboard before copying"
+cmdinfo["showautolock"]="show the clipboard autolocking status"
 
 # selection buffers
 selections=( 'clipboard' 'primary' 'secondary' )
@@ -108,9 +112,11 @@ function copy() {
     return
   fi
   test ${cliphistory} -eq 1 && f="${clipdata}/logs/$(date +%Y%m%d%H%M%S.%N)" || f=/dev/null
+  checkautolock && lock
   cat /dev/stdin \
   | tee -a ${f} \
   | xclip -in -selection clipboard
+  checkautolock && unlock
 }
 
 function paste() {
@@ -305,6 +311,22 @@ function showlock() {
 
 function showhist() {
   cat ${clipdata}/history
+}
+
+function enautolock() {
+  echo 1 > ${clipdata}/autolock
+}
+
+function disautolock() {
+  echo 0 > ${clipdata}/autolock
+}
+
+function showautolock() {
+  cat ${clipdata}/autolock
+}
+
+function checkautolock() {
+  showautolock | grep -q '^1$'
 }
 
 if [ ${#} -lt 1 ] ; then

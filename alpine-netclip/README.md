@@ -248,6 +248,13 @@ done
   - aggregate views w/tmux
 - ring buffer with sponge
 - ripple i/o loops
+- broadcast/subscription/todo system?
+- combine with
+  - pbcopy/pbpaste on macos
+  - xclip/xsel on linux
+  - hterm utils on chrome os (https://chromium.googlesource.com/apps/libapps/+/master/hterm/etc)
+  - ??? on windows
+- daemon/service/plugins for whatever programs for centralized clipping
 
 ### links
 

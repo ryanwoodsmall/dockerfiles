@@ -30,38 +30,50 @@ var | purpose | default
 
 ```
 # netclip help
-/clip: usage
+usage: /clip [cmd]
 
-  /clip [cmd]
+  basics:
+    export cliphost=hostname.domainname
+    ssh -l clippy -p 11922 ${cliphost} /clip install | bash
+    cat ~/.bin/id_rsa.pub | netclip addkey
+    echo hello | sc
+    sp
+    cat /tmp/in.txt | netclip copy ; ssh remote 'netclip paste > /tmp/out.txt'
 
   commands:
-       addkey: add an ssh key from stdin
-        clear: clear the contents of the clipboard
-    clearhist: clear all history entries
-         copy: copy stdin to the clipboard
-      delhist: read a history entry from stdin and delete it
-       delkey: read a key number from stdin and delete it
-      delpass: delete the stored password file
-      dishist: disable capturing clipboard history
-     dumpkeys: copy and paste ssh keys to stdout
-       enhist: enable capturing clipboard history
-      gethist: read a history entry from stdin and show it
-         help: show this help
-      install: show install script for netclip/sc/sp
-     listhist: list any existing history entries
-     listkeys: show known ssh authorized keys
-         lock: mark the clipboard as read-only
-      netclip: show netclip control script
-        paste: paste the clipboard to stdout
-         reap: kill any lingering xclip processes
-           sc: show network copy script
-      setpass: read new password from stdin
-     showlock: show the clipboard lock status
-     showpass: show password
-     showport: show the ssh clipboard port
-     showuser: show the ssh clipboard user
-           sp: show network paste script
-       unlock: mark the clipboard as read-write
+          addkey: add an ssh key from stdin
+           clear: clear the contents of the clipboard
+       clearhist: clear all history entries
+     clipboardin: manipulate clipboard selection stdin
+    clipboardout: manipulate clipboard selection stdout
+            copy: copy stdin to the clipboard
+         delhist: read a history entry from stdin and delete it
+          delkey: read a key number from stdin and delete it
+         delpass: delete the stored password file
+         dishist: disable capturing clipboard history
+        dumpkeys: copy and paste ssh keys to stdout
+          enhist: enable capturing clipboard history
+         gethist: read a history entry from stdin and show it
+            help: show this help
+         install: show install script for netclip/sc/sp
+        listhist: list any existing history entries
+        listkeys: show known ssh authorized keys
+            lock: mark the clipboard as read-only
+         netclip: show netclip control script
+           paste: paste the clipboard to stdout
+       primaryin: manipulate primary selection stdin
+      primaryout: manipulate primary selection stdout
+            reap: kill any lingering xclip processes
+              sc: show network copy script
+     secondaryin: manipulate secondary selection stdin
+    secondaryout: manipulate secondary selection stdout
+         setpass: read new password from stdin
+        showlock: show the clipboard lock status
+        showpass: show password
+        showport: show the ssh clipboard port
+        showuser: show the ssh clipboard user
+              sp: show network paste script
+          unlock: mark the clipboard as read-write
 ```
 
 ## building

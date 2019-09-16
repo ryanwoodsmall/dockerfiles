@@ -50,8 +50,10 @@ usage: /clip [cmd]
          delhist: read a history entry from stdin and delete it
           delkey: read a key number from stdin and delete it
          delpass: delete the stored password file
+     disautolock: disable autolocking the clipboard before copying
          dishist: disable capturing clipboard history
         dumpkeys: copy and paste ssh keys to stdout
+      enautolock: enable autolocking the clipboard before copying
           enhist: enable capturing clipboard history
          gethist: read a history entry from stdin and show it
             help: show this help
@@ -68,6 +70,8 @@ usage: /clip [cmd]
      secondaryin: manipulate secondary selection stdin
     secondaryout: manipulate secondary selection stdout
          setpass: read new password from stdin
+    showautolock: show the clipboard autolocking status
+        showhist: show the clipboard history status
         showlock: show the clipboard lock status
         showpass: show password
         showport: show the ssh clipboard port

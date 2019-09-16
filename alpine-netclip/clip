@@ -261,7 +261,7 @@ function clearhist() {
   done
 }
 
-function clear() {
+function clearclip() {
   if $(cliplocked) ; then
     echo "clipboard is locked" 1>&2
     return
@@ -323,34 +323,9 @@ fi
 #set -x
 case "${1}" in
   help) usage ;;
-  copy) copy ;;
-  paste) paste ;;
-  sc) sc ;;
-  sp) sp ;;
-  addkey) addkey ;;
-  showpass) showpass ;;
-  setpass) setpass ;;
-  enhist) enhist ;;
-  dishist) dishist ;;
-  listkeys) listkeys ;;
-  delkey) delkey ;;
-  netclip) netclip ;;
-  install) install ;;
-  showuser) showuser ;;
-  showport) showport ;;
-  delpass) delpass ;;
-  listhist) listhist ;;
-  gethist) gethist ;;
-  delhist) delhist ;;
-  clearhist) clearhist ;;
-  clear) clear ;;
-  reap) reap ;;
-  dumpkeys) dumpkeys ;;
-  lock) lock ;;
-  unlock) unlock ;;
-  showlock) showlock ;;
-  showhist) showhist ;;
+  clear) clearclip ;;
   *)
+    # check for and run a like-named function if we have one in our list
     if $(echo ${funclist[@]} | tr -s ' ' | tr ' ' '\n' | grep -q "^${1}$") ; then
       ${1}
     else

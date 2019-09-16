@@ -182,6 +182,7 @@ done
 - make ssh command configurable
 - ability to turn ssh password auth off
 - ability to update: clip script, startup .sh scripts, and dropbear packages
+- peel out unnecessary/big packages
 
 ### links
 

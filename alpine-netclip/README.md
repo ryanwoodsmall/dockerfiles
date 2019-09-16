@@ -191,6 +191,8 @@ done
 - service discovery for user/host/port (mdns? other broadcast?)
 - gui???
 - real supervisor instead of shell loops?
+- network of clipboards? local service, master service with broadcast, distribution?
+- actual c/go/rust service process?
 
 ### links
 

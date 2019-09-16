@@ -9,6 +9,7 @@ network clipboard built on docker with
 - xvfb virtual frame buffer x server
 - x11vnc vnc server (for debugging)
 - those perennial favorites, _**stdin**_ and _**stdout**_
+- "last in, only out, maybe" technology
 
 ## usage
 

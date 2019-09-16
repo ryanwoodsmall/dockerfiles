@@ -61,6 +61,8 @@ RUN chmod 755 /*.sh \
 #    && chmod 640 ${clipdata}/* \
 #    && sed -i '/x11vnc/s/#//g' /startup.sh
 
+# XXX - volumes for /etc/dropbear, /data/vnc, etc.?
+
 ENTRYPOINT ["/sbin/tini","-gwvv","--"]
 
 CMD ["/startup.sh"]

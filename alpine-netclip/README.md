@@ -240,6 +240,10 @@ done
 - explicit file copy support?
   - would require "client" code
   - no
+- volumes for docker stuff
+  - dropbear
+  - settings
+  - history/log files
 
 ### uses
 

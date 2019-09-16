@@ -183,6 +183,8 @@ done
 - ability to turn ssh password auth off
 - ability to update: clip script, startup .sh scripts, and dropbear packages
 - peel out unnecessary/big packages
+- clear on read, i.e. delete the clipboard when paste
+- move clip to its own netclip git project/repo
 
 ### links
 

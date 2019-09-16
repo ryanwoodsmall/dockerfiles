@@ -189,6 +189,7 @@ done
 - something more "enterprise-y" on centos/rhel w/auth (pam, ldap, kerberos, ...) stuff built in
 - service discovery for user/host/port (mdns? other broadcast?)
 - gui???
+- real supervisor instead of shell loops?
 
 ### links
 

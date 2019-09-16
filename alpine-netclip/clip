@@ -223,7 +223,7 @@ function clearhist() {
 }
 
 function clear() {
-  echo -n | xclip -in -selection clipboard 
+  echo -n | xclip -in -selection clipboard
 }
 
 function reap() {

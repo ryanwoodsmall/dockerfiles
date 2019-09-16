@@ -29,8 +29,7 @@ var | purpose | default
 `clipinst` | netclip script installation path | `${HOME}/bin`
 
 ```
-$ netclip help
-
+# netclip help
 /clip: usage
 
   /clip [cmd]
@@ -51,15 +50,18 @@ $ netclip help
       install: show install script for netclip/sc/sp
      listhist: list any existing history entries
      listkeys: show known ssh authorized keys
+         lock: mark the clipboard as read-only
       netclip: show netclip control script
         paste: paste the clipboard to stdout
          reap: kill any lingering xclip processes
            sc: show network copy script
       setpass: read new password from stdin
+     showlock: show the clipboard lock status
      showpass: show password
      showport: show the ssh clipboard port
      showuser: show the ssh clipboard user
            sp: show network paste script
+       unlock: mark the clipboard as read-write
 ```
 
 ## building
@@ -194,7 +196,23 @@ done
 - network of clipboards? local service, master service with broadcast, distribution?
 - actual c/go/rust service process?
 - ssh client mutual auth/verification from server
-- simple lock/unlock to write-protect the clipboard
+- lock/unlock around copy? probably, but race-y
+- multiple clipboards?
+  - multiple copy/paste is ugh, complicates input
+  - use as undo? implicit/explicit?
+  - if clipboard is text, automatically copy to primary?
+  - xclip supports primary/secondary/clipboard/buffer-cut
+  - xsel supports primary/secondary/clipboard
+  - clipboard is any data type, cut buffer is old, primary is "text only", secondary is underdefined
+- xclip `-verbose`?
+- xsel?
+  - more features than xclip
+  - `--append` option for stdin to selection
+  - `--follow` option for tail-like stdin
+  - `--exchange` option for primary/secondary
+  - `--logfile` for logging errors
+  - `--keep` option for primary/secondary persistence
+  - `--verbose` option
 
 ### links
 

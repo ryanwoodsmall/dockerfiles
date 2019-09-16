@@ -16,12 +16,12 @@ clipport="$(cat ${clipdata}/clipport)"
 sshdir="${HOME}/.ssh"
 sshauthkeys="${sshdir}/authorized_keys"
 cliphistory=0
-cliplogs="${clipdata}/logs"
 if [ ! -e ${clipdata}/history ] ; then
   echo 0 > ${clipdata}/history
 else
   cliphistory="$(cat ${clipdata}/history)"
 fi
+cliplogs="${clipdata}/logs"
 test -e ${cliplogs} || mkdir -p ${cliplogs}
 
 test -e ${sshdir} || mkdir -p ${sshdir}
@@ -54,6 +54,9 @@ cmdinfo["clearhist"]="clear all history entries"
 cmdinfo["clear"]="clear the contents of the clipboard"
 cmdinfo["reap"]="kill any lingering xclip processes"
 cmdinfo["dumpkeys"]="copy and paste ssh keys to stdout"
+cmdinfo["lock"]="mark the clipboard as read-only"
+cmdinfo["unlock"]="mark the clipboard as read-write"
+cmdinfo["showlock"]="show the clipboard lock status"
 
 function usage() {
   local cmdwidth=0
@@ -75,6 +78,10 @@ function usage() {
 
 function copy() {
   local f
+  if $(cliplocked) ; then
+    echo "clipboard is locked" 1>&2
+    return
+  fi
   test ${cliphistory} -eq 1 && f="${clipdata}/logs/$(date +%Y%m%d%H%M%S.%N)" || f=/dev/null
   cat /dev/stdin \
   | tee -a ${f} \
@@ -223,6 +230,10 @@ function clearhist() {
 }
 
 function clear() {
+  if $(cliplocked) ; then
+    echo "clipboard is locked" 1>&2
+    return
+  fi
   echo -n | xclip -in -selection clipboard
 }
 
@@ -233,6 +244,38 @@ function reap() {
 function dumpkeys() {
   cat ${sshauthkeys} | copy
   paste
+}
+
+function createlock() {
+  if [ ! -e ${clipdata}/locked ] ; then
+    echo 0 > ${clipdata}/locked
+  fi
+  true
+}
+
+# shell logic, 1: unlocked, 0: locked
+function cliplocked() {
+  local locked=0
+  local unlocked=1
+  createlock
+  local l="$(cat ${clipdata}/locked)"
+  if [[ $l == 1 ]] ; then
+    return ${locked}
+  fi
+  return ${unlocked}
+}
+
+function lock() {
+  echo 1 > ${clipdata}/locked
+}
+
+function unlock() {
+  echo 0 > ${clipdata}/locked
+}
+
+function showlock() {
+  createlock
+  cat ${clipdata}/locked
 }
 
 if [ ${#} -lt 1 ] ; then
@@ -266,6 +309,9 @@ case "${1}" in
   clear) clear ;;
   reap) reap ;;
   dumpkeys) dumpkeys ;;
+  lock) lock ;;
+  unlock) unlock ;;
+  showlock) showlock ;;
   *)
     echo "${clipprog}: command ${1} not understood" 1>&2
     usage 1>&2

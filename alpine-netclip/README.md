@@ -194,6 +194,7 @@ done
 - network of clipboards? local service, master service with broadcast, distribution?
 - actual c/go/rust service process?
 - ssh client mutual auth/verification from server
+- simple lock/unlock to write-protect the clipboard
 
 ### links
 

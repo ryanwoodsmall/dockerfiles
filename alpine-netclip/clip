@@ -57,6 +57,7 @@ cmdinfo["dumpkeys"]="copy and paste ssh keys to stdout"
 cmdinfo["lock"]="mark the clipboard as read-only"
 cmdinfo["unlock"]="mark the clipboard as read-write"
 cmdinfo["showlock"]="show the clipboard lock status"
+cmdinfo["showhist"]="show the clipboard history status"
 
 # selection buffers
 selections=( 'clipboard' 'primary' 'secondary' )
@@ -302,6 +303,10 @@ function showlock() {
   cat ${clipdata}/locked
 }
 
+function showhist() {
+  cat ${clipdata}/history
+}
+
 if [ ${#} -lt 1 ] ; then
   echo "${clipprog}: no command supplied" 1>&2
   usage 1>&2
@@ -337,6 +342,7 @@ case "${1}" in
   lock) lock ;;
   unlock) unlock ;;
   showlock) showlock ;;
+  showhist) showhist ;;
   *)
     if $(echo ${funclist[@]} | tr -s ' ' | tr ' ' '\n' | grep -q "^${1}$") ; then
       ${1}

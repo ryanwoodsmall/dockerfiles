@@ -209,6 +209,7 @@ done
 - actual c/go/rust service process?
 - ssh client mutual auth/verification from server
 - lock/unlock around copy? probably, but race-y
+  - autolock bool
 - multiple clipboards?
   - multiple copy/paste is ugh, complicates input
   - use as undo? implicit/explicit?

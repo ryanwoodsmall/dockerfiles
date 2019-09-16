@@ -58,6 +58,24 @@ cmdinfo["lock"]="mark the clipboard as read-only"
 cmdinfo["unlock"]="mark the clipboard as read-write"
 cmdinfo["showlock"]="show the clipboard lock status"
 
+# selection buffers
+selections=( 'clipboard' 'primary' 'secondary' )
+# directions
+directions=( 'in' 'out' )
+# build functions
+for s in ${selections[@]} ; do
+  for d in ${directions[@]} ; do
+    eval "
+      function ${s}${d}() {
+        xclip -${d} -selection ${s}
+      }
+    "
+    cmdinfo["${s}${d}"]="manipulate ${s} selection std${d}"
+  done
+done
+funclist=( $(echo ${!cmdinfo[@]}) )
+funcstring="$(echo ${funclist[@]} | xargs echo | tr -s ' ' | sed 's/ / | /g')"
+
 function usage() {
   local cmdwidth=0
   for cmd in ${!cmdinfo[@]} ; do
@@ -65,9 +83,15 @@ function usage() {
       cmdwidth="$(echo -n ${cmd} | wc -c)"
     fi
   done
-  echo "${clipprog}: usage"
+  echo "usage: ${clipprog} [cmd]"
   echo
-  echo "  ${clipprog} [cmd]"
+  echo "  basics:"
+  echo "    export cliphost=hostname.domainname"
+  echo "    ssh -l clippy -p 11922 \${cliphost} /clip install | bash"
+  echo "    cat ~/.bin/id_rsa.pub | netclip addkey"
+  echo "    echo hello | sc"
+  echo "    sp"
+  echo "    cat /tmp/in.txt | netclip copy ; ssh remote 'netclip paste > /tmp/out.txt'"
   echo
   echo "  commands:"
   for cmd in $(echo ${!cmdinfo[@]} | tr ' ' '\n' | sort) ; do
@@ -284,6 +308,7 @@ if [ ${#} -lt 1 ] ; then
   exit 1
 fi
 
+#set -x
 case "${1}" in
   help) usage ;;
   copy) copy ;;
@@ -313,8 +338,12 @@ case "${1}" in
   unlock) unlock ;;
   showlock) showlock ;;
   *)
-    echo "${clipprog}: command ${1} not understood" 1>&2
-    usage 1>&2
-    exit 1
+    if $(echo ${funclist[@]} | tr -s ' ' | tr ' ' '\n' | grep -q "^${1}$") ; then
+      ${1}
+    else
+      echo "${clipprog}: command ${1} not understood" 1>&2
+      usage 1>&2
+      exit 1
+    fi
     ;;
 esac

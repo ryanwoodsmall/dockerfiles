@@ -213,6 +213,9 @@ done
   - `--logfile` for logging errors
   - `--keep` option for primary/secondary persistence
   - `--verbose` option
+- case-generation for function expansion
+  - pipes are paresed BEFORE vars in $v1|$v2|$v3) ... case examples
+  - ugh
 
 ### links
 

@@ -225,11 +225,24 @@ done
   - `--logfile` for logging errors
   - `--keep` option for primary/secondary persistence
   - `--verbose` option
+- sselp
+  - suckless simple x selection printer
+  - works on primary, out only
+  - https://tools.suckless.org/x/sselp/
 - case-generation for function expansion
   - pipes are paresed BEFORE vars in $v1|$v2|$v3) ... case examples
   - ugh
+
+### uses
+
+- system monitor?
+  - htop/iostat/ifstat/etc. output on secondary
+  - aggregate views w/tmux
+- ring buffer with sponge
+- ripple i/o loops
 
 ### links
 
 - https://github.com/danielguerra69/alpine-vnc
 - https://github.com/jkuri/alpine-xfce4
+- https://wiki.archlinux.org/index.php/Clipboard

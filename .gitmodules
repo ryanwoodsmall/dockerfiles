@@ -1,0 +1,3 @@
+[submodule "alpine-netclip"]
+	path = alpine-netclip
+	url = https://github.com/ryanwoodsmall/netclip.git

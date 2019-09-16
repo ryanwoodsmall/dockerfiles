@@ -150,9 +150,30 @@ that's it!
 
 once a host's key is in place it has full copy/paste powers as long as the cliphost is reachable
 
+## setting up a bunch of keys at once
+
+bootstrapping keys is relatively simple assuming they're exchanged with the netclip host
+
+```
+git clone https://github.com/ryanwoodsmall/dockerfiles.git
+cd dockerfiles/alpine-netclip
+docker build --tag netclip .
+docker run -d --restart always --name netclip -p 11922:11922 netclip
+docker exec --user clippy netclip /clip delpass
+docker cp ~/.ssh/id_rsa.pub netclip:/tmp/key.pub
+docker exec --user clippy netclip bash -c 'cat /tmp/key.pub | /clip addkey'
+docker exec --user clippy netclip /clip install | bash
+for h in h01 h02 h03 ; do
+  ssh $h cat .ssh/id_rsa.pub | netclip addkey
+  netclip install | ssh $h
+done
+```
+
 ### todo
 
 - debug environment var - run vs build time
+- debug x11vnc should run as debug user connecting to clippy xvfb? xhost?
+- just remove vnc stuff for now?
 - watch a fifo?
 - read-only flag? write-host check? "only host with IP #.#.#.# can copy"
 - or read-only user? read-only port?
@@ -160,7 +181,7 @@ once a host's key is in place it has full copy/paste powers as long as the cliph
 - remove root user requirement after setup, run as regular user
 - make ssh command configurable
 - ability to turn ssh password auth off
-- ability to update - clip script, .sh scripts, and dropbear packages
+- ability to update: clip script, startup .sh scripts, and dropbear packages
 
 ### links
 

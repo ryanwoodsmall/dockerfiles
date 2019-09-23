@@ -1,9 +1,9 @@
 FROM alpine as ALPINE
 
+ADD https://github.com/beanshell/beanshell/releases/download/2.0b6/bsh-2.0b6.jar /bsh.jar
+
 RUN apk update \
-    && apk upgrade \
-    && apk add curl tini-static \
-    && curl -kLo /bsh.jar https://github.com/beanshell/beanshell/releases/download/2.0b6/bsh-2.0b6.jar
+    && apk add tini-static
 
 FROM gcr.io/distroless/java:8
 

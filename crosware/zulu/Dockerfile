@@ -76,8 +76,9 @@ RUN source /etc/profile \
     && sed -i s/CW_USE_JGIT=false/CW_USE_JGIT=true/g ${cwprofd} \
     && sed -i s/CW_USE_JAVA=false/CW_USE_JAVA=true/g ${cwprofd} \
     && echo 'export CW_EXT_JAVA=true' >> ${cwprofd} \
-    && find ${ult}/ -type f | xargs rm -f \
-    && rm -f ${cwdl}/*/*
+    && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
+    && source /etc/profile \
+    && ccache -C || true
 
 # fetch and extract zulu
 RUN source /etc/profile \
@@ -91,6 +92,8 @@ RUN source /etc/profile \
     && chown -R ${UID}:${GROUPS} ${zulutop} \
     && find ${ult}/ -type f | xargs rm -f \
     && crosware update \
-    && crosware upgrade-all || true
+    && crosware upgrade-all || true \
+    && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
+    && ccache -C || true
 
 # vim: set ft=sh:

@@ -90,6 +90,7 @@ RUN source /etc/profile \
     && ln -s ${zulutop}/zulu${zuludefver} ${zulutop}/current \
     && chown -R ${UID}:${GROUPS} ${zulutop} \
     && find ${ult}/ -type f | xargs rm -f \
-    && crosware update
+    && crosware update \
+    && crosware upgrade-all || true
 
 # vim: set ft=sh:

@@ -3,3 +3,7 @@
 *.tar.gz
 *.tar.xz
 *.rpm
+*.class
+*.ear
+*.jar
+*.war

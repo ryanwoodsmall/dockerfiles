@@ -1,16 +1,16 @@
-FROM alpine as ALPINE
+FROM alpine AS alpine
 
 RUN apk update \
     && apk add tini-static
 
 FROM gcr.io/distroless/java:8
 
-COPY --from=ALPINE /sbin/tini-static /tini
+COPY --from=alpine /sbin/tini-static /tini
 
 ADD https://github.com/beanshell/beanshell/releases/download/2.0b6/bsh-2.0b6.jar /bsh.jar
 
-ENTRYPOINT ["/tini","-gwvv","--"]
+ENTRYPOINT ["/tini","-gwvv","--","java","-cp"]
 
-CMD ["java","-cp","/bsh.jar","bsh.Interpreter"]
+CMD ["/bsh.jar","bsh.Interpreter"]
 
 # vim: set ft=sh:

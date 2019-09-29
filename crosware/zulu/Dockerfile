@@ -10,7 +10,6 @@ FROM ryanwoodsmall/crosware:latest
 ENV cwtop   /usr/local/crosware
 ENV cwdl    ${cwtop}/downloads
 ENV cwsw    ${cwtop}/software
-ENV cwtmp   ${cwtop}/tmp
 ENV cwvar   ${cwtop}/var
 ENV cwprofd /etc/profile.d/crosware.sh
 ENV ult     /usr/local/tmp
@@ -57,7 +56,7 @@ RUN source /etc/profile \
 # setup profile
 RUN source /etc/profile \
     && echo "export JAVA_HOME=${zulutop}/current" > ${zuluprofd} \
-    && echo "export _JAVA_OPTIONS='-Djava.io.tmpdir=${cwtmp} -Djava.awt.headless=true'" >> ${zuluprofd} \
+    && echo "export _JAVA_OPTIONS='-Djava.io.tmpdir=${cwtop}/tmp -Djava.awt.headless=true'" >> ${zuluprofd} \
     && echo 'prepend_path "${JAVA_HOME}/bin"' >> ${zuluprofd}
 
 # setup libz.so

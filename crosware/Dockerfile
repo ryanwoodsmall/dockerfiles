@@ -25,7 +25,7 @@ FROM busybox:musl as BUSYBOX
 
 # build out some of our recipes
 # XXX - busybox patch does *not* work for some bash patches
-FROM centos:latest as BUILDER
+FROM centos:7 as BUILDER
 RUN set -eu \
     && yum clean all \
     && yum -y install bash bzip2 curl git patch binutils file \

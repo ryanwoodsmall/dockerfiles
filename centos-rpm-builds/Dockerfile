@@ -4,7 +4,7 @@
 #  docker run -it --rm -v ${PWD}/rpmbuild:/root/rpmbuild blah/blah:blah
 #
 
-FROM centos:latest
+FROM centos:7
 
 COPY files/build-rpms.sh /
 

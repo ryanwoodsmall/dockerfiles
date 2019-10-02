@@ -35,7 +35,7 @@ RUN set -eu \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates mbedtls rlwrap less \
+    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates mbedtls rlwrap less xvi \
     && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
     && rm -rf /stow \
     && mkdir -p /stow \
@@ -43,6 +43,7 @@ RUN set -eu \
     && cp ./software/toybox/current/bin/toybox /stow/ \
     && cp ./software/bash/current/bin/bash /stow/ \
     && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
+    && cp ./software/xvi/current/bin/xvi /stow/ \
     && find /stow/ -type f | xargs file | grep 'ELF.*stripped' | cut -f1 -d: | xargs strip --strip-all \
     && file /stow/* \
     && rm -rf /usr/local/tmp/* \
@@ -83,6 +84,10 @@ RUN for p in toybox ; do for a in $(${p}) ; do test -e /usr/bin/${a} || ln -s ${
 COPY --from=BUILDER /stow/bash /usr/bin/
 RUN rm -f /usr/bin/sh \
     && ln -s bash /usr/bin/sh
+# xvi
+COPY --from=BUILDER /stow/xvi /usr/bin/
+RUN rm -f /usr/bin/vi \
+    && ln -s xvi /usr/bin/vi
 # files/directories to be copied with no setup
 COPY --from=BUILDER /stow/curl /usr/bin/
 # crosware and permissions

@@ -11,6 +11,7 @@ the included userspace is completely static and consists of a handful of binarie
 - toybox
 - curl
 - dropbear
+- xvi
 
 additionally, a fully static gcc+binutils C/C++ toolchain is included.
 

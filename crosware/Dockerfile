@@ -113,12 +113,16 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo 'export CW_GIT_CMD=git' >> /etc/profile.d/crosware.sh \
     && echo 'export CW_USE_JAVA=false' >> /etc/profile.d/crosware.sh \
     && echo 'export CW_USE_JGIT=false' >> /etc/profile.d/crosware.sh \
+    && echo 'export SHELL=/bin/bash' >> /etc/profile.d/crosware.sh \
+    && echo 'export XVINIT="source ${HOME}/.exrc"' >> /etc/profile.d/crosware.sh \
     && echo 'test -e /usr/local/crosware/etc/profile && . /usr/local/crosware/etc/profile' >> /etc/profile.d/crosware.sh \
     && echo '# XXX UGH' >> /etc/profile.d/crosware.sh \
-    && echo 'export GIT_SSL_NO_VERIFY=1' >> /etc/profile.d/crosware.sh \
+    && echo '#export GIT_SSL_NO_VERIFY=1' >> /etc/profile.d/crosware.sh \
     && echo '# USER KNOWS BEST' >> /etc/profile.d/crosware.sh \
     && echo 'export PATH=${HOME}/bin:${PATH}' >> /etc/profile.d/crosware.sh \
     && sed -i 's/root::/root:*:/g' /etc/shadow \
+    && for d in https://github.com/ryanwoodsmall/dotfiles/raw/master/dot_{elvis,ex,vile}rc ; do curl -fkLs ${d} > ${HOME}/$(basename ${d} | sed 's/dot_/./g') ; done \
+    && curl -fkLso /etc/vi.exrc https://github.com/ryanwoodsmall/dotfiles/raw/master/dot_exrc \
     && /usr/local/crosware/bin/crosware install statictoolchain \
     && rm -rf /usr/local/tmp/* \
     && chgrp -R wheel /usr/local/crosware \

@@ -3,6 +3,8 @@
 #  mkdir -p rpmbuild
 #  docker run -it --rm -v ${PWD}/rpmbuild:/root/rpmbuild blah/blah:blah
 #
+# XXX - run createrepo/repoview and serve rpms via busybox httpd
+#
 
 FROM centos:7
 

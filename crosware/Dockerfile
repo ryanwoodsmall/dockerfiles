@@ -35,7 +35,7 @@ RUN set -eu \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates mbedtls rlwrap less nvi179 \
+    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates mbedtls rlwrap less elvis \
     && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
     && rm -rf /stow \
     && mkdir -p /stow \
@@ -43,13 +43,12 @@ RUN set -eu \
     && cp ./software/toybox/current/bin/toybox /stow/ \
     && cp ./software/bash/current/bin/bash /stow/ \
     && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
-    && cp $(realpath ./software/nvi179/current/bin/nvi179) /stow/nvi \
     && find /stow/ -type f | xargs file | grep 'ELF.*stripped' | cut -f1 -d: | xargs strip --strip-all \
     && file /stow/* \
     && rm -rf /usr/local/tmp/* \
     && yum clean all \
     && rm -rf /var/cache/yum \
-    && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|less|rlwrap) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
+    && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|rlwrap) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
     && for d in builds downloads ; do pushd $d ; git clean -fdx ; popd ; done \
     && find software/ -type f -exec file {} + | awk -F: '/:.*ELF/{print $1}' | xargs strip --strip-all
 
@@ -89,9 +88,9 @@ RUN rm -f /usr/bin/sh \
 #RUN rm -f /usr/bin/vi \
 #    && ln -s xvi /usr/bin/vi
 # nvi
-COPY --from=BUILDER /stow/nvi /usr/bin/
-RUN rm -f /usr/bin/vi \
-    && ln -s nvi /usr/bin/vi
+#COPY --from=BUILDER /stow/nvi /usr/bin/
+#RUN rm -f /usr/bin/vi \
+#    && ln -s nvi /usr/bin/vi
 # files/directories to be copied with no setup
 COPY --from=BUILDER /stow/curl /usr/bin/
 # crosware and permissions
@@ -100,6 +99,9 @@ COPY --from=BUILDER /usr/local/crosware /usr/local/crosware
 RUN ln -s /usr/local/crosware/software/dropbear/current/bin/dropbearmulti /usr/bin/ \
     && for d in $(/usr/bin/dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'" | tr -d "'" | sort) ; do ln -s dropbearmulti /usr/bin/${d} ; done \
     && mkdir -p /usr/local/crosware/software/dropbear/etc
+# elvis
+RUN rm -f /usr/bin/vi \
+    && ln -s /usr/local/crosware/software/elvis/current/bin/elvis /usr/bin/vi
 # final setup stuff
 RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo '/bin/sh' > /etc/shells \

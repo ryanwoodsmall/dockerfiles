@@ -120,6 +120,7 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo 'export CW_USE_JAVA=false' >> /etc/profile.d/crosware.sh \
     && echo 'export CW_USE_JGIT=false' >> /etc/profile.d/crosware.sh \
     && echo 'export SHELL=/bin/bash' >> /etc/profile.d/crosware.sh \
+    && echo 'export EDITOR=vi' >> /etc/profile.d/crosware.sh \
     && echo 'export XVINIT="source ${HOME}/.exrc"' >> /etc/profile.d/crosware.sh \
     && echo 'test -e /usr/local/crosware/etc/profile && . /usr/local/crosware/etc/profile' >> /etc/profile.d/crosware.sh \
     && echo '# XXX UGH' >> /etc/profile.d/crosware.sh \

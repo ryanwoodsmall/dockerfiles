@@ -113,7 +113,7 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo 'set convert-meta off' >> /etc/inputrc \
     && echo 'set output-meta on' >> /etc/inputrc \
     && echo 'set mark-symlinked-directories on' >> /etc/inputrc \
-    && echo 'test -e /etc/profile.d && for scriptlet in /etc/profile.d/*.sh ; do source ${scriptlet} ; done ; unset scriptlet' > /etc/profile \
+    && echo 'test -e /etc/profile.d && for scriptlet in /etc/profile.d/*.sh ; do . ${scriptlet} ; done ; unset scriptlet' > /etc/profile \
     && echo 'export PATH=${PATH}:/usr/local/crosware/bin' > /etc/profile.d/crosware.sh \
     && echo 'export PS1="\u@crosware-$(uname -m) \W \$ "' >> /etc/profile.d/crosware.sh \
     && echo 'export CW_GIT_CMD=git' >> /etc/profile.d/crosware.sh \
@@ -122,7 +122,7 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo 'export SHELL=/bin/bash' >> /etc/profile.d/crosware.sh \
     && echo 'export EDITOR=vi' >> /etc/profile.d/crosware.sh \
     && echo 'export XVINIT="source ${HOME}/.exrc"' >> /etc/profile.d/crosware.sh \
-    && echo 'test -e /usr/local/crosware/etc/profile && source /usr/local/crosware/etc/profile' >> /etc/profile.d/crosware.sh \
+    && echo 'test -e /usr/local/crosware/etc/profile && . /usr/local/crosware/etc/profile' >> /etc/profile.d/crosware.sh \
     && echo '# XXX UGH' >> /etc/profile.d/crosware.sh \
     && echo '#export GIT_SSL_NO_VERIFY=1' >> /etc/profile.d/crosware.sh \
     && echo '# USER KNOWS BEST' >> /etc/profile.d/crosware.sh \

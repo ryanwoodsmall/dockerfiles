@@ -2,7 +2,6 @@
 # musl (alpine) zulu on crosware x86_64
 #
 #  XXX - should this be a recipe? if there are other arches, yes.
-#  XXX - innocuous change
 #
 
 FROM ryanwoodsmall/crosware:amd64

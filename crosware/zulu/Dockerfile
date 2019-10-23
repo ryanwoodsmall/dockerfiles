@@ -4,7 +4,7 @@
 #  XXX - should this be a recipe? if there are other arches, yes.
 #
 
-FROM ryanwoodsmall/crosware:latest
+FROM ryanwoodsmall/crosware:amd64
 
 # crosware
 ENV cwtop   /usr/local/crosware

@@ -19,16 +19,16 @@ ENV zulucdn    https://cdn.azul.com/zulu/bin
 ENV zulutop    /usr/local/zulu
 ENV zuluprofd  /etc/profile.d/zulu.sh
 ENV zuludefver 8
-ENV zulu8ver   8.40.0.25-ca-jdk8.0.222
+ENV zulu8ver   8.42.0.21-ca-jdk8.0.232
 ENV zulu8dir   zulu${zulu8ver}-linux_musl_x64
 ENV zulu8file  ${zulu8dir}.tar.gz
 ENV zulu8url   ${zulucdn}/${zulu8file}
-ENV zulu8sha   80fcc823ca4e86cf2969937403c763375f7eff9f543fc5d2854daca0098bfa68
-ENV zulu11ver  11.33.15-ca-jdk11.0.4
+ENV zulu8sha   5b0f5e9a78e721ddfaabf26cedc40750309bd4e093cefa8caebd1f2b7e3b2007
+ENV zulu11ver  11.35.13-ca-jdk11.0.5
 ENV zulu11dir  zulu${zulu11ver}-linux_musl_x64
 ENV zulu11file ${zulu11dir}.tar.gz
 ENV zulu11url  ${zulucdn}/${zulu11file}
-ENV zulu11sha  5fbf6921641711033be7725c584af97ba2a61d678598134b5179a65e1224af66
+ENV zulu11sha  873fe24c77ce7303b61dfa7fc8f9ec9afc88110b8fed8f0ef15ffee17da447bc
 
 # alpine musl zlib
 ENV alpver   3.10

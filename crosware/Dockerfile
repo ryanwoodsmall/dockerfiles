@@ -23,6 +23,9 @@
 # start from the musl busybox container
 FROM busybox:musl as BUSYBOX
 
+# and we need a couple things from alpine as well
+FROM alpine:latest as ALPINE
+
 # build out some of our recipes
 # XXX - busybox patch does *not* work for some bash patches
 FROM centos:7 as BUILDER
@@ -60,6 +63,9 @@ COPY --from=BUILDER /stow/busybox /bin/sh
 COPY --from=BUSYBOX /etc/group /etc/
 COPY --from=BUSYBOX /etc/passwd /etc/
 COPY --from=BUSYBOX /etc/shadow /etc/
+# get /etc services/protocols from alpine
+COPY --from=ALPINE /etc/protocols /etc/
+COPY --from=ALPINE /etc/services /etc/
 # shuffle /bin -> /usr/bin and create symlinks and required directories
 RUN /bin/busybox mkdir -p /usr/bin \
     && /bin/busybox cp /bin/busybox /usr/bin/ \

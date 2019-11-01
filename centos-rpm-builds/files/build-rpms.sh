@@ -2,6 +2,7 @@
 
 # XXX - ~/rpmbuild should be set from "rpm --eval '%{_topdir}'"
 # XXX - add ccache and setup musl-gcc in /usr/lib{,64}/ccache/
+# XXX - use yum-builddep to install reqs from .spec files
 
 # exit on failure and be verbose
 set -eux

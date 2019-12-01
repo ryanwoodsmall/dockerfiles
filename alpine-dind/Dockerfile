@@ -6,6 +6,15 @@
 # XXX - does NOT really run as non-root user
 #       /var/lib/docker and /var/run/docker perms...
 #
+# XXX - replace docker w/latest static, eg. armhf:
+#   cd /tmp \
+#   wget https://download.docker.com/linux/static/stable/armhf/docker-19.03.5.tgz \
+#   tar -zxvf docker-19.03.5.tgz \
+#   find docker -type f | awk -F/ '{print $NF}' | sort | while read -r d ; do cat ./docker/$d > $(which $d) ; echo $d ; done \
+#   rm -rf docker*
+#
+# XXX - for 32-bit builds, prepend "linux32" and FROM i386/alpine or arm32v7/alpine on x86_64 and aarch64 builds, respectively
+#
 
 FROM alpine:latest
 
@@ -23,6 +32,7 @@ RUN apk update \
     && apk upgrade \
     && apk add \
            bash \
+           curl \
            docker \
            dropbear \
            dropbear-convert \
@@ -49,5 +59,5 @@ RUN apk update \
     && echo "/usr/bin/dockerd -H unix:///var/run/docker.sock -H tcp://${dockerip}:${dockerport} -s vfs" >> ${ep} \
     && chmod 755 ${ep}
 
-ENTRYPOINT ["/sbin/tini-static","-s","-g"]
-CMD ${ep}
+ENTRYPOINT ["/sbin/tini-static","-s","-g","--"]
+CMD ["sh","-c","/entrypoint.sh"]

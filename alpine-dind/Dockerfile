@@ -13,7 +13,10 @@
 #   find docker -type f | awk -F/ '{print $NF}' | sort | while read -r d ; do cat ./docker/$d > $(which $d) ; echo $d ; done \
 #   rm -rf docker*
 #
-# XXX - for 32-bit builds, prepend "linux32" and FROM i386/alpine or arm32v7/alpine on x86_64 and aarch64 builds, respectively
+# XXX - for 32-bit builds...
+#   prepend "linux32" and FROM i386/alpine or arm32v7/alpine on x86_64 and aarch64 builds, respectively
+#   might _still_ need qemu-*
+#   arm32v7/centos:7 breaks running as "armv8l" on aarch64
 #
 
 FROM alpine:latest

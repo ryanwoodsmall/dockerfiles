@@ -1,11 +1,12 @@
 #
-# expose docker socket insecurely on tcp 2375:
+# build:
 #   docker build --tag socat https://github.com/ryanwoodsmall/dockerfiles/raw/master/crosware/socat/Dockerfile
+# expose docker socket insecurely on tcp 2375:
 #   docker run -d --restart always --name socat-docker -it -p 2375:2375 -v /var/run/docker.sock:/docker.sock socat -d -d tcp4-listen:2375,fork,reuseaddr unix-connect:/docker.sock
 #   curl -s --unix-socket /var/run/docker.sock http/info
 #   curl -kLs http://localhost:2375/info
-# expose remote docker registry locally to get around having certs, which is insane
-#   docker run -d --restart always -it -p 5000:5000 --name socat-registry -p 5001:5000 socat -d -d tcp-listen:5000,fork,reuseaddr tcp-connect:123:45:67:89:5000
+# expose remote docker registry locally to get around having certs, which is insane:
+#   docker run -d --restart always -it -p 5000:5000 --name socat-registry -p 5001:5000 socat -d -d tcp-listen:5000,fork,reuseaddr tcp-connect:123.45.67.89:5000
 # decap ssh encapsulated in https with openssl to defeat protocol checks:
 #   socat -d tcp4-listen:33333,fork,reuseaddr exec:'openssl s_client -connect remote.https-ssh.hostname\:443'
 #   # without local stunnel - fine for quick/dirty connections but heartbeat kills connection?

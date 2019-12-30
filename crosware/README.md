@@ -10,10 +10,12 @@ the included userspace is completely static and consists of a handful of binarie
 - busybox
 - toybox
 - curl
-- dropbear
-- xvi
 
-additionally, a fully static gcc+binutils C/C++ toolchain is included.
+additionally, a fully static gcc+binutils C/C++ toolchain included, along with a handful of useful recipes, including:
+
+- dropbear
+- less
+- rlwrap
 
 run ```crosware``` without an arguments to see usage.
 

@@ -18,6 +18,7 @@
 # XXX - need (read-only?) git client that doesn't require java
 # XXX - ssl/tls certs???
 # XXX - downloads statictoolchain twice, but at least tests our bash/curl/userspace?
+# XXX - set "-Os" in CFLAGS/CXXFLAGS on centos:7 builder
 #
 
 # start from the musl busybox container

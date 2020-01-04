@@ -9,8 +9,9 @@ ADD https://github.com/mydzor/bash2048/raw/master/bash2048.sh /
 RUN chmod 755 /bash2048.sh \
     && ln -sf /bash2048.sh /2048 \
     && . /etc/profile \
-    && crosware install netbsdcurses
+    && crosware install netbsdcurses tini
 
-CMD bash -l -c /2048
-    
+ENTRYPOINT ["/usr/local/crosware/software/tini/current/sbin/tini","-gwvv","--"]
+CMD ["bash","-l","-c","/2048"]
+
 # vim: set ft=sh:

@@ -1,3 +1,7 @@
+#
+# 2048 for bash w/netbsdcurses
+#
+
 FROM ryanwoodsmall/crosware
 
 ADD https://github.com/mydzor/bash2048/raw/master/bash2048.sh /

@@ -17,7 +17,7 @@ ENV ult     /usr/local/tmp
 # zulu
 ENV zulucdn    https://cdn.azul.com/zulu/bin
 ENV zulutop    /usr/local/zulu
-ENV zuluprofd  /etc/profile.d/zulu.sh
+ENV zuluprofd  ${cwtop}/etc/local.d/zulu.sh
 ENV zuludefver 8
 ENV zulu8ver   8.42.0.23-ca-jdk8.0.232
 ENV zulu8dir   zulu${zulu8ver}-linux_musl_x64
@@ -31,11 +31,11 @@ ENV zulu11url  ${zulucdn}/${zulu11file}
 ENV zulu11sha  cef8591c619a4bec06a94d0f7e21847b04b97468a8385b6683b3c5fa2641ab57
 
 # alpine musl zlib
-ENV alpver   3.10
-ENV zlibver  1.2.11-r1
+ENV alpver   3.11
+ENV zlibver  1.2.11-r3
 ENV zlibfile zlib-${zlibver}.apk
 ENV zliburl  http://dl-cdn.alpinelinux.org/alpine/v${alpver}/main/x86_64/${zlibfile}
-ENV zlibsha  9295333293b4ffbe4e2af94d91841a3d69542a19da66654c8d866e6e3f53ae34
+ENV zlibsha  cf6da20f78633551c1dc0233c4c6dd172437e09de05b6c12110daf19fecd7c85
 
 # only 64-bit intel for now
 RUN uname -m | grep -q '^x86_64$'

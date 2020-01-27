@@ -135,7 +135,7 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo '# USER KNOWS BEST' >> /etc/profile.d/crosware.sh \
     && echo 'export PATH=${HOME}/bin:${PATH}' >> /etc/profile.d/crosware.sh \
     && sed -i 's/root::/root:*:/g' /etc/shadow \
-    && for d in https://github.com/ryanwoodsmall/dotfiles/raw/master/dot_{elvis,ex,vile,vim}rc ; do curl -fkLs ${d} > ${HOME}/$(basename ${d} | sed 's/dot_/./g') ; done \
+    && for d in https://github.com/ryanwoodsmall/dotfiles/raw/master/dot_{bim,elvis,ex,vile,vim}rc ; do curl -fkLs ${d} > ${HOME}/$(basename ${d} | sed 's/dot_/./g') ; done \
     && curl -fkLso /etc/vi.exrc https://github.com/ryanwoodsmall/dotfiles/raw/master/dot_exrc \
     && /usr/local/crosware/bin/crosware install statictoolchain \
     && rm -rf /usr/local/tmp/* \

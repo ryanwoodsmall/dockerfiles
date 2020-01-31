@@ -20,6 +20,19 @@
 # XXX - downloads statictoolchain twice, but at least tests our bash/curl/userspace?
 # XXX - set "-Os" in CFLAGS/CXXFLAGS on centos:7 builder
 #
+# centos:7 for arm32 on aarch64 is weird:
+#   uname -m # returns armv8l
+#   sed -i.ORIG s/exactarch=1/exactarch=0/g /etc/yum.conf
+#   cp /usr/lib/rpm/rpmrc{,.ORIG}
+#   echo armhfp | tee /etc/yum/vars/arch /etc/yum/vars/basearch
+#   echo "optflags: armv8l -O2 -g -march=armv7-a -mfloat-abi=hard -mfpu=vfpv3-d16" >> /usr/lib/rpm/rpmrc
+#   echo "arch_canon: armv8l: armv7hnl 12" >> /usr/lib/rpm/rpmrc
+#   echo "buildarchtranslate: armv8l: armv7hl" >> /usr/lib/rpm/rpmrc
+#   echo "arch_compat: armv8l: armv7hnl" >> /usr/lib/rpm/rpmrc
+#   echo "buildarch_compat: armv8l: armv7hnl" >> /usr/lib/rpm/rpmrc
+#   sed -i.ORIG '/^%arm/s/$/ armv8l/' /usr/lib/rpm/macros
+#   ln -s /usr/lib/rpm/platform/armv{7hn,8}l-linux
+#
 
 # start from the musl busybox container
 FROM busybox:musl as BUSYBOX

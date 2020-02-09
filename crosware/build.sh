@@ -4,6 +4,8 @@
 # scatter:
 #   run this natively on arm32/arm64/amd64/i386 to build the container
 #   tmux windowpanes, gnu parallel, jenkins, whatever floats your boat
+#   build ex:
+#     echo ; date ; time bash <(curl -kLs https://raw.githubusercontent.com/ryanwoodsmall/dockerfiles/master/crosware/build.sh) 2>&1 | tee /tmp/croswarebuild.out ; echo $? ; date ; echo
 #
 # gather:
 #   # using dbclient with keys exchanged

@@ -19,6 +19,8 @@
 # XXX - ssl/tls certs???
 # XXX - downloads statictoolchain twice, but at least tests our bash/curl/userspace?
 # XXX - set "-Os" in CFLAGS/CXXFLAGS on centos:7 builder
+# XXX - move curl mbedtls to bearssl
+# XXX - disable jq?
 #
 # centos:7 for arm32 on aarch64 is weird:
 #   uname -m # returns armv8l

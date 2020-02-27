@@ -16,11 +16,9 @@
 #
 # XXX - build a downloads/ mirror? share as a volume? hmm...
 # XXX - need (read-only?) git client that doesn't require java
-# XXX - ssl/tls certs???
 # XXX - downloads statictoolchain twice, but at least tests our bash/curl/userspace?
 # XXX - set "-Os" in CFLAGS/CXXFLAGS on centos:7 builder
-# XXX - move curl mbedtls to bearssl
-# XXX - disable jq?
+# XXX - move curl mbedtls to bearssl (done, keep testing)
 #
 # centos:7 for arm32 on aarch64 is weird:
 #   uname -m # returns armv8l
@@ -54,20 +52,20 @@ RUN set -eu \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates mbedtls rlwrap less elvis neatvi tinyscheme bearssl jq bim \
-    && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
+    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates rlwrap less elvis neatvi tinyscheme bearssl bim \
+    && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_bearssl cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
     && rm -rf /stow \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \
     && cp ./software/toybox/current/bin/toybox /stow/ \
     && cp ./software/bash/current/bin/bash /stow/ \
-    && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
+    && cp ./software/curl/current/bin/curl-bearssl /stow/curl \
     && find /stow/ -type f | xargs file | grep 'ELF.*stripped' | cut -f1 -d: | xargs strip --strip-all \
     && file /stow/* \
     && rm -rf /usr/local/tmp/* \
     && yum clean all \
     && rm -rf /var/cache/yum \
-    && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|bearssl|jq|make|bim) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
+    && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|bearssl|make|bim) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
     && for d in builds downloads ; do pushd $d ; git clean -fdx ; popd ; done \
     && find software/ -type f -exec file {} + | awk -F: '/:.*ELF/{print $1}' | xargs strip --strip-all
 

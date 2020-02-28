@@ -20,6 +20,6 @@ done
 docker pull ${basecon}
 docker kill ${ccachecon} || true
 docker rm ${ccachecon} || true
-docker run --name ${ccachecon} ${vopts} ${basecon} bash -l ${crosware} install ccache make ccache \
+docker run --name ${ccachecon} ${vopts} ${basecon} bash -l ${crosware} install ccache \
 && docker commit -c 'CMD ["bash","-il"]' -c 'WORKDIR /usr/local/crosware' ${ccachecon} ${basecon} \
 && docker rm ${ccachecon}

@@ -10,6 +10,8 @@
 # decap ssh encapsulated in https with openssl to defeat protocol checks:
 #   socat -d tcp4-listen:33333,fork,reuseaddr exec:'openssl s_client -connect remote.https-ssh.hostname\:443'
 #   # without local stunnel - fine for quick/dirty connections but heartbeat kills connection?
+# bind localhost-only dropbear ssh on port 2222 to a specific host ip
+#   docker run -d -it --restart always --network host --name socat-dropbear socat -d -d tcp4-listen:2222,fork,reuseaddr,bind=192.168.100.1 tcp4-connect:127.0.0.1:2222
 #
 
 FROM ryanwoodsmall/crosware:latest as SOCATBUILDER

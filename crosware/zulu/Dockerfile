@@ -19,16 +19,16 @@ ENV zulucdn    https://cdn.azul.com/zulu/bin
 ENV zulutop    /usr/local/zulu
 ENV zuluprofd  ${cwtop}/etc/local.d/zulu.sh
 ENV zuludefver 8
-ENV zulu8ver   8.44.0.11-ca-jdk8.0.242
+ENV zulu8ver   8.46.0.19-ca-jdk8.0.252
 ENV zulu8dir   zulu${zulu8ver}-linux_musl_x64
 ENV zulu8file  ${zulu8dir}.tar.gz
 ENV zulu8url   ${zulucdn}/${zulu8file}
-ENV zulu8sha   1910df13769824abdf82ce565e3150d6c2fa455f752133b092e5e800caef5f80
-ENV zulu11ver  11.37.17-ca-jdk11.0.6
+ENV zulu8sha   306ec531eed55c119321dcd9ae7664a110d98955afc571d5d19ad6b69172a705
+ENV zulu11ver  11.39.15-ca-jdk11.0.7
 ENV zulu11dir  zulu${zulu11ver}-linux_musl_x64
 ENV zulu11file ${zulu11dir}.tar.gz
 ENV zulu11url  ${zulucdn}/${zulu11file}
-ENV zulu11sha  7c97f078d34116e434467026d6740346af79558cc8628f27d36324f8ed67921b
+ENV zulu11sha  0de7ac5afede2ddeda399f10c9f9df83f91c9b60481ecf304aa5785ed50f36ce
 
 # alpine musl zlib
 ENV alpver   3.11
@@ -56,7 +56,7 @@ RUN source /etc/profile \
 # setup profile
 RUN source /etc/profile \
     && echo "export JAVA_HOME=${zulutop}/current" > ${zuluprofd} \
-    && echo "export _JAVA_OPTIONS='-Djava.io.tmpdir=${cwtop}/tmp -Djava.awt.headless=true'" >> ${zuluprofd} \
+    && echo "export _JAVA_OPTIONS='-Djava.io.tmpdir=${cwtop}/tmp -Djava.awt.headless=true -XX:-UsePerfData'" >> ${zuluprofd} \
     && echo 'prepend_path "${JAVA_HOME}/bin"' >> ${zuluprofd}
 
 # setup libz.so
@@ -70,14 +70,14 @@ RUN source /etc/profile \
 
 # install jgitsh and make sure it's default
 RUN source /etc/profile \
-    && crosware install jgitsh ccache busybox toybox sed gawk byacc m4 flex pkgconfig \
+    && crosware install jgitsh ccache busybox toybox sed gawk m4 flex pkgconfig byacc reflex \
+    && source /etc/profile \
+    && ccache -C || true \
+    && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
     && sed -i s/CW_GIT_CMD=git/CW_GIT_CMD=jgitsh/g ${cwprofd} \
     && sed -i s/CW_USE_JGIT=false/CW_USE_JGIT=true/g ${cwprofd} \
     && sed -i s/CW_USE_JAVA=false/CW_USE_JAVA=true/g ${cwprofd} \
-    && echo 'export CW_EXT_JAVA=true' >> ${cwprofd} \
-    && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
-    && source /etc/profile \
-    && ccache -C || true
+    && echo 'export CW_EXT_JAVA=true' >> ${cwprofd}
 
 # fetch and extract zulu
 RUN source /etc/profile \
@@ -92,7 +92,7 @@ RUN source /etc/profile \
     && find ${ult}/ -type f | xargs rm -f \
     && crosware update \
     && crosware upgrade-all || true \
-    && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
-    && ccache -C || true
+    && ccache -C || true \
+    && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f
 
 # vim: set ft=sh:

@@ -19,6 +19,7 @@
 # XXX - downloads statictoolchain twice, but at least tests our bash/curl/userspace?
 # XXX - set "-Os" in CFLAGS/CXXFLAGS on centos:7 builder
 # XXX - move curl mbedtls to bearssl (done, keep testing)
+#       https://bellard.org/qemacs/qemacs-0.3.3.tar.gz - works with mbedtls, not with bearssl?
 #
 # centos:7 for arm32 on aarch64 is weird:
 #   uname -m # returns armv8l
@@ -52,14 +53,14 @@ RUN set -eu \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates rlwrap less elvis neatvi tinyscheme bearssl bim \
-    && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_bearssl cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
+    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates rlwrap less elvis neatvi tinyscheme bearssl mbedtls bim \
+    && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
     && rm -rf /stow \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \
     && cp ./software/toybox/current/bin/toybox /stow/ \
     && cp ./software/bash/current/bin/bash /stow/ \
-    && cp ./software/curl/current/bin/curl-bearssl /stow/curl \
+    && cp ./software/curl/current/bin/curl-mbedtls /stow/curl \
     && find /stow/ -type f | xargs file | grep 'ELF.*stripped' | cut -f1 -d: | xargs strip --strip-all \
     && file /stow/* \
     && rm -rf /usr/local/tmp/* \

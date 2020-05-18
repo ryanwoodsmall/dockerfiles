@@ -53,7 +53,7 @@ RUN set -eu \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates rlwrap less elvis neatvi tinyscheme bearssl mbedtls bim \
+    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates rlwrap less elvis neatvi tinyscheme bearssl mbedtls bim mujs \
     && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
     && rm -rf /stow \
     && mkdir -p /stow \
@@ -66,7 +66,7 @@ RUN set -eu \
     && rm -rf /usr/local/tmp/* \
     && yum clean all \
     && rm -rf /var/cache/yum \
-    && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|bearssl|make|bim|git) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
+    && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|bearssl|make|bim|git|mujs) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
     && for d in builds downloads ; do pushd $d ; git clean -fdx ; popd ; done \
     && find software/ -type f -exec file {} + | awk -F: '/:.*ELF/{print $1}' | xargs strip --strip-all
 

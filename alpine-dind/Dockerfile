@@ -40,10 +40,13 @@ RUN apk update \
            dropbear \
            dropbear-convert \
            dropbear-dbclient \
+           findutils \
            openssh-client \
            openssh-keygen \
            openssh-sftp-server \
+           screen \
            tini-static \
+           vim \
     && getent passwd ${contuser} || useradd -m ${contuser} \
     && sed -i "/^docker:/s/\$/${contuser}/g" /etc/group \
     && sed -i "/^${contuser}:/s/ash$/bash/g" /etc/passwd \

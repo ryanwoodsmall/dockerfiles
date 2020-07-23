@@ -18,6 +18,13 @@
 #   #   docker pull localhost:5000/ryanwoodsmall/crosware:i386
 #   #   docker tag localhost:5000/ryanwoodsmall/crosware:i386 ryanwoodsmall/crosware:i386
 #   #   docker push ryanwoodsmall/crosware:i386
+#   # scriptlet:
+#   #   docker image ls \
+#   #   | grep ^ryanwoodsmall/crosware \
+#   #   | awk '{print $1":"$2}' \
+#   #   | egrep ':(amd64|arm32v6|arm64v8|i386)$' \
+#   #   | xargs --replace echo -e "docker image tag {} localhost:5000/{}\ndocker push localhost:5000/{}" \
+#   #   | bash
 #   # manual:
 #   for n in $(for h in amd64 i386/2222 arm32v6/222 arm64v8 ; do dbclient -y -y ${h} docker image ls | awk '/ryanwoodsmall\/crosware:(amd64|arm32v6|arm64v8|i386)/{print $1":"$2}' | sed "s#^#${h}:#g" ; done) ; do
 #     dbclient -y -y ${n%%:*} docker save ${n#*:} | docker load

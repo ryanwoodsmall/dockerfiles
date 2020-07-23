@@ -21,6 +21,7 @@ RUN apk update \
     && apk add \
                git \
                python3 \
+               py3-pip \
     && git clone https://github.com/ryanwoodsmall/docker-portwrangler.git
 
 WORKDIR ${projdir}

@@ -11,6 +11,9 @@
 # - https://www.github.com/jenkinsci/docker-inbound-agent
 # - https://hub.docker.com/r/jenkins/inbound-agent/dockerfile
 #
+# XXX - docker-in-docker arm 32-bit on arm 64-bt breaks
+# - echo "deb [arch=armel] https://download.docker.com/linux/debian buster stable" > /etc/apt/sources.list.d/docker.list
+#
 
 FROM debian:buster
 

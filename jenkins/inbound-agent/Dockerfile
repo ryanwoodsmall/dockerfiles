@@ -25,7 +25,7 @@ ARG AGENT_WORKDIR=/home/${user}/agent
 ARG VERSION=4.5
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 
 USER root
 
@@ -45,6 +45,7 @@ RUN chmod 755 /usr/local/bin/jenkins-agent \
 RUN apt-get update \
     && apt-get dist-upgrade -y \
     && apt-get install -y openjdk-11-jdk-headless curl wget bash \
+    && ln -sf $(find /usr/lib/jvm/ -type d -name java-11-openjdk\* | head -1) /usr/lib/jvm/java-11-openjdk \
     && curl -kLs https://get.docker.com/ > /tmp/docker-install.sh \
     && env CHANNEL=stable VERSION= bash /tmp/docker-install.sh \
     && usermod -a -G docker ${user}

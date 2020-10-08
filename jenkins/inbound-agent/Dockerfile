@@ -44,7 +44,7 @@ RUN chmod 755 /usr/local/bin/jenkins-agent \
 
 RUN apt-get update \
     && apt-get dist-upgrade -y \
-    && apt-get install -y openjdk-11-jdk-headless curl wget bash \
+    && apt-get install -y openjdk-11-jdk-headless curl wget bash procps \
     && ln -sf $(find /usr/lib/jvm/ -type d -name java-11-openjdk\* | head -1) /usr/lib/jvm/java-11-openjdk \
     && curl -kLs https://get.docker.com/ > /tmp/docker-install.sh \
     && env CHANNEL=stable VERSION= bash /tmp/docker-install.sh \

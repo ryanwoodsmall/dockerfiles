@@ -11,8 +11,12 @@
 # - https://www.github.com/jenkinsci/docker-inbound-agent
 # - https://hub.docker.com/r/jenkins/inbound-agent/dockerfile
 #
-# XXX - docker-in-docker arm 32-bit on arm 64-bt breaks
+# XXX - docker-in-docker arm 32-bit on arm 64-bt breaks (at least with arm32v6, arm32v7 seems to work?)
 # - echo "deb [arch=armel] https://download.docker.com/linux/debian buster stable" > /etc/apt/sources.list.d/docker.list
+#
+# XXX - need git...
+#
+# XXX - just rebuild on alpine for smaller image?
 #
 
 FROM debian:buster

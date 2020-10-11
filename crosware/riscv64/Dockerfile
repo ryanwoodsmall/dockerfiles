@@ -3,6 +3,8 @@
 # this requires qemu user emulation
 # on debian and ubuntu, install binfmt-support and qemu-user-static
 # a little janky/big, doesn't clean up much after itself
+# run with:
+#   docker run -it --rm -v $(which qemu-riscv64-static):$(which qemu-riscv64-static) ryanwoodsmall/crosware:riscv64
 #
 
 FROM ubuntu:focal AS qemustatic
@@ -20,11 +22,16 @@ ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/toybox  
 ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/curl    /usr/bin/riscv64-curl
 
 RUN . /etc/profile \
+    && barch="$(uname -m)" \
     && ln -sf /usr/bin/qemu-riscv64-static /usr/bin/qemu-riscv64 \
     && chmod 755 /usr/bin/*riscv64* \
     && crosware list-installed | cut -f1 -d: | xargs crosware uninstall \
-    && for p in bash busybox toybox curl ; do cp /usr/bin/${p} /usr/bin/$(uname -m)-${p} ; done \
+    && for p in bash busybox toybox curl ; do cp /usr/bin/${p} /usr/bin/${barch}-${p} ; done \
     && for p in bash busybox toybox curl ; do cp /usr/bin/riscv64-${p} /usr/bin/${p} ; done \
+    && for p in bash busybox toybox curl ; do rm -f /usr/bin/${barch}-${p} /usr/bin/riscv64-${p} ; done \
+    && uname -m \
+    && bash -c set | grep TYPE \
+    && find /usr/bin/ -type f -exec file {} + | sort \
     && unset AR AS CC CFLAGS CPP CXX CXXFLAGS LD LDFLAGS \
     && crosware install statictoolchain \
     && . /etc/profile \

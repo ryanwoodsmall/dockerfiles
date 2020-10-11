@@ -36,6 +36,6 @@ RUN . /etc/profile \
     && crosware install statictoolchain \
     && . /etc/profile \
     && crosware install bearssl bim cacertificates dropbear elvis less mujs neatvi rlwrap tinyscheme \
-    && rm -f /usr/local/tmp/* /usr/local/crosware/downloads/*/*
+    && rm -rf /usr/local/tmp/* /usr/local/crosware/downloads/*/*
 
 # vim: set ft=sh:

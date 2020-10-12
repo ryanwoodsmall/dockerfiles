@@ -21,19 +21,6 @@
 # XXX - move curl mbedtls to bearssl (done, keep testing)
 #       https://bellard.org/qemacs/qemacs-0.3.3.tar.gz - works with mbedtls, not with bearssl?
 #
-# centos:7 for arm32 on aarch64 is weird:
-#   uname -m # returns armv8l
-#   sed -i.ORIG s/exactarch=1/exactarch=0/g /etc/yum.conf
-#   cp /usr/lib/rpm/rpmrc{,.ORIG}
-#   echo armhfp | tee /etc/yum/vars/arch /etc/yum/vars/basearch
-#   echo "optflags: armv8l -O2 -g -march=armv7-a -mfloat-abi=hard -mfpu=vfpv3-d16" >> /usr/lib/rpm/rpmrc
-#   echo "arch_canon: armv8l: armv7hnl 12" >> /usr/lib/rpm/rpmrc
-#   echo "buildarchtranslate: armv8l: armv7hl" >> /usr/lib/rpm/rpmrc
-#   echo "arch_compat: armv8l: armv7hnl" >> /usr/lib/rpm/rpmrc
-#   echo "buildarch_compat: armv8l: armv7hnl" >> /usr/lib/rpm/rpmrc
-#   sed -i.ORIG '/^%arm/s/$/ armv8l/' /usr/lib/rpm/macros
-#   ln -s /usr/lib/rpm/platform/armv{7hn,8}l-linux
-#
 
 # start from the musl busybox container
 FROM busybox:musl as BUSYBOX
@@ -44,6 +31,20 @@ FROM alpine:latest as ALPINE
 # build out some of our recipes
 # XXX - busybox patch does *not* work for some bash patches
 FROM centos:7 as BUILDER
+# fixup armv8 (32-bit arm chroot with linux32 and/or docker-in-docker on 64-bit aarch64)
+RUN uname -m | grep -qv '^armv8' || { \
+      sed -i.ORIG s/exactarch=1/exactarch=0/g /etc/yum.conf \
+      && cp /usr/lib/rpm/rpmrc{,.ORIG} \
+      && echo armhfp | tee /etc/yum/vars/arch /etc/yum/vars/basearch \
+      && echo "optflags: armv8l -O2 -g -march=armv7-a -mfloat-abi=hard -mfpu=vfpv3-d16" >> /usr/lib/rpm/rpmrc \
+      && echo "arch_canon: armv8l: armv7hnl 12" >> /usr/lib/rpm/rpmrc \
+      && echo "buildarchtranslate: armv8l: armv7hl" >> /usr/lib/rpm/rpmrc \
+      && echo "arch_compat: armv8l: armv7hnl" >> /usr/lib/rpm/rpmrc \
+      && echo "buildarch_compat: armv8l: armv7hnl" >> /usr/lib/rpm/rpmrc \
+      && sed -i.ORIG '/^%arm/s/$/ armv8l/' /usr/lib/rpm/macros \
+      && ln -s /usr/lib/rpm/platform/armv{7hn,8}l-linux \
+    ; }
+# bootstrap, build some stuff for the container, then clean up
 RUN set -eu \
     && yum clean all \
     && yum -y install bash bzip2 curl git patch binutils file \

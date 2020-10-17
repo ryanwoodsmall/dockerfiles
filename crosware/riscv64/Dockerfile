@@ -22,6 +22,7 @@ ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/toybox  
 ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/curl    /usr/bin/riscv64-curl
 
 RUN . /etc/profile \
+    && cd ${cwtop} \
     && barch="$(uname -m)" \
     && ln -sf /usr/bin/qemu-riscv64-static /usr/bin/qemu-riscv64 \
     && chmod 755 /usr/bin/*riscv64* \
@@ -35,7 +36,11 @@ RUN . /etc/profile \
     && unset AR AS CC CFLAGS CPP CXX CXXFLAGS LD LDFLAGS \
     && crosware install statictoolchain \
     && . /etc/profile \
-    && crosware install bearssl bim cacertificates dropbear elvis less mujs neatvi rlwrap tinyscheme \
+    && crosware install bearssl bim cacertificates dropbear elvis less mbedtls mujs neatvi rlwrap tinyscheme zlib \
+    && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
+    && cp ./software/curl/current/bin/curl-mbedtls /usr/bin/curl \
+    && strip --strip-all /usr/bin/curl \
+    && ./bin/crosware uninstall curl \
     && rm -rf /usr/local/tmp/* /usr/local/crosware/downloads/*/*
 
 # vim: set ft=sh:

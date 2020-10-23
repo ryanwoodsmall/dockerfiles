@@ -13,8 +13,8 @@ RUN . /etc/profile \
     && curl -kLo httpd_indexcgi.c 'https://git.busybox.net/busybox/plain/networking/httpd_indexcgi.c?h=1_30_stable' \
     && curl -kLo httpd_post_upload.cgi 'https://git.busybox.net/busybox/plain/networking/httpd_post_upload.cgi?h=1_30_stable' \
     && curl -kLo httpd_ssi.c 'https://git.busybox.net/busybox/plain/networking/httpd_ssi.c?h=1_30_stable' \
-    && gcc httpd_indexcgi.c -o index.cgi \
-    && gcc httpd_ssi.c -o httpd_ssi \
+    && gcc httpd_indexcgi.c -o index.cgi -static \
+    && gcc httpd_ssi.c -o httpd_ssi -static \
     && chmod 755 httpd_post_upload.cgi \
     && cp -a httpd_post_upload.cgi index.cgi httpd_ssi /usr/bin/ \
     && cp -a index.cgi ${BUSYBOX_HTTPD_HOME}/cgi-bin/ \

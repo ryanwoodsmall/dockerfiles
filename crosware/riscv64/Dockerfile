@@ -7,14 +7,20 @@
 #   docker run -it --rm -v $(which qemu-riscv64-static):$(which qemu-riscv64-static) ryanwoodsmall/crosware:riscv64
 #
 
-FROM ubuntu:focal AS qemustatic
+FROM ubuntu:focal AS ubuntu
 
 RUN apt-get update \
-    && apt-get -y install qemu-user-static
+    && apt-get -y install git qemu-user-static \
+    && mkdir -p /usr/local \
+    && cd /usr/local \
+    && git clone https://github.com/ryanwoodsmall/crosware.git \
+    && ( cd crosware ; git gc --aggressive ) \
+    && tar -C / -jcf /tmp/crosware.tar.bz2 /usr/local/crosware
 
 FROM ryanwoodsmall/crosware
 
-COPY --from=qemustatic /usr/bin/qemu-riscv64-static /usr/bin/
+COPY --from=ubuntu /usr/bin/qemu-riscv64-static /usr/bin/
+COPY --from=ubuntu /tmp/crosware.tar.bz2 /tmp/
 
 ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/bash    /usr/bin/riscv64-bash
 ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/busybox /usr/bin/riscv64-busybox
@@ -22,6 +28,8 @@ ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/toybox  
 ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/curl    /usr/bin/riscv64-curl
 
 RUN . /etc/profile \
+    && tar -C / -jxvf /tmp/crosware.tar.bz2 \
+    && rm -f /tmp/crosware.tar.bz2 \
     && cd ${cwtop} \
     && barch="$(uname -m)" \
     && ln -sf /usr/bin/qemu-riscv64-static /usr/bin/qemu-riscv64 \

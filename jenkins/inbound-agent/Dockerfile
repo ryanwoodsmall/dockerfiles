@@ -59,8 +59,8 @@ RUN mkdir -p /home/${user}/.jenkins \
     && mkdir -p ${AGENT_WORKDIR} \
     && ln -sf ${AGENT_WORKDIR} /home/${user}/remoting
 
-VOLUME /home/${user}/.jenkins
-VOLUME ${AGENT_WORKDIR}
+# VOLUME /home/${user}/.jenkins
+# VOLUME ${AGENT_WORKDIR}
 WORKDIR /home/${user}
 
 ENTRYPOINT ["jenkins-agent"]

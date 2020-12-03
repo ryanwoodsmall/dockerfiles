@@ -18,6 +18,12 @@
 #
 # XXX - just rebuild on alpine for smaller image?
 #
+# XXX - docker volumes break plugin w/newer jackson? error with request size too?
+# - https://github.com/jenkinsci/docker-plugin/issues/821
+# - https://github.com/jenkinsci/docker/issues/842
+# - https://github.com/docker-java/docker-java/issues/1509
+# - https://stackoverflow.com/questions/44667924/jenkins-java-plugin-field-gives-bad-message-414-reason-uri-too-long
+#
 
 FROM debian:buster
 

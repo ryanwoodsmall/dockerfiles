@@ -9,7 +9,9 @@
 
 FROM ubuntu:focal AS ubuntu
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
+    && apt-get dist-upgrade -y \
     && apt-get -y install git qemu-user-static \
     && mkdir -p /usr/local \
     && cd /usr/local \
@@ -27,10 +29,14 @@ ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/busybox 
 ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/toybox  /usr/bin/riscv64-toybox
 ADD https://github.com/ryanwoodsmall/static-binaries/raw/master/riscv64/curl    /usr/bin/riscv64-curl
 
-RUN . /etc/profile \
+RUN cd / \
+    && rm -rf /usr/local/crosware \
     && tar -C / -jxvf /tmp/crosware.tar.bz2 \
     && rm -f /tmp/crosware.tar.bz2 \
+    && . /etc/profile \
     && cd ${cwtop} \
+    && pwd \
+    && which crosware \
     && barch="$(uname -m)" \
     && ln -sf /usr/bin/qemu-riscv64-static /usr/bin/qemu-riscv64 \
     && chmod 755 /usr/bin/*riscv64* \
@@ -45,13 +51,13 @@ RUN . /etc/profile \
     && crosware install statictoolchain \
     && . /etc/profile \
     && for r in bash bearssl bim busybox cacertificates dropbear elvis less mbedtls mujs neatvi rlwrap tinyscheme toybox zlib ; do crosware check-installed ${r} || crosware install ${r} ; done \
-    && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
+    && crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_mbedtls cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
     && cp ./software/curl/current/bin/curl-mbedtls /usr/bin/curl \
     && cp ./software/bash/current/bin/bash /usr/bin/bash \
     && cp ./software/busybox/current/bin/busybox /usr/bin/busybox \
     && cp ./software/toybox/current/bin/toybox /usr/bin/toybox \
     && strip --strip-all /usr/bin/bash /usr/bin/busybox /usr/bin/curl /usr/bin/toybox \
-    && ./bin/crosware uninstall curl \
+    && crosware uninstall curl \
     && rm -rf /usr/local/tmp/* /usr/local/crosware/downloads/*/*
 
 # vim: set ft=sh:

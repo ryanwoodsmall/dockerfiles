@@ -20,6 +20,7 @@
 # XXX - set "-Os" in CFLAGS/CXXFLAGS on centos:7 builder
 # XXX - move curl mbedtls to bearssl (done, keep testing)
 #       https://bellard.org/qemacs/qemacs-0.3.3.tar.gz - works with mbedtls, not with bearssl?
+# XXX - symlink /etc/profile to /etc/bash.bashrc
 #
 
 # start from the musl busybox container

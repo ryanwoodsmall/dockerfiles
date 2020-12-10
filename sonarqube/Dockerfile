@@ -5,7 +5,7 @@
 
 FROM sonarqube:latest
 
-ENV SONAR_VERSION 7.3
+ENV SONAR_VERSION=7.3
 
 RUN apt-get update \
     && apt-get dist-upgrade -y \

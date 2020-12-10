@@ -1,20 +1,20 @@
 FROM alpine
 
-ENV siabuser  shellinabox
-ENV siabshell /bin/ash
-ENV siabport  4200
-ENV siabname  ${siabuser}
-ENV siabtop   /opt/${siabname}
-ENV siabhome  /home/${siabuser}
-ENV siabver   2.20
-ENV siaburl   https://github.com/${siabname}/${siabname}/archive/v${siabver}.tar.gz
-ENV siabdir   ${siabname}-${siabver}
-ENV siabfile  ${siabdir}.tar.gz
-ENV siabinst  ${siabtop}/${siabdir}
-ENV siabcss   ${siabinst}/css
-ENV siabcert  ${siabtop}/cert
-ENV sudoersd  /etc/sudoers.d
-ENV siabep    /entrypoint.sh
+ENV siabuser=shellinabox
+ENV siabshell=/bin/ash
+ENV siabport=4200
+ENV siabname=${siabuser}
+ENV siabtop=/opt/${siabname}
+ENV siabhome=/home/${siabuser}
+ENV siabver=2.20
+ENV siaburl=https://github.com/${siabname}/${siabname}/archive/v${siabver}.tar.gz
+ENV siabdir=${siabname}-${siabver}
+ENV siabfile=${siabdir}.tar.gz
+ENV siabinst=${siabtop}/${siabdir}
+ENV siabcss=${siabinst}/css
+ENV siabcert=${siabtop}/cert
+ENV sudoersd=/etc/sudoers.d
+ENV siabep=/entrypoint.sh
 
 ADD ${siaburl} /tmp/${siabfile}
 

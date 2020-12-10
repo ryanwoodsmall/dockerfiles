@@ -1,15 +1,15 @@
 FROM alpine:latest
 
-ENV derbytop     /opt/derby
-ENV derbydbdir   ${derbytop}/db
-ENV derbystart   ${derbytop}/startderby.sh
-ENV derbyversion 10.14.2.0
-ENV derbydir     db-derby-${derbyversion}-bin
-ENV derbyfile    ${derbydir}.tar.gz
-ENV derbyurl     http://www-us.apache.org/dist/db/derby/db-derby-${derbyversion}/${derbyfile}
-ENV derbysha256  980fb0534c38edf4a529a13fb4a12b53d32054827b57b6c5f0307d10f17d25a8
-ENV derbyport    1527
-ENV profdfile    /etc/profile.d/zz_local.sh
+ENV derbytop=/opt/derby
+ENV derbydbdir=${derbytop}/db
+ENV derbystart=${derbytop}/startderby.sh
+ENV derbyversion=10.14.2.0
+ENV derbydir=db-derby-${derbyversion}-bin
+ENV derbyfile=${derbydir}.tar.gz
+ENV derbyurl=http://www-us.apache.org/dist/db/derby/db-derby-${derbyversion}/${derbyfile}
+ENV derbysha256=980fb0534c38edf4a529a13fb4a12b53d32054827b57b6c5f0307d10f17d25a8
+ENV derbyport=1527
+ENV profdfile=/etc/profile.d/zz_local.sh
 
 EXPOSE ${derbyport}
 

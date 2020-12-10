@@ -7,15 +7,15 @@
 FROM ryanwoodsmall/crosware:amd64
 
 # crosware
-ENV cwtop   /usr/local/crosware
-ENV cwdl    ${cwtop}/downloads
-ENV cwsw    ${cwtop}/software
-ENV cwvar   ${cwtop}/var
-ENV cwprofd /etc/profile.d/crosware.sh
-ENV ult     /usr/local/tmp
+ENV cwtop=/usr/local/crosware
+ENV cwdl=${cwtop}/downloads
+ENV cwsw=${cwtop}/software
+ENV cwvar=${cwtop}/var
+ENV cwprofd=/etc/profile.d/crosware.sh
+ENV ult=/usr/local/tmp
 
 # zulu
-ENV zulutop    /usr/local/zulu
+ENV zulutop=/usr/local/zulu
 
 # only 64-bit intel for now
 RUN uname -m | grep -q '^x86_64$'

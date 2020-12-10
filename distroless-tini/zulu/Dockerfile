@@ -15,7 +15,7 @@ RUN apk update \
 
 FROM gcr.io/distroless/java:11
 
-ENV JAVA_HOME /zulu
+ENV JAVA_HOME=/zulu
 
 COPY --from=ALPINE /sbin/tini-static /sbin/tini
 COPY --from=ALPINE /zulu /zulu

@@ -10,7 +10,7 @@
 
 FROM alpine
 
-ENV projdir /docker-portwrangler
+ENV projdir=/docker-portwrangler
 
 EXPOSE 5000
 

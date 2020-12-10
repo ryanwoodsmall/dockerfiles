@@ -38,7 +38,7 @@ RUN /usr/sbin/groupadd -f -o -g ${GROUPS} ${FFUSER} \\
 USER ${FFUSER}
 RUN firefox --no-remote --headless -CreateProfile ${FFUSER} \\
     && firefox --no-remote --headless -CreateProfile ${FFUSER}
-ENV HOME ${FFHOME}
+ENV HOME=${FFHOME}
 WORKDIR ${FFHOME}
 ENTRYPOINT [\"bash\",\"-x\",\"${EP}\"]
 " | docker build --pull --tag ${VENDOR}/${IMAGE}:${TAG} -

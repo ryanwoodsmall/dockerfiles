@@ -20,7 +20,7 @@
 # XXX - set "-Os" in CFLAGS/CXXFLAGS on centos:7 builder
 # XXX - move curl mbedtls to bearssl (done, keep testing)
 #       https://bellard.org/qemacs/qemacs-0.3.3.tar.gz - works with mbedtls, not with bearssl?
-# XXX - symlink /etc/profile to /etc/bash.bashrc
+# XXX - symlink /etc/profile to /etc/bash.bashrc (done, needs testing)
 #
 
 # start from the musl busybox container
@@ -137,6 +137,7 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo 'set output-meta on' >> /etc/inputrc \
     && echo 'set mark-symlinked-directories on' >> /etc/inputrc \
     && echo 'test -e /etc/profile.d && for scriptlet in /etc/profile.d/*.sh ; do . ${scriptlet} ; done ; unset scriptlet' > /etc/profile \
+    && ln -sf /etc/profile /etc/bash.bashrc \
     && echo 'export PATH=${PATH}:/usr/local/crosware/bin' > /etc/profile.d/crosware.sh \
     && echo 'export PS1="\u@crosware-$(uname -m) \W \$ "' >> /etc/profile.d/crosware.sh \
     && echo 'export CW_GIT_CMD=git' >> /etc/profile.d/crosware.sh \

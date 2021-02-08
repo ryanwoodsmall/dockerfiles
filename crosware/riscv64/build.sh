@@ -22,4 +22,4 @@ docker image rm ${v}/${i}:${a} || true
                 && docker image push ${v}/${i}:${a} \
                 && docker rm ${c} \
                 && docker image rm ${c}
-) ) 2>&1 | tee /tmp/${a}build.out
+) ) 2>&1 | tee /tmp/${c}.out

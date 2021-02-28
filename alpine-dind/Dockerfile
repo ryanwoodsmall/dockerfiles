@@ -41,6 +41,8 @@ RUN apk update \
            dropbear-convert \
            dropbear-dbclient \
            findutils \
+           iptables \
+           ip6tables \
            openssh-client \
            openssh-keygen \
            openssh-sftp-server \

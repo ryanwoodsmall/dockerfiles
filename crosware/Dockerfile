@@ -21,6 +21,8 @@
 # XXX - move curl mbedtls to bearssl (done, keep testing)
 #       https://bellard.org/qemacs/qemacs-0.3.3.tar.gz - works with mbedtls, not with bearssl?
 # XXX - mbedtls 2.16.10 breaks downloading https://download.samba.org/pub/rsync/src/rsync-3.2.3.tar.gz
+# XXX - libressl/3.2.5 and wolfssl/4.7.0 can't download... https://svnkit.com/org.tmatesoft.svn_1.10.3.standalone.nojna.zip
+# XXX - ssl/tls juggling is killing me. wish openssl didn't require perl
 # XXX - symlink /etc/profile to /etc/bash.bashrc (done, needs testing)
 #
 

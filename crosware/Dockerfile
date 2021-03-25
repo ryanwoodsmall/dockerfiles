@@ -56,7 +56,7 @@ RUN set -eu \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates rlwrap less elvis neatvi tinyscheme bearssl mbedtls bim mujs libressl \
+    && ./bin/crosware install busybox toybox bash zlib dropbear cacertificates rlwrap less elvis neatvi pkgconfig tinyscheme bearssl mbedtls bim mujs libressl nghttp2 \
     && ./bin/crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_libressl cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
     && rm -rf /stow \
     && mkdir -p /stow \

@@ -50,14 +50,12 @@ RUN cd / \
     && unset AR AS CC CFLAGS CPP CXX CXXFLAGS LD LDFLAGS \
     && crosware install statictoolchain \
     && . /etc/profile \
-    && for r in bash bearssl bim busybox cacertificates dropbear elvis less libressl mbedtls mujs neatvi nghttp2 pkgconfig rlwrap tinyscheme toybox zlib ; do crosware check-installed ${r} || crosware install ${r} ; done \
-    && crosware run-func cwfetch_curl cwextract_curl cwmakeinstall_curl_libressl cwlinkdir_curl cwclean_curl cwmarkinstall_curl \
-    && cp ./software/curl/current/bin/curl-libressl /usr/bin/curl \
+    && for r in bash bearssl bim busybox cacertificates curllibressl dropbear elvis less mbedtls mujs neatvi rlwrap tinyscheme toybox ; do crosware check-installed ${r} || crosware install ${r} ; done \
+    && cp ./software/curllibressl/current/bin/curl-libressl /usr/bin/curl \
     && cp ./software/bash/current/bin/bash /usr/bin/bash \
     && cp ./software/busybox/current/bin/busybox /usr/bin/busybox \
     && cp ./software/toybox/current/bin/toybox /usr/bin/toybox \
     && strip --strip-all /usr/bin/bash /usr/bin/busybox /usr/bin/curl /usr/bin/toybox \
-    && crosware uninstall curl \
     && rm -rf /usr/local/tmp/* /usr/local/crosware/downloads/*/*
 
 # vim: set ft=sh:

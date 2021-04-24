@@ -5,7 +5,6 @@
 FROM busybox:musl
 
 ENV cwtop=/usr/local/crosware
-ENV cwsw=${cwtop}/software
 
 RUN ln -s /bin /usr/bin \
     && uname -m | grep -q ^aarch && a=aarch64 || true \

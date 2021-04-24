@@ -1,6 +1,12 @@
 #
 # busybox:musl with crosware installed from .zip
 #
+# XXX - need another layer for this swap since busybox is in use
+#   && cp -a /bin/busybox /bin/busybox.ORIG \
+#   && curl -kLo /bin/busybox https://github.com/ryanwoodsmall/static-binaries/raw/master/${a}/busybox \
+#   && toybox chmod 755 /bin/busybox \
+#   && for i in $(busybox --list | grep -v '^bash$') ; do ( cd /bin/ ; ln -sf busybox $i ) ; done \
+#
 
 FROM busybox:musl
 
@@ -33,7 +39,9 @@ RUN ln -s /bin /usr/bin \
     && echo 'export PATH="${PATH}:${cwtop}/bin"' >> /etc/profile.d/crosware.sh \
     && echo 'test -z "${BASH_VERSION}" && true || . "${cwtop}/etc/profile"' >> /etc/profile.d/crosware.sh \
     && echo 'export PS1="\u@crosware-$(uname -m) \W \$ "' >> /etc/profile.d/crosware.sh \
-    && echo 'export PATH="${HOME}/bin:${PATH}"' >> /etc/profile.d/crosware.sh
+    && echo 'export PATH="${HOME}/bin:${PATH}"' >> /etc/profile.d/crosware.sh \
+    && ${cwtop}/bin/crosware install cacertificates statictoolchain \
+    && rm -f /usr/local/tmp/* ${cwtop}/downloads/*/*
 
 WORKDIR ${cwtop}
 

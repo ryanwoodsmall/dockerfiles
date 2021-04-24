@@ -17,7 +17,7 @@ VOLUME ${derbydbdir}
 
 RUN apk update \
     && apk upgrade \
-    && apk add bash openjdk8 \
+    && apk add bash openjdk8 tini \
     && ln -sf /bin/bash /bin/sh \
     && sed -i.ORIG 's#/bin/ash#/bin/bash#g' /etc/passwd \
     && ln -sf /etc/profile ~/.profile \
@@ -45,5 +45,7 @@ RUN apk update \
     && chmod 755 ${derbystart}
 
 WORKDIR ${derbydbdir}
+
+ENTRYPOINT ["/sbin/tini","-gwvv","--"]
 
 CMD ${derbystart}

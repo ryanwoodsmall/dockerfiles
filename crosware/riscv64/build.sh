@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+#
+# build riscv64 crosware
+#
+# override url with:
+#   env u="file://$(realpath Dockerfile)" bash build.sh
+#
 
 set -e
 set -u
@@ -9,12 +15,14 @@ i="crosware"
 a="riscv64"
 c="${i}build${a}"
 
+: ${u:="https://github.com/${v}/dockerfiles/raw/master/${i}/${a}/Dockerfile"}
+
 docker rm ${c} || true
 docker image rm ${c} || true
 docker image rm ${v}/${i}:${a} || true
 
 ( time ( docker image pull ${v}/${i}
-         curl -kLs https://github.com/${v}/dockerfiles/raw/master/${i}/${a}/Dockerfile \
+         curl -kLs ${u} \
          | docker build --tag ${c} - \
            && docker run --name ${c} ${c} bash -c 'uname -m ; curl --version ; bash --version ; set | egrep "(TYPE|BASH)"' \
            && docker export ${c} \

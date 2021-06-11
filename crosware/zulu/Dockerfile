@@ -47,7 +47,7 @@ RUN source /etc/profile \
 
 # install zulu, update, etc.
 RUN source /etc/profile \
-    && crosware install zulu8musl zulu11musl \
+    && crosware install zulu8musl \
     && pf="${cwtop}/etc/profile.d/zz_zulu8musl.sh" \
     && echo "test -e ${pf} && . ${pf} || true" > ${cwtop}/etc/local.d/zulumusl.sh \
     && source /etc/profile \

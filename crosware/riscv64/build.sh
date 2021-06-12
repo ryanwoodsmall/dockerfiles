@@ -27,7 +27,6 @@ docker image rm ${v}/${i}:${a} || true
            && docker run --name ${c} ${c} bash -c 'uname -m ; curl --version ; bash --version ; set | egrep "(TYPE|BASH)"' \
            && docker export ${c} \
               | docker import -c 'CMD ["bash","-il"]' -c 'WORKDIR /usr/local/crosware' - ${v}/${i}:${a} \
-                && docker image push ${v}/${i}:${a} \
                 && docker rm ${c} \
                 && docker image rm ${c}
 ) ) 2>&1 | tee /tmp/${c}.out

@@ -8,7 +8,25 @@
 #   && for i in $(busybox --list | grep -v '^bash$') ; do ( cd /bin/ ; ln -sf busybox $i ) ; done \
 #
 
+FROM ryanwoodsmall/crosware:latest AS CROSWARE
+
 FROM busybox:musl
+
+COPY --from=CROSWARE /usr/bin/bash /bin/
+
+RUN cd /bin \
+    && chmod 755 bash \
+    && rm -f sh \
+    && ln -sf bash sh
+
+COPY --from=CROSWARE /usr/bin/busybox /bin/
+COPY --from=CROSWARE /usr/bin/toybox /bin/
+
+RUN cd /bin \
+    && chmod 755 /bin/toybox \
+    && for i in $(busybox --list | egrep -v '^(ba|)sh$') ; do ( cd /bin/ ; toybox rm $i ; toybox ln -sf busybox $i ) ; done
+
+COPY --from=CROSWARE /usr/bin/curl /bin/
 
 ENV cwtop=/usr/local/crosware
 
@@ -19,11 +37,7 @@ RUN ln -s /bin /usr/bin \
     && uname -m | grep -q ^r && a=riscv64 || true \
     && uname -m | grep -q ^x86_64 && a=x86_64 || true \
     && echo ${a} \
-    && wget -P /bin/ https://github.com/ryanwoodsmall/static-binaries/raw/master/${a}/curl \
-    && chmod 755 /bin/curl \
-    && curl -kLo /bin/bash https://github.com/ryanwoodsmall/static-binaries/raw/master/${a}/bash \
-    && curl -kLo /bin/toybox https://github.com/ryanwoodsmall/static-binaries/raw/master/${a}/toybox \
-    && chmod 755 /bin/bash /bin/toybox \
+    && chmod 755 /bin/bash /bin/curl /bin/toybox \
     && rm -f /bin/sh \
     && ln -sf /bin/bash /bin/sh \
     && for i in $(toybox) ; do ( cd /bin/ ; test -e $i || ln -s toybox $i ) ; done \

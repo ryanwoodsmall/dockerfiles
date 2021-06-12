@@ -29,7 +29,7 @@ RUN uname -m | grep -q '^x86_64$'
 
 # fresh git checkout
 COPY --from=checkout /tmp/crosware.tar /tmp/crosware.tar
-RUN rm -rf ${cwtop}/.git \
+RUN rm -rf ${cwtop}/.git ${cwtop}/recipes ${cwtop}/scripts \
     && tar -C / -xvf /tmp/crosware.tar \
     && rm -f /tmp/crosware.tar
 

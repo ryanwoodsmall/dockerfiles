@@ -5,6 +5,9 @@
 # override url with:
 #   env u="file://$(realpath Dockerfile)" bash build.sh
 #
+# XXX - this is pretty general, could use for zulu
+# XXX - use ${t} for target instead of ${a} for arch
+#
 
 set -e
 set -u

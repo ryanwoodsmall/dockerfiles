@@ -50,7 +50,7 @@ RUN cd / \
     && unset AR AS CC CFLAGS CPP CXX CXXFLAGS LD LDFLAGS \
     && crosware install statictoolchain \
     && . /etc/profile \
-    && for r in bash bearssl bim busybox cacertificates curllibressl dropbear elvis less mbedtls mujs neatvi rlwrap tinyscheme toybox sbase ubase 9base x509cert libixp u9fs ; do crosware check-installed ${r} || crosware install ${r} ; done \
+    && for r in bash bearssl bim busybox cacertificates curllibressl dropbear elvis less mbedtls mujs neatvi rlwrap tinyscheme toybox sbase ubase 9base x509cert plan9port9p u9fs ; do crosware check-installed ${r} || crosware install ${r} ; done \
     && cp ./software/curllibressl/current/bin/curl-libressl /usr/bin/curl \
     && cp ./software/bash/current/bin/bash /usr/bin/bash \
     && cp ./software/busybox/current/bin/busybox /usr/bin/busybox \

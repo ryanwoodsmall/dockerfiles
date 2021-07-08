@@ -1,5 +1,13 @@
 FROM ryanwoodsmall/crosware:zulu
 
+# http listener
+EXPOSE 9631/tcp
+# control listener - localhost only by default
+#EXPOSE 9632/tcp
+# gossip listeners
+EXPOSE 9638/tcp
+EXPOSE 9638/udp
+
 RUN source /etc/profile \
     && crosware update \
     && crosware upgrade-all \

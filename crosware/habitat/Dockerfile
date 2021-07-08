@@ -9,6 +9,8 @@ RUN source /etc/profile \
     && env TERM=dumb hab pkg install core/hab \
     && env TERM=dumb hab pkg install core/hab-sup \
     && env TERM=dumb hab pkg install core/hab-launcher \
+    && env TERM=dumb hab pkg install core/git --binlink \
+    && env CW_GIT_CMD=git crosware update \
     && busybox addgroup -S hab \
     && busybox adduser -H -D -S -h /hab -G hab -s /bin/bash hab
 

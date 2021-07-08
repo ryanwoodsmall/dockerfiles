@@ -22,12 +22,21 @@ RUN source /etc/profile \
     && busybox addgroup -S hab \
     && busybox adduser -H -D -S -h /hab -G hab -s /bin/bash hab
 
+RUN >/sup.sh \
+    && chmod 755 /sup.sh \
+    && echo '#!/usr/bin/env bash' >> /sup.sh \
+    && echo 'source /etc/profile' >> /sup.sh \
+    && echo 'echo "logging hab-sup stdout/stderr to ${cwtop}/tmp/hab-sup.log" 1>&2' >> /sup.sh \
+    && echo 'while true ; do' >> /sup.sh \
+    && echo '  hab sup run >>"${cwtop}/tmp/hab-sup.log" 2>&1' >> /sup.sh \
+    && echo '  sleep 3' >> /sup.sh \
+    && echo 'done' >> /sup.sh
+
 RUN >/init.sh \
     && chmod 755 /init.sh \
     && echo '#!/usr/bin/env bash' >> /init.sh \
     && echo 'source /etc/profile' >> /init.sh \
-    && echo 'echo "logging hab-sup stdout/stderr to ${cwtop}/tmp/hab-sup.log" 1>&2' >> /init.sh \
-    && echo 'hab sup run >"${cwtop}/tmp/hab-sup.log" 2>&1 &' >> /init.sh \
+    && echo '/sup.sh &' >> /init.sh \
     && echo 'test ${#} -eq 0 && exec bash -il || exec "${@}"' >> /init.sh
 
 ENTRYPOINT ["/usr/sbin/tini","-gwvv","--","/init.sh"]

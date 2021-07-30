@@ -1,6 +1,11 @@
 #
 # build:
-#   docker build --tag socat https://github.com/ryanwoodsmall/dockerfiles/raw/master/crosware/socat/Dockerfile
+#   default with openssl and readline:
+#     docker build --no-cache --tag socat https://github.com/ryanwoodsmall/dockerfiles/raw/master/crosware/socat/Dockerfile
+#   libressl+readline:
+#     docker build --no-cache --build-arg socatvariant=libressl --tag socatlibressl https://github.com/ryanwoodsmall/dockerfiles/raw/master/crosware/socat/Dockerfile
+#   minimal w/o tls or readline:
+#     docker build --no-cache --build-arg socatvariant=minimal --tag socatminimal https://github.com/ryanwoodsmall/dockerfiles/raw/master/crosware/socat/Dockerfile
 # expose docker socket insecurely on tcp 2375:
 #   docker run -d --restart always --name socat-docker -it -p 2375:2375 -v /var/run/docker.sock:/docker.sock socat -d -d tcp4-listen:2375,fork,reuseaddr unix-connect:/docker.sock
 #   curl -s --unix-socket /var/run/docker.sock http/info
@@ -15,21 +20,14 @@
 #
 
 FROM ryanwoodsmall/crosware:latest as SOCATBUILDER
+ARG socatvariant
+ENV socatvariant=${socatvariant:-}
 RUN source /usr/local/crosware/etc/profile \
-    && socatrecipe="${cwtop}/recipes/socat/socat.sh" \
-    && sed -i.ORIG '/--enable-openssl/d'  ${socatrecipe} \
-    && sed -i      '/--enable-readline/d' ${socatrecipe} \
-    && sed -i      's/LIBS=.*/DUMMY=""/g' ${socatrecipe} \
-    && sed -i      's/openssl//g'         ${socatrecipe} \
-    && sed -i      's/readline//g'        ${socatrecipe} \
-    && diff -Naur ${socatrecipe}{.ORIG,} || true \
-    && crosware install socat \
+    && crosware install socat${socatvariant} \
     && source /usr/local/crosware/etc/profile \
-    && cat ${socatrecipe}.ORIG > ${socatrecipe} \
-    && rm -f ${socatrecipe}.ORIG \
     && rm -rf /stow/ \
     && mkdir -p /stow \
-    && cp /usr/local/crosware/software/socat/current/bin/socat /stow/ \
+    && cp $(realpath /usr/local/crosware/software/socat${socatvariant}/current/bin/socat) /stow/socat \
     && strip --strip-all /stow/socat
 
 FROM scratch

@@ -17,6 +17,8 @@
 #   # without local stunnel - fine for quick/dirty connections but heartbeat kills connection?
 # bind localhost-only dropbear ssh on port 2222 to a specific host ip
 #   docker run -d -it --restart always --network host --name socat-dropbear socat -d -d tcp4-listen:2222,fork,reuseaddr,bind=192.168.100.1 tcp4-connect:127.0.0.1:2222
+# run tls on 8443 in front of a localhost-only http server on 8080
+#   docker run -d -it --restart always --network host --name socat-https-8443-8080 socat -d -d openssl-listen:8443,reuseaddr,fork,cert=/cert.pem,verify=0 tcp4-connect:127.0.0.1:8080
 #
 # XXX - need tini?
 #

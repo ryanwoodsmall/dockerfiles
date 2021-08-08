@@ -21,9 +21,6 @@ ENV cwvar=${cwtop}/var
 ENV cwprofd=/etc/profile.d/crosware.sh
 ENV ult=/usr/local/tmp
 
-# zulu
-ENV zulutop=/usr/local/zulu
-
 # only 64-bit intel for now
 RUN uname -m | grep -q '^x86_64$'
 

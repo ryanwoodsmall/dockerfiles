@@ -58,7 +58,7 @@ RUN set -eu \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install busybox toybox bash dropbear cacertificates rlwrap less elvis neatvi tinyscheme mbedtls bearssl bim mujs curllibressl sbase ubase 9base x509cert plan9port9p u9fs \
+    && ./bin/crosware install busybox toybox bash dropbear cacertificates rlwrap less elvis neatvi tinyscheme mbedtls bearssl bim mujs curllibressl sbase ubase 9base x509cert plan9port9p u9fs px5g \
     && rm -rf /stow \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \
@@ -70,7 +70,7 @@ RUN set -eu \
     && rm -rf /usr/local/tmp/* \
     && yum clean all \
     && rm -rf /var/cache/yum \
-    && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|mbedtls|bearssl|make|bim|git|mujs|(s|u|9)base|x509cert|plan9port9p|u9fs) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
+    && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|mbedtls|bearssl|make|bim|git|mujs|(s|u|9)base|x509cert|plan9port9p|u9fs|px5g) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
     && for d in builds downloads ; do pushd $d ; git clean -fdx ; popd ; done \
     && find software/ -type f -exec file {} + | awk -F: '/:.*ELF/{print $1}' | xargs strip --strip-all
 

@@ -1,6 +1,7 @@
 #
-# XXX - add heirloom after switch to netbsdcurses
-#    && crosware reinstall heirloom \
+# XXX - stunnel, rsync, tmux, screen, dtach, links/lynx (w/netbsdcurses?), gnupg, jq, jo, miller
+# XXX - tinycc{,mob}, pcc, muslstandalone
+# XXX - python, go, ...
 #
 
 FROM ryanwoodsmall/crosware:latest
@@ -15,6 +16,9 @@ RUN . /etc/profile \
     && crosware reinstall gitlibressl \
     && crosware update-upgrade-all \
     && crosware reinstall vimnetbsdcurses \
+    && crosware reinstall mandoc \
+    && crosware reinstall socatlibressl \
+    && crosware reinstall heirloom \
     && crosware reinstall baseutils \
     && crosware reinstall outils \
     && crosware reinstall plan9port \

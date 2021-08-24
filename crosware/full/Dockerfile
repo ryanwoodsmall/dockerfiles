@@ -1,9 +1,23 @@
+#
+# XXX - add heirloom after switch to netbsdcurses
+#    && crosware reinstall heirloom \
+#
+
 FROM ryanwoodsmall/crosware:latest
 
 RUN . /etc/profile \
     && export CW_GIT_CMD=git \
-    && time crosware reinstall gitlibressl \
-    && time crosware update-upgrade-all \
-    && time crosware reinstall vimnetbsdcurses \
-    && time crosware reinstall ccache \
-    && find ${cwtop}/downloads/*/ -type f -exec rm -f {} +
+    && crosware reinstall bootstrapmake \
+    && crosware reinstall make \
+    && crosware reinstall byacc \
+    && crosware reinstall reflex \
+    && crosware reinstall flex \
+    && crosware reinstall gitlibressl \
+    && crosware update-upgrade-all \
+    && crosware reinstall vimnetbsdcurses \
+    && crosware reinstall baseutils \
+    && crosware reinstall outils \
+    && crosware reinstall plan9port \
+    && uname -m | grep -q '^x86_64$' && crosware reinstall zulu11musl jgitsh habitat || true \
+    && crosware reinstall ccache \
+    && rm -rf ${cwtop}/downloads/*/*

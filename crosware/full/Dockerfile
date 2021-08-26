@@ -1,5 +1,5 @@
 #
-# XXX - stunnel, rsync, tmux, screen, dtach, links/lynx (w/netbsdcurses?), gnupg, jq, jo, miller
+# XXX - stunnel, rsync, tmux, screen, dtach, lynx (w/netbsdcurses?), gnupg, jq, jo, miller
 # XXX - tinycc{,mob}, pcc, muslstandalone
 # XXX - python, go, ...
 #
@@ -15,6 +15,7 @@ RUN . /etc/profile \
     && crosware reinstall flex \
     && crosware reinstall gitlibressl \
     && crosware update-upgrade-all \
+    && crosware reinstall linkslibressl \
     && crosware reinstall vimnetbsdcurses \
     && crosware reinstall mandoc \
     && crosware reinstall socatlibressl \

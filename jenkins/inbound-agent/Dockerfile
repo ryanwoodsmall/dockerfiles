@@ -12,7 +12,7 @@
 # - https://hub.docker.com/r/jenkins/inbound-agent/dockerfile
 #
 # XXX - docker-in-docker arm 32-bit on arm 64-bt breaks (at least with arm32v6, arm32v7 seems to work?)
-# - echo "deb [arch=armel] https://download.docker.com/linux/debian buster stable" > /etc/apt/sources.list.d/docker.list
+# - echo "deb [arch=armel] https://download.docker.com/linux/debian bullseye stable" > /etc/apt/sources.list.d/docker.list
 #
 # XXX - need git...
 #
@@ -25,7 +25,7 @@
 # - https://stackoverflow.com/questions/44667924/jenkins-java-plugin-field-gives-bad-message-414-reason-uri-too-long
 #
 
-FROM debian:buster
+FROM debian:bullseye
 
 ARG user=jenkins
 ARG group=jenkins

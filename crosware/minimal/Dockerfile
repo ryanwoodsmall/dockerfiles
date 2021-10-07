@@ -13,6 +13,7 @@ FROM ryanwoodsmall/crosware:latest AS CROSWARE
 FROM busybox:musl
 
 COPY --from=CROSWARE /usr/bin/bash /bin/
+COPY --from=CROSWARE /etc/inputrc /etc/
 
 RUN cd /bin \
     && chmod 755 bash \

@@ -1,6 +1,8 @@
 #
 # musl (alpine) zulu on crosware x86_64
 #
+# XXX - zulu 17 musl now has aarch64 builds
+#
 
 FROM centos:7 AS checkout
 

@@ -56,4 +56,7 @@ RUN source /etc/profile \
     && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
     && rmdir ${cwdl}/*/
 
+RUN source /etc/profile \
+    && javac -version 2>&1 | grep -i ^javac
+
 # vim: set ft=sh:

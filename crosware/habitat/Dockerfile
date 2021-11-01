@@ -19,6 +19,7 @@ RUN source /etc/profile \
     && env TERM=dumb hab pkg install core/hab \
     && env TERM=dumb hab pkg install core/hab-sup \
     && env TERM=dumb hab pkg install core/hab-launcher \
+    && rm -f /hab/cache/artifacts/*.hart \
     && busybox addgroup -S hab \
     && busybox adduser -H -D -S -h /hab -G hab -s /bin/bash hab
 

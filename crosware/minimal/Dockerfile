@@ -1,48 +1,51 @@
 #
 # busybox:musl with crosware installed from .zip
 #
-# XXX - need another layer for this swap since busybox is in use
-#   && cp -a /bin/busybox /bin/busybox.ORIG \
-#   && curl -kLo /bin/busybox https://github.com/ryanwoodsmall/static-binaries/raw/master/${a}/busybox \
-#   && toybox chmod 755 /bin/busybox \
-#   && for i in $(busybox --list | grep -v '^bash$') ; do ( cd /bin/ ; ln -sf busybox $i ) ; done \
-#
 
 FROM ryanwoodsmall/crosware:latest AS CROSWARE
 
 FROM busybox:musl
 
-COPY --from=CROSWARE /usr/bin/bash /bin/
+RUN rm -rf /usr/bin && mkdir -p /usr/bin && test -d /usr/bin
+
+COPY --from=CROSWARE /usr/bin/bash /usr/bin/bash
+COPY --from=CROSWARE /usr/bin/busybox /usr/bin/busybox
+COPY --from=CROSWARE /usr/bin/curl /usr/bin/curl
+COPY --from=CROSWARE /usr/bin/toybox /usr/bin/toybox
+
 COPY --from=CROSWARE /etc/inputrc /etc/
 
-RUN cd /bin \
-    && chmod 755 bash \
-    && rm -f sh \
-    && ln -sf bash sh
-
-COPY --from=CROSWARE /usr/bin/busybox /bin/
-COPY --from=CROSWARE /usr/bin/toybox /bin/
+RUN chmod 755 /usr/bin/* \
+    && cd /usr/bin \
+    && ln -sf /usr/bin/bash /usr/bin/sh \
+    && for a in $(/usr/bin/busybox --list) ; do test -e /usr/bin/${a} || ln -sf /usr/bin/busybox /usr/bin/${a} ; done \
+    && for a in $(/usr/bin/toybox) ; do test -e /usr/bin/${a} || ln -sf /usr/bin/toybox /usr/bin/${a} ; done
 
 RUN cd /bin \
-    && chmod 755 /bin/toybox \
-    && for i in $(busybox --list | egrep -v '^(ba|)sh$') ; do ( cd /bin/ ; toybox rm $i ; toybox ln -sf busybox $i ) ; done
+    && /usr/bin/busybox ln -sf /usr/bin/busybox /bin/busybox \
+    && for a in $(/usr/bin/busybox --list) ; do /usr/bin/busybox ln -sf /usr/bin/busybox /bin/${a} ; done \
+    && /usr/bin/busybox rm -f /bin/bash \
+    && /usr/bin/busybox ln -sf /usr/bin/bash /bin/bash \
+    && /usr/bin/busybox rm -f /bin/sh \
+    && /usr/bin/busybox ln -sf /usr/bin/bash /bin/sh
 
-COPY --from=CROSWARE /usr/bin/curl /bin/
+RUN cd / \
+    && /usr/bin/busybox rm -rf /bin /sbin \
+    && /usr/bin/busybox ln -sf /usr/bin /bin \
+    && /usr/bin/busybox ln -sf /usr/bin /sbin
 
 ENV cwtop=/usr/local/crosware
 
-RUN ln -s /bin /usr/bin \
+RUN cd / \
     && uname -m | grep -q ^aarch && a=aarch64 || true \
     && uname -m | grep -q ^arm && a=armhf || true \
     && uname -m | grep -q ^i && a=i686 || true \
     && uname -m | grep -q ^r && a=riscv64 || true \
     && uname -m | grep -q ^x86_64 && a=x86_64 || true \
     && echo ${a} \
-    && chmod 755 /bin/bash /bin/curl /bin/toybox \
-    && rm -f /bin/sh \
-    && ln -sf /bin/bash /bin/sh \
-    && for i in $(toybox) ; do ( cd /bin/ ; test -e $i || ln -s toybox $i ) ; done \
     && sed -i.ORIG s,/bin/sh,/bin/bash,g /etc/passwd \
+    && mkdir -p /run \
+    && ln -sf /run /var/ \
     && mkdir -p ${cwtop}/tmp \
     && cd ${cwtop}/tmp \
     && curl -kLo update-crosware-from-zip.sh https://github.com/ryanwoodsmall/crosware/raw/master/scripts/update-crosware-from-zip.sh \

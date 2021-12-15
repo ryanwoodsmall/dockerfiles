@@ -15,6 +15,8 @@ RUN source /etc/profile \
     && ln -s /usr/bin /usr/sbin \
     && crosware install habitat tini \
     && source /etc/profile \
+    && which hab \
+    && hab --version \
     && install -m 0755 `which tini` /usr/sbin/tini \
     && env TERM=dumb hab pkg install core/hab \
     && env TERM=dumb hab pkg install core/hab-sup \

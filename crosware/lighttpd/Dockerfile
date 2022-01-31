@@ -7,10 +7,10 @@
 # XXX - dedicated user/group
 #
 
+FROM ryanwoodsmall/crosware:latest
+
 ARG lighttpdvariant
 ENV lighttpdvariant=${lighttpdvariant:-}
-
-FROM ryanwoodsmall/crosware:latest
 
 RUN source /usr/local/crosware/etc/profile \
     && bash /usr/local/crosware/scripts/update-crosware-from-zip.sh \

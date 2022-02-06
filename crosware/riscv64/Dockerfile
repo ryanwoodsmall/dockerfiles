@@ -56,6 +56,8 @@ RUN cd / \
     && cp ./software/busybox/current/bin/busybox /usr/bin/busybox \
     && cp ./software/toybox/current/bin/toybox /usr/bin/toybox \
     && strip --strip-all /usr/bin/bash /usr/bin/busybox /usr/bin/curl /usr/bin/toybox \
+    && bash ${cwtop}/scripts/install-dotfiles.sh \
+    && cat ~/.exrc > /etc/vi.exrc \
     && rm -rf /usr/local/tmp/* /usr/local/crosware/downloads/*/*
 
 # vim: set ft=sh:

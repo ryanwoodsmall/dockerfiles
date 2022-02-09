@@ -154,6 +154,7 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo '# USER KNOWS BEST' >> /etc/profile.d/crosware.sh \
     && echo 'export PATH=${HOME}/bin:${PATH}' >> /etc/profile.d/crosware.sh \
     && sed -i 's/root::/root:*:/g' /etc/shadow \
+    && export cwtop=/usr/local/crosware \
     && bash ${cwtop}/scripts/install-dotfiles.sh \
     && cat ~/.exrc > /etc/vi.exrc \
     && /usr/local/crosware/bin/crosware install statictoolchain \

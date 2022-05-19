@@ -24,6 +24,8 @@
 # - https://github.com/docker-java/docker-java/issues/1509
 # - https://stackoverflow.com/questions/44667924/jenkins-java-plugin-field-gives-bad-message-414-reason-uri-too-long
 #
+# XXX - checksum? looks like artifactory (X-Checksum-Sha1/X-Checksum-Sha256/X-Checksum-Md5) and maven central (X-Checksum-MD5/X-Checksum-SHA1) output checksums in headers
+#
 
 FROM debian:bullseye
 
@@ -32,7 +34,7 @@ ARG group=jenkins
 ARG uid=1000
 ARG gid=1000
 ARG AGENT_WORKDIR=/home/${user}/agent
-ARG VERSION=4.14
+ARG VERSION=release
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
@@ -42,21 +44,29 @@ USER root
 RUN groupadd -g ${gid} ${group} \
     && useradd -c ${user} -d /home/${user} -u ${uid} -g ${gid} -m ${user}
 
-ADD https://repo.jenkins-ci.org/releases/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar /usr/share/jenkins/agent.jar
-
-ADD https://github.com/jenkinsci/docker-inbound-agent/raw/master/jenkins-agent /usr/local/bin/jenkins-agent
-
-RUN chmod 755 /usr/local/bin/jenkins-agent \
-    && ln -sf /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave \
-    && chmod 755 /usr/share/jenkins \
-    && chmod 644 /usr/share/jenkins/agent.jar \
-    && ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
-
 RUN apt-get update \
     && apt-get dist-upgrade -y \
-    && apt-get install -y openjdk-11-jdk-headless curl wget bash procps docker.io \
+    && apt-get install -y openjdk-11-jdk-headless curl wget bash procps docker.io xmlstarlet \
     && ln -sf $(find /usr/lib/jvm/ -type d -name java-11-openjdk\* | head -1) /usr/lib/jvm/java-11-openjdk \
     && usermod -a -G docker ${user}
+
+RUN echo 'installing jenkins agent bits' \
+    && export REPOSITE="https://repo.jenkins-ci.org/releases/org/jenkins-ci/main/remoting" \
+    && export RELEASE="$(curl -kLs ${REPOSITE}/maven-metadata.xml | xmlstarlet sel -t -v /metadata/versioning/release)" \
+    && echo ${VERSION} | grep -q ^release && export VERSION="${RELEASE}" || true \
+    && mkdir -p /usr/share/jenkins /usr/local/bin \
+    && echo 'getting agent script' \
+    && curl -kLo /usr/local/bin/jenkins-agent "https://github.com/jenkinsci/docker-inbound-agent/raw/master/jenkins-agent" \
+    && chmod 755 /usr/local/bin/jenkins-agent \
+    && ln -sf /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave \
+    && echo 'getting remoting.jar' \
+    && curl -kLo /usr/share/jenkins/remoting.jar "${REPOSITE}/${VERSION}/remoting-${VERSION}.jar" \
+    && export SHA1SUM="$(curl -kILs ${REPOSITE}/${VERSION}/remoting-${VERSION}.jar | awk -F: 'BEGIN{IGNORECASE=1} /^x-checksum-sha1:/{print $NF}' | xargs echo)" \
+    && sha1sum /usr/share/jenkins/remoting.jar | grep -i "^${SHA1SUM}" \
+    && chmod 755 /usr/share/jenkins \
+    && chmod 644 /usr/share/jenkins/remoting.jar \
+    && ln -sf /usr/share/jenkins/remoting.jar /usr/share/jenkins/agent.jar \
+    && ln -sf /usr/share/jenkins/remoting.jar /usr/share/jenkins/slave.jar
 
 USER ${user}
 

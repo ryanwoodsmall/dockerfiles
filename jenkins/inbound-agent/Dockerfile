@@ -26,6 +26,8 @@
 #
 # XXX - checksum? looks like artifactory (X-Checksum-Sha1/X-Checksum-Sha256/X-Checksum-Md5) and maven central (X-Checksum-MD5/X-Checksum-SHA1) output checksums in headers
 #
+# XXX - should this just pull in /usr/share/jenkins/agent.jar from upstream jenkins/agent?
+#
 
 FROM debian:bullseye
 

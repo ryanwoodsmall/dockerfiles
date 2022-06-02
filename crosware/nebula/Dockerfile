@@ -1,3 +1,8 @@
+#
+# run with:
+#   docker run -it -d --restart always --name nebula --network host --privileged -v /opt/nebula/conf:/opt/nebula/conf:ro nebula -config /opt/nebula/conf/config.yml
+#
+
 FROM ryanwoodsmall/crosware:latest AS NEBULABUILD
 
 RUN source /usr/local/crosware/etc/profile \

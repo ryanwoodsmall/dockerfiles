@@ -53,8 +53,19 @@ RUN source /etc/profile \
     && crosware update \
     && crosware upgrade-all || true \
     && ccache -C || true \
+    && mkdir -p /usr/local/bin \
+    && ln -sf ${cwtop}/scripts/jgit /usr/local/bin/jgit \
     && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
     && rmdir ${cwdl}/*/
+
+RUN source /etc/profile \
+    && cd ${cwtop}/tmp/ \
+    && jgit clone https://github.com/ryanwoodsmall/dotfiles.git \
+    && jgit clone https://github.com/ryanwoodsmall/vimrcs.git \
+    && cd ${cwtop}/tmp/dotfiles/ \
+    && for f in dot_* ; do install -m 644 ${f} ${HOME}/${f//dot_/.} ; done \
+    && cd ${cwtop}/tmp/vimrcs/ \
+    && bash install-on-chrome-os.sh
 
 RUN source /etc/profile \
     && javac -version 2>&1 | grep -i ^javac

@@ -44,6 +44,12 @@ RUN cd / \
     && uname -m | grep -q ^x86_64 && a=x86_64 || true \
     && echo ${a} \
     && sed -i.ORIG s,/bin/sh,/bin/bash,g /etc/passwd \
+    && echo /bin/bash >> /etc/shells \
+    && echo /usr/bin/bash >> /etc/shells \
+    && echo /bin/ash >> /etc/shells \
+    && echo /usr/bin/ash >> /etc/shells \
+    && echo /bin/sh >> /etc/shells \
+    && echo /usr/bin/sh >> /etc/shells \
     && mkdir -p /run \
     && ln -sf /run /var/ \
     && mkdir -p ${cwtop}/tmp \

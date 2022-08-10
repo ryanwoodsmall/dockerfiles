@@ -58,13 +58,13 @@ RUN set -eu \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install bootstrapmake busybox toybox bash dropbear cacertificates rlwrap less elvis neatvi tinyscheme mbedtls bearssl bim mujs curllibressl sbase ubase 9base x509cert plan9port9p u9fs px5g shellish alpinemuslutils htermutils cryanc \
+    && ./bin/crosware install bootstrapmake busybox toybox bash dropbear cacertificates rlwrap less elvis neatvi tinyscheme mbedtls bearssl bim mujs curlmbedtls sbase ubase 9base x509cert plan9port9p u9fs px5g shellish alpinemuslutils htermutils cryanc \
     && rm -rf /stow \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \
     && cp ./software/toybox/current/bin/toybox /stow/ \
     && cp ./software/bash/current/bin/bash /stow/ \
-    && cp ./software/curllibressl/current/bin/curl-libressl /stow/curl \
+    && cp ./software/curlmbedtls/current/bin/curl-mbedtls /stow/curl \
     && find /stow/ -type f | xargs file | grep 'ELF.*stripped' | cut -f1 -d: | xargs strip --strip-all \
     && file /stow/* \
     && rm -rf /usr/local/tmp/* \

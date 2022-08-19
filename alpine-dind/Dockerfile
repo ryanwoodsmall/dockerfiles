@@ -18,6 +18,8 @@
 #   might _still_ need qemu-*
 #   arm32v7/centos:7 breaks running as "armv8l" on aarch64
 #
+# XXX - move the "-H tcp://..." to a separate socat<->Docker socket, fix "-H unix..." stuff
+#
 
 FROM alpine:latest
 

@@ -20,6 +20,8 @@
 #
 # XXX - move the "-H tcp://..." to a separate socat<->Docker socket, fix "-H unix..." stuff
 #
+# XXX - need `{ "experimental": true }` in **/etc/docker/daemon.json**
+#
 
 FROM alpine:latest
 

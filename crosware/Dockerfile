@@ -1,8 +1,7 @@
 #
-# work in progress crosware bootstrap container
-#
-# should work ootb for x86_64/arm/aarch64
-#
+# bootstrap crosware container
+# - "tested" on x86_64/aarch64/arm32v{6,7}/i386...
+
 # can build x86 by (or arm32v6 on arm64v8)
 # - build x86_64
 # - running container with "setarch linux32 bash -il" (or just "linux32 bash -il")
@@ -24,6 +23,7 @@
 # XXX - libressl/3.2.5 and wolfssl/4.7.0 can't download... https://svnkit.com/org.tmatesoft.svn_1.10.3.standalone.nojna.zip
 # XXX - ssl/tls juggling is killing me. wish openssl didn't require perl
 # XXX - symlink /etc/profile to /etc/bash.bashrc (done, needs testing)
+# XXX - leave busybox/toybox/bash "installed" but symlink /usr/bin/${rname} back to ${cwsw}/${rname}/current/bin/${rname}
 #
 
 # start from the musl busybox container
@@ -32,31 +32,17 @@ FROM busybox:musl as BUSYBOX
 # and we need a couple things from alpine as well
 FROM alpine:latest as ALPINE
 
-# build out some of our recipes
-# XXX - busybox patch does *not* work for some bash patches
-FROM centos:7 as BUILDER
-# fixup armv8 (32-bit arm chroot with linux32 and/or docker-in-docker on 64-bit aarch64)
-RUN uname -m | grep -qv '^armv8' || { \
-      sed -i.ORIG s/exactarch=1/exactarch=0/g /etc/yum.conf \
-      && cp /usr/lib/rpm/rpmrc{,.ORIG} \
-      && echo armhfp | tee /etc/yum/vars/arch /etc/yum/vars/basearch \
-      && echo "optflags: armv8l -O2 -g -march=armv7-a -mfloat-abi=hard -mfpu=vfpv3-d16" >> /usr/lib/rpm/rpmrc \
-      && echo "arch_canon: armv8l: armv7hnl 12" >> /usr/lib/rpm/rpmrc \
-      && echo "buildarchtranslate: armv8l: armv7hl" >> /usr/lib/rpm/rpmrc \
-      && echo "arch_compat: armv8l: armv7hnl" >> /usr/lib/rpm/rpmrc \
-      && echo "buildarch_compat: armv8l: armv7hnl" >> /usr/lib/rpm/rpmrc \
-      && sed -i.ORIG '/^%arm/s/$/ armv8l/' /usr/lib/rpm/macros \
-      && ln -s /usr/lib/rpm/platform/armv{7hn,8}l-linux \
-    ; }
 # bootstrap, build some stuff for the container, then clean up
+FROM debian:bullseye as BUILDER
 RUN set -eu \
-    && yum clean all \
-    && yum -y install bash bzip2 curl git patch binutils file \
+    && apt update \
+    && apt install -y bash binutils bzip2 curl file git \
     && mkdir -p /usr/local \
     && cd /usr/local \
     && rm -rf crosware \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && cd crosware \
+    && git gc --aggressive \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
     && ./bin/crosware install bootstrapmake busybox toybox bash dropbear cacertificates rlwrap less elvis neatvi tinyscheme mbedtls bearssl bim mujs curlmbedtls sbase ubase 9base x509cert plan9port9p u9fs px5g shellish alpinemuslutils htermutils cryanc \
     && rm -rf /stow \
@@ -68,10 +54,8 @@ RUN set -eu \
     && find /stow/ -type f | xargs file | grep 'ELF.*stripped' | cut -f1 -d: | xargs strip --strip-all \
     && file /stow/* \
     && rm -rf /usr/local/tmp/* \
-    && yum clean all \
-    && rm -rf /var/cache/yum \
     && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|mbedtls|bearssl|(bootstrap|)make|bim|git|mujs|(s|u|9)base|x509cert|plan9port9p|u9fs|px5g|shellish|alpinemuslutils|htermutils|cryanc) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
-    && for d in builds downloads ; do pushd $d ; git clean -fdx ; popd ; done \
+    && for d in builds downloads ; do cd $d ; git clean -fdx ; cd - ; done \
     && find software/ -type f -exec file {} + | awk -F: '/:.*ELF/{print $1}' | xargs strip --strip-all
 
 # get the busybox binary and install it as usual under /bin/ and as /bin/sh
@@ -108,14 +92,6 @@ RUN for p in toybox ; do for a in $(${p}) ; do test -e /usr/bin/${a} || ln -s ${
 COPY --from=BUILDER /stow/bash /usr/bin/
 RUN rm -f /usr/bin/sh \
     && ln -s bash /usr/bin/sh
-## xvi
-#COPY --from=BUILDER /stow/xvi /usr/bin/
-#RUN rm -f /usr/bin/vi \
-#    && ln -s xvi /usr/bin/vi
-# nvi
-#COPY --from=BUILDER /stow/nvi /usr/bin/
-#RUN rm -f /usr/bin/vi \
-#    && ln -s nvi /usr/bin/vi
 # files/directories to be copied with no setup
 COPY --from=BUILDER /stow/curl /usr/bin/
 # crosware and permissions

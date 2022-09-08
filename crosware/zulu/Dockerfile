@@ -1,15 +1,17 @@
 #
 # musl (alpine) zulu on crosware x86_64
 #
-# XXX - zulu 17 musl now has aarch64 builds
+# XXX - zulu 8/11/17 musl now have aarch64 builds
 #
 
-FROM centos:7 AS checkout
+FROM debian:bullseye AS checkout
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN mkdir -p /usr/local/ \
     && cd /usr/local/ \
-    && yum clean all \
-    && yum -y install git \
+    && apt update \
+    && apt install -y git \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && tar -C / -cf /tmp/crosware.tar /usr/local/crosware
 
@@ -34,7 +36,7 @@ RUN rm -rf ${cwtop}/.git ${cwtop}/recipes ${cwtop}/scripts \
 
 # install jgitsh and make sure it's default
 RUN source /etc/profile \
-    && crosware install jgitsh ccache busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils vimnetbsdcurses diffutils tmux \
+    && for i in jgitsh ccache busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils ; do crosware check-installed $i || crosware install $i ; done \
     && source /etc/profile \
     && ccache -C || true \
     && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
@@ -52,6 +54,7 @@ RUN source /etc/profile \
     && source /etc/profile \
     && crosware update \
     && crosware upgrade-all || true \
+    && for i in vimnetbsdcurses tmux ; do crosware check-installed $i || crosware install $i ; done \
     && ccache -C || true \
     && mkdir -p /usr/local/bin \
     && ln -sf ${cwtop}/scripts/jgit /usr/local/bin/jgit \

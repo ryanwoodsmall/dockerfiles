@@ -12,7 +12,7 @@ FROM ubuntu:jammy AS ubuntu
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
     && apt-get dist-upgrade -y \
-    && apt-get -y install git qemu-user-static \
+    && apt-get -y install bzip2 git qemu-user-static \
     && mkdir -p /usr/local \
     && cd /usr/local \
     && git clone https://github.com/ryanwoodsmall/crosware.git \

@@ -7,7 +7,7 @@
 #   docker run -it --rm -v $(which qemu-riscv64-static):$(which qemu-riscv64-static) ryanwoodsmall/crosware:riscv64
 #
 
-FROM ubuntu:focal AS ubuntu
+FROM ubuntu:jammy AS ubuntu
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \

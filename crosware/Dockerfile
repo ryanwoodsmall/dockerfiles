@@ -50,8 +50,8 @@ RUN set -eu \
     && cp ./software/toybox/current/bin/toybox /stow/ \
     && cp ./software/bash/current/bin/bash /stow/ \
     && cp ./software/curlmbedtls/current/bin/curl-mbedtls /stow/curl \
-    && find /stow/ -type f | xargs file | grep 'ELF.*stripped' | cut -f1 -d: | xargs strip --strip-all \
-    && file /stow/* \
+    && find /stow/ -type f | xargs ./software/toybox/current/bin/toybox file | grep 'ELF.*stripped' | cut -f1 -d: | xargs ./software/statictoolchain/current/bin/strip --strip-all \
+    && ./software/toybox/current/bin/toybox file /stow/* \
     && rm -rf /usr/local/tmp/* \
     && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|mbedtls|bearssl|(bootstrap|)make|bim|git|mujs|(s|u|9)base|x509cert|plan9port9p|u9fs|px5g|shellish|alpinemuslutils|htermutils|cryanc|gawk|sed|busybox|toybox|bash|patch) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
     && for d in builds downloads ; do cd $d ; git clean -fdx ; cd - ; done \

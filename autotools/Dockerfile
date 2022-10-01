@@ -32,7 +32,7 @@ RUN echo 'installing prereqs' \
     && yum clean all \
     && yum list updates \
     && yum -y update \
-    && yum -y install make perl gcc gcc-c++ m4 autoconf automake libtool curl wget which openssh-clients diffutils patch xz bzip2 \
+    && yum -y install make perl gcc gcc-c++ m4 autoconf automake libtool curl wget which openssh-clients diffutils patch xz bzip2 git file vim-enhanced \
     && yum --enablerepo=* clean all
 
 RUN echo 'build autotools' \

@@ -1,10 +1,13 @@
 #
 # build and install up-to-date autotools on an out-of-date operating system
 #
-
 # https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz
 # https://ftp.gnu.org/gnu/automake/automake-1.16.5.tar.gz
 # https://ftp.gnu.org/gnu/libtool/libtool-2.4.6.tar.gz
+#
+# XXX - need m4? ed? make? sed? gawk? coreutils?
+# XXX - make an RPM?
+#
 
 FROM centos:7
 

@@ -14,8 +14,6 @@
 # XXX - docker-in-docker arm 32-bit on arm 64-bt breaks (at least with arm32v6, arm32v7 seems to work?)
 # - echo "deb [arch=armel] https://download.docker.com/linux/debian bullseye stable" > /etc/apt/sources.list.d/docker.list
 #
-# XXX - need git...
-#
 # XXX - just rebuild on alpine for smaller image?
 #
 # XXX - docker volumes break plugin w/newer jackson? error with request size too?
@@ -48,7 +46,7 @@ RUN groupadd -g ${gid} ${group} \
 
 RUN apt-get update \
     && apt-get dist-upgrade -y \
-    && apt-get install -y openjdk-11-jdk-headless curl wget bash procps docker.io xmlstarlet \
+    && apt-get install -y openjdk-11-jdk-headless curl wget bash procps docker.io xmlstarlet git \
     && ln -sf $(find /usr/lib/jvm/ -type d -name java-11-openjdk\* | head -1) /usr/lib/jvm/java-11-openjdk \
     && usermod -a -G docker ${user}
 

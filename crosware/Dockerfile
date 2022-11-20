@@ -43,7 +43,7 @@ RUN set -eu \
     && cd crosware \
     && git gc --aggressive \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install bootstrapmake busybox toybox bash dropbear cacertificates rlwrap less elvis neatvi tinyscheme mbedtls bearssl bim mujs curlmbedtls sbase ubase 9base x509cert plan9port9p u9fs px5g shellish alpinemuslutils htermutils cryanc \
+    && ./bin/crosware install bootstrapmake busybox toybox bash dropbear cacertificates rlwrap less elvis neatvi tinyscheme mbedtls bearssl bim mujs curlmbedtls sbase ubase 9base x509cert plan9port9p u9fs px5g htermutils shellish alpinemuslutils cryanc \
     && rm -rf /stow \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \

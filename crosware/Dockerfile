@@ -110,6 +110,7 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo '/bin/sh' > /etc/shells \
     && echo '/bin/ash' >> /etc/shells \
     && echo '/bin/bash' >> /etc/shells \
+    && cat /etc/shells > /etc/shells.default \
     && echo 'set bell-style none' > /etc/inputrc \
     && echo 'set meta-flag on' >> /etc/inputrc \
     && echo 'set input-meta on' >> /etc/inputrc \

@@ -1,16 +1,17 @@
 #
-# builds a fully-featured, libressl-enabled inadyn instance by default
+# builds a fully-featured, mbedtls-enabled inadyn instance by default
 #
 # to build a minimal (i.e., no tls) variant:
 #   docker build --no-cache --build-arg inadynvariant=gnutls --tag inadyngnutls .
 #
 # XXX - dedicated user/group
+# XXX - moved to mbedtls, this needs to be tested... ca certificate(s), etc. are kinda unknown
 #
 
 FROM ryanwoodsmall/crosware:latest
 
 ARG inadynvariant
-ENV inadynvariant=${inadynvariant:-libressl}
+ENV inadynvariant=${inadynvariant:-mbedtls}
 
 RUN source /usr/local/crosware/etc/profile \
     && bash /usr/local/crosware/scripts/update-crosware-from-zip.sh \

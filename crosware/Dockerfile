@@ -23,6 +23,7 @@
 # XXX - libressl/3.2.5 and wolfssl/4.7.0 can't download... https://svnkit.com/org.tmatesoft.svn_1.10.3.standalone.nojna.zip
 # XXX - ssl/tls juggling is killing me. wish openssl didn't require perl
 # XXX - symlink /etc/profile to /etc/bash.bashrc (done, needs testing)
+# XXX - package install/cleanup needs to be moved to a script in croware:scripts/
 #
 
 # start from the musl busybox container
@@ -53,9 +54,9 @@ RUN set -eu \
     && find /stow/ -type f | xargs ./software/toybox/current/bin/toybox file | grep 'ELF.*stripped' | cut -f1 -d: | xargs ./software/statictoolchain/current/bin/strip --strip-all \
     && ./software/toybox/current/bin/toybox file /stow/* \
     && rm -rf /usr/local/tmp/* \
-    && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|mbedtls|bearssl|(bootstrap|)make|bim|git|mujs|(s|u|9)base|x509cert|plan9port9p|u9fs|px5g|shellish|alpinemuslutils|htermutils|cryanc|gawk|sed|busybox|toybox|bash|patch|jo|jq|ag|pv|entr) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
+    && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|mbedtls|bearssl|(bootstrap|)make|bim|git|mujs|(s|u|9)base|x509cert|plan9port9p|u9fs|px5g|shellish|alpinemuslutils|htermutils|cryanc|gawk|sed|busybox|toybox|bash|patch|jo|jq|ag|pv|entr|byacc|flex|m4|pkgconfig|slibtool|lshsftpserver|configgit|gettexttiny|zlib|xz) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
     && for d in builds downloads ; do cd $d ; git clean -fdx ; cd - ; done \
-    && find software/ -type f -exec file {} + | awk -F: '/:.*ELF/{print $1}' | xargs strip --strip-all \
+    && find software/ -type f -exec file {} + | awk -F: '/\/bin\/.*:.*ELF/{print $1}' | xargs strip --strip-all \
     && ln -sf /usr/bin/bash ./software/bash/current/bin/bash \
     && ln -sf /usr/bin/busybox ./software/busybox/current/bin/busybox \
     && ln -sf /usr/bin/toybox ./software/toybox/current/bin/toybox

@@ -3,11 +3,11 @@ FROM alpine AS alpine
 RUN apk update \
     && apk add tini-static
 
-FROM gcr.io/distroless/java:8
+FROM gcr.io/distroless/java17-debian11
 
 COPY --from=alpine /sbin/tini-static /tini
 
-ADD https://github.com/beanshell/beanshell/releases/download/2.0b6/bsh-2.0b6.jar /bsh.jar
+ADD https://github.com/beanshell/beanshell/releases/download/2.1.1/bsh-2.1.1.jar /bsh.jar
 
 ENTRYPOINT ["/tini","-gwvv","--","java","-cp"]
 

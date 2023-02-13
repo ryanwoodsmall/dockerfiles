@@ -36,6 +36,7 @@ RUN echo 'installing prereqs' \
     && yum list updates \
     && yum -y update \
     && yum -y install make perl gcc gcc-c++ m4 autoconf automake libtool curl wget which openssh-clients diffutils patch xz bzip2 git file vim-enhanced \
+    && yum -y install rpm-build rpm rpmdevtools glibc-static \
     && yum --enablerepo=* clean all
 
 RUN echo 'build autotools' \

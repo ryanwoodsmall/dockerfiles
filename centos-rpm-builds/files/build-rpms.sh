@@ -1,8 +1,11 @@
 #!/bin/bash
-
+#
 # XXX - add ccache and setup musl-gcc in /usr/lib{,64}/ccache/
 # XXX - use yum-builddep to install reqs from .spec files
 # XXX - https://www.terriblecode.com/blog/extracing-rpm-build-dependencies-from-rpm-spec-files/
+# XXX - need more repos (scl o, rh) for toybox
+# XXX - need to setup vault links for devtoolset-8 (rhel6) and devtoolset-11 (rhel7)
+#
 
 # exit on failure and be verbose
 set -eux

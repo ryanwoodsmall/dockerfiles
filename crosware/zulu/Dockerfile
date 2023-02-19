@@ -36,7 +36,7 @@ RUN rm -rf ${cwtop}/.git ${cwtop}/recipes ${cwtop}/scripts \
 
 # install jgitsh and make sure it's default
 RUN source /etc/profile \
-    && for i in jgitsh ccache busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils ; do crosware check-installed $i || crosware install $i ; done \
+    && for i in jgitsh ccache busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils tini ; do crosware check-installed $i || crosware install $i ; done \
     && source /etc/profile \
     && ccache -C || true \
     && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \

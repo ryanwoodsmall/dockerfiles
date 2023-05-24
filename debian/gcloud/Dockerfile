@@ -5,7 +5,7 @@ RUN apt-get update \
     && apt-get dist-upgrade -y \
     && apt-get autoremove -y \
     && apt full-upgrade -y \
-    && apt install -y curl wget sudo tini \
+    && apt install -y curl wget sudo tini vim-nox file \
     && groupadd -g 1000 user \
     && useradd -m -d /home/user -s /bin/bash -g 1000 -u 1000 user \
     && echo 'user ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/zz_local

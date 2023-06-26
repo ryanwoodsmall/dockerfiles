@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bookworm
 
 # base setup
 RUN apt-get update \

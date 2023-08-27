@@ -26,6 +26,8 @@
 #
 # XXX - should this just pull in /usr/share/jenkins/agent.jar from upstream jenkins/agent?
 #
+# XXX - this really needs to be moved to bookworm, which means either java 17 or an external jdk that supports the arches i care about (amd64/aarch64/riscv64/arm32hf/i686)
+#
 
 FROM debian:bullseye
 
@@ -34,7 +36,7 @@ ARG group=jenkins
 ARG uid=1000
 ARG gid=1000
 ARG AGENT_WORKDIR=/home/${user}/agent
-ARG VERSION=3107.v665000b_51092
+ARG VERSION=3131.vf2b_b_798b_ce99
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk

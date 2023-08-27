@@ -48,7 +48,7 @@ RUN groupadd -g ${gid} ${group} \
 
 RUN apt-get update \
     && apt-get dist-upgrade -y \
-    && apt-get install -y openjdk-11-jdk-headless curl wget bash procps docker.io xmlstarlet git \
+    && apt-get install -y openjdk-11-jdk-headless curl wget bash procps docker.io xmlstarlet git jq \
     && ln -sf $(find /usr/lib/jvm/ -type d -name java-11-openjdk\* | head -1) /usr/lib/jvm/java-11-openjdk \
     && usermod -a -G docker ${user}
 

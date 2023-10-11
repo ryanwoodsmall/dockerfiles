@@ -23,6 +23,7 @@ RUN apt-get update \
        psmisc \
        screen \
        sudo \
+       tidy \
        tini \
        vim-nox \
        wget \

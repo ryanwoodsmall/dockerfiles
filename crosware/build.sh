@@ -52,20 +52,20 @@ c="crosware"
 b="${c}build"
 u="https://raw.githubusercontent.com/${v}/dockerfiles/master/${c}/Dockerfile"
 a="$(docker info | awk -F: '/Architecture/{print $2}' | tr -d ' ')"
-o="-c 'CMD [\"bash\",\"-il\"]' -c 'WORKDIR /usr/local/crosware'"
+o="-c 'CMD [\"/usr/bin/bash\",\"-il\"]' -c 'WORKDIR /usr/local/crosware'"
 t="${a}"
 if [[ ${a} =~ ^aarch64 ]] ; then
 	t="arm64v8"
 elif [[ ${a} =~ ^arm ]] ; then
 	t="arm32v6"
 	o+=' '
-	o+="-c 'ENTRYPOINT [\"linux32\"]'"
+	o+="-c 'ENTRYPOINT [\"/usr/bin/linux32\"]'"
 elif [[ ${a} =~ x86_64 ]] ; then
 	t="amd64"
 elif [[ ${a} =~ ^i.86 ]] ; then
 	t="i386"
 	o+=' '
-	o+="-c 'ENTRYPOINT [\"linux32\"]'"
+	o+="-c 'ENTRYPOINT [\"/usr/bin/linux32\"]'"
 fi
 
 docker stop "${b}" || true

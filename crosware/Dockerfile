@@ -147,6 +147,6 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
 #   && chpasswd <<<"root:${RANDOM}$(date '+%Y%m%d%H%M%S')${RANDOM}" \
 
 WORKDIR "/usr/local/crosware"
-CMD ["bash","-il"]
+CMD ["/usr/bin/bash","-il"]
 
 # vim: set ft=sh:

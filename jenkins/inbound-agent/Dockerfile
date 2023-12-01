@@ -12,14 +12,13 @@
 # - https://hub.docker.com/r/jenkins/inbound-agent/dockerfile
 #
 # XXX - docker volumes break plugin w/newer jackson? error with request size too?
-# - https://github.com/jenkinsci/docker-plugin/issues/821
-# - https://github.com/jenkinsci/docker/issues/842
-# - https://github.com/docker-java/docker-java/issues/1509
-# - https://stackoverflow.com/questions/44667924/jenkins-java-plugin-field-gives-bad-message-414-reason-uri-too-long
-#
+#   - https://github.com/jenkinsci/docker-plugin/issues/821
+#   - https://github.com/jenkinsci/docker/issues/842
+#   - https://github.com/docker-java/docker-java/issues/1509
+#   - https://stackoverflow.com/questions/44667924/jenkins-java-plugin-field-gives-bad-message-414-reason-uri-too-long
 # XXX - checksum? looks like artifactory (X-Checksum-Sha1/X-Checksum-Sha256/X-Checksum-Md5) and maven central (X-Checksum-MD5/X-Checksum-SHA1) output checksums in headers
-#
 # XXX - should this just pull in /usr/share/jenkins/agent.jar from upstream jenkins/agent?
+# XXX - tini?
 #
 
 FROM debian:bookworm
@@ -74,4 +73,5 @@ RUN mkdir -p /home/${user}/.jenkins \
 # VOLUME ${AGENT_WORKDIR}
 WORKDIR /home/${user}
 
-ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
+#ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
+CMD /usr/bin/java -jar /usr/share/jenkins/remoting.jar -jnlpUrl ${JENKINS_URL}computer/${NODE_NAME}/slave-agent.jnlp -secret ${JNLP_SECRET}

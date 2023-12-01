@@ -74,4 +74,4 @@ RUN mkdir -p /home/${user}/.jenkins \
 # VOLUME ${AGENT_WORKDIR}
 WORKDIR /home/${user}
 
-ENTRYPOINT ["jenkins-agent"]
+ENTRYPOINT ["/usr/local/bin/jenkins-agent"]

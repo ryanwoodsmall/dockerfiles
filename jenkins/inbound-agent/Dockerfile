@@ -11,11 +11,6 @@
 # - https://www.github.com/jenkinsci/docker-inbound-agent
 # - https://hub.docker.com/r/jenkins/inbound-agent/dockerfile
 #
-# XXX - docker-in-docker arm 32-bit on arm 64-bt breaks (at least with arm32v6, arm32v7 seems to work?)
-# - echo "deb [arch=armel] https://download.docker.com/linux/debian bullseye stable" > /etc/apt/sources.list.d/docker.list
-#
-# XXX - just rebuild on alpine for smaller image?
-#
 # XXX - docker volumes break plugin w/newer jackson? error with request size too?
 # - https://github.com/jenkinsci/docker-plugin/issues/821
 # - https://github.com/jenkinsci/docker/issues/842
@@ -26,20 +21,18 @@
 #
 # XXX - should this just pull in /usr/share/jenkins/agent.jar from upstream jenkins/agent?
 #
-# XXX - this really needs to be moved to bookworm, which means either java 17 or an external jdk that supports the arches i care about (amd64/aarch64/riscv64/arm32hf/i686)
-#
 
-FROM debian:bullseye
+FROM debian:bookworm
 
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000
 ARG gid=1000
 ARG AGENT_WORKDIR=/home/${user}/agent
-ARG VERSION=3131.vf2b_b_798b_ce99
+ARG VERSION=3160.vd76b_9ddd10cc
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 
 USER root
 
@@ -48,8 +41,8 @@ RUN groupadd -g ${gid} ${group} \
 
 RUN apt-get update \
     && apt-get dist-upgrade -y \
-    && apt-get install -y openjdk-11-jdk-headless curl wget bash procps docker.io xmlstarlet git jq \
-    && ln -sf $(find /usr/lib/jvm/ -type d -name java-11-openjdk\* | head -1) /usr/lib/jvm/java-11-openjdk \
+    && apt-get install -y openjdk-17-jdk-headless curl wget bash procps docker.io xmlstarlet git jq \
+    && ln -sf $(find /usr/lib/jvm/ -type d -name java-17-openjdk\* | head -1) /usr/lib/jvm/java-17-openjdk \
     && usermod -a -G docker ${user}
 
 RUN echo 'installing jenkins agent bits' \

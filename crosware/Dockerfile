@@ -88,9 +88,10 @@ RUN mkdir -p /home /root /tmp /var/spool/mail /var/www /etc/profile.d /usr/local
     && chmod 600 /etc/shadow \
     && ln -s /run /var/ \
     && rm -f /usr/bin/bash
-# toybox
+# toybox - lspci, lsusb work well with /etc/{pci,usb}.ids, microcom is a little more stable than busybox ime
 COPY --from=BUILDER /stow/toybox /usr/bin/
-RUN for p in toybox ; do for a in $(${p}) ; do test -e /usr/bin/${a} || ln -s ${p} /usr/bin/${a} ; done ; done
+RUN for p in toybox ; do for a in $(${p}) ; do test -e /usr/bin/${a} || ln -s ${p} /usr/bin/${a} ; done ; done \
+    && for p in lsusb lspci microcom ; do rm -f /usr/bin/${p} ; ln -sf toybox /usr/bin/${p} ; done
 # bash
 COPY --from=BUILDER /stow/bash /usr/bin/
 RUN rm -f /usr/bin/sh \
@@ -137,7 +138,9 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && export cwtop=/usr/local/crosware \
     && bash ${cwtop}/scripts/install-dotfiles.sh \
     && cat ~/.exrc > /etc/vi.exrc \
-    && /usr/local/crosware/bin/crosware install statictoolchain \
+    && bash ${cwtop}/scripts/get-pci-usb-ids.sh \
+    && ln -sf ${cwtop}/etc/{pci,usb}.ids /etc/ \
+    && ${cwtop}/bin/crosware install statictoolchain \
     && rm -rf /usr/local/tmp/* \
     && chgrp -R wheel /usr/local/crosware \
     && chmod -R g+w /usr/local/crosware \

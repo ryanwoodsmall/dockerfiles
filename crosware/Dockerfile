@@ -59,7 +59,8 @@ RUN set -eu \
     && find software/ -type f -exec file {} + | awk -F: '/\/bin\/.*:.*ELF/{print $1}' | xargs strip --strip-all \
     && ln -sf /usr/bin/bash ./software/bash/current/bin/bash \
     && ln -sf /usr/bin/busybox ./software/busybox/current/bin/busybox \
-    && ln -sf /usr/bin/toybox ./software/toybox/current/bin/toybox
+    && ln -sf /usr/bin/toybox ./software/toybox/current/bin/toybox \
+    && git ls-files | xargs realpath | sort -u > ./tmp/git_ls-files.out
 
 # get the busybox binary and install it as usual under /bin/ and as /bin/sh
 FROM scratch
@@ -130,9 +131,6 @@ RUN sed -i 's#/bin/sh#/bin/bash#g' /etc/passwd \
     && echo 'export EDITOR=vi' >> /etc/profile.d/crosware.sh \
     && echo 'export XVINIT="source ${HOME}/.exrc"' >> /etc/profile.d/crosware.sh \
     && echo 'test -e /usr/local/crosware/etc/profile && . /usr/local/crosware/etc/profile' >> /etc/profile.d/crosware.sh \
-    && echo '# XXX UGH' >> /etc/profile.d/crosware.sh \
-    && echo '#export GIT_SSL_NO_VERIFY=1' >> /etc/profile.d/crosware.sh \
-    && echo '# USER KNOWS BEST' >> /etc/profile.d/crosware.sh \
     && echo 'export PATH=${HOME}/bin:${PATH}' >> /etc/profile.d/crosware.sh \
     && sed -i 's/root::/root:*:/g' /etc/shadow \
     && export cwtop=/usr/local/crosware \

@@ -28,7 +28,7 @@ ARG group=jenkins
 ARG uid=1000
 ARG gid=1000
 ARG AGENT_WORKDIR=/home/${user}/agent
-ARG VERSION=3160.vd76b_9ddd10cc
+ARG VERSION=3206.vb_15dcf73f6a_9
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
@@ -67,7 +67,8 @@ USER ${user}
 ENV AGENT_WORKDIR=${AGENT_WORKDIR}
 RUN mkdir -p /home/${user}/.jenkins \
     && mkdir -p ${AGENT_WORKDIR} \
-    && ln -sf ${AGENT_WORKDIR} /home/${user}/remoting
+    && true
+    #&& ln -sf ${AGENT_WORKDIR} /home/${user}/remoting
 
 # VOLUME /home/${user}/.jenkins
 # VOLUME ${AGENT_WORKDIR}

@@ -32,11 +32,13 @@ FROM busybox:musl as BUSYBOX
 # and we need a couple things from alpine as well
 FROM alpine:latest as ALPINE
 
+# XXX - bookworm!!!
 # bootstrap, build some stuff for the container, then clean up
 FROM debian:bullseye as BUILDER
 RUN set -eu \
+    && export DEBIAN_FRONTEND=noninteractive \
     && apt update \
-    && apt install -y bash binutils bzip2 curl file git \
+    && apt install -y bash binutils bzip2 curl file git xz-utils \
     && mkdir -p /usr/local \
     && cd /usr/local \
     && rm -rf crosware \

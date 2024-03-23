@@ -46,7 +46,7 @@ RUN set -eu \
     && cd crosware \
     && git gc --aggressive \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && ./bin/crosware install bootstrapmake busybox toybox bash dropbear cacertificates rlwrap less elvis neatvi tinyscheme mbedtls bearssl bim mujs curlmbedtls sbase ubase 9base x509cert plan9port9p u9fs px5g htermutils shellish alpinemuslutils cryanc jo jq ag pv entr otools outils tini rsyncminimal \
+    && for i in $(bash /usr/local/crosware/scripts/container-packages.sh) ; do ./bin/crosware check-installed ${i} || ./bin/crosware reinstall ${i} ; echo ${i} : ${?} ; done \
     && rm -rf /stow \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \

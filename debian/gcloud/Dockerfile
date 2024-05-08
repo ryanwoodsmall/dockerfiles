@@ -41,7 +41,8 @@ RUN apt install -y apt-transport-https ca-certificates gnupg \
        | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
     && apt-get update -y \
     && apt-get install google-cloud-cli -y \
-    && apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin kubectl
+    && apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin kubectl \
+    && gcloud config set survey/disable_prompts True
 
 # runtime setup
 USER user

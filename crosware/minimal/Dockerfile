@@ -64,7 +64,7 @@ RUN cd / \
     && echo 'test -z "${BASH_VERSION}" && true || . "${cwtop}/etc/profile"' >> /etc/profile.d/crosware.sh \
     && echo 'export PS1="\u@crosware-$(uname -m) \W \$ "' >> /etc/profile.d/crosware.sh \
     && echo 'export PATH="${HOME}/bin:${PATH}"' >> /etc/profile.d/crosware.sh \
-    && ${cwtop}/bin/crosware install cacertificates statictoolchain alpinemuslutils tini \
+    && ${cwtop}/bin/crosware install cacertificates statictoolchain alpinemuslutils tini shellish dropbearminimal ccache \
     && bash ${cwtop}/scripts/install-dotfiles.sh \
     && cat ~/.exrc > /etc/vi.exrc \
     && rm -f /usr/local/tmp/* ${cwtop}/downloads/*/*

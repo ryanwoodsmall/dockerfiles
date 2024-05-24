@@ -1,10 +1,7 @@
 #
-# musl (alpine) zulu on crosware x86_64
+# musl (alpine) zulu on crosware x86_64/aarch64
 #
-# XXX - zulu 8/11/17 musl now have aarch64 builds
-#
-
-FROM debian:bullseye AS checkout
+FROM debian:bookworm AS checkout
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -15,7 +12,7 @@ RUN mkdir -p /usr/local/ \
     && git clone https://github.com/ryanwoodsmall/crosware.git \
     && tar -C / -cf /tmp/crosware.tar /usr/local/crosware
 
-FROM ryanwoodsmall/crosware:amd64
+FROM ryanwoodsmall/crosware:latest
 
 # crosware
 ENV cwtop=/usr/local/crosware
@@ -26,7 +23,7 @@ ENV cwprofd=/etc/profile.d/crosware.sh
 ENV ult=/usr/local/tmp
 
 # only 64-bit intel for now
-RUN uname -m | grep -q '^x86_64$'
+RUN uname -m | grep -qE '^(x86_64|aarch64)$'
 
 # fresh git checkout
 COPY --from=checkout /tmp/crosware.tar /tmp/crosware.tar

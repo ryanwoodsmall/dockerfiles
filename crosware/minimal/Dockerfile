@@ -2,18 +2,18 @@
 # busybox:musl with crosware installed from .zip
 #
 
-FROM ryanwoodsmall/crosware:latest AS CROSWARE
+FROM ryanwoodsmall/crosware:latest AS crosware
 
 FROM busybox:musl
 
 RUN rm -rf /usr/bin && mkdir -p /usr/bin && test -d /usr/bin
 
-COPY --from=CROSWARE /usr/bin/bash /usr/bin/bash
-COPY --from=CROSWARE /usr/bin/busybox /usr/bin/busybox
-COPY --from=CROSWARE /usr/bin/curl /usr/bin/curl
-COPY --from=CROSWARE /usr/bin/toybox /usr/bin/toybox
+COPY --from=crosware /usr/bin/bash /usr/bin/bash
+COPY --from=crosware /usr/bin/busybox /usr/bin/busybox
+COPY --from=crosware /usr/bin/curl /usr/bin/curl
+COPY --from=crosware /usr/bin/toybox /usr/bin/toybox
 
-COPY --from=CROSWARE /etc/inputrc /etc/
+COPY --from=crosware /etc/inputrc /etc/
 
 RUN chmod 755 /usr/bin/* \
     && cd /usr/bin \
@@ -67,7 +67,8 @@ RUN cd / \
     && ${cwtop}/bin/crosware install cacertificates statictoolchain alpinemuslutils tini shellish dropbearminimal ccache \
     && bash ${cwtop}/scripts/install-dotfiles.sh \
     && cat ~/.exrc > /etc/vi.exrc \
-    && rm -f /usr/local/tmp/* ${cwtop}/downloads/*/*
+    && rm -f /usr/local/tmp/* ${cwtop}/downloads/*/* \
+    && test -e /usr/local/bin || mkdir -p /usr/local/bin
 
 WORKDIR ${cwtop}
 

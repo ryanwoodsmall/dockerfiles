@@ -5,34 +5,34 @@
 # XXX - make an RPM?
 #
 
-#FROM centos:7
 FROM oraclelinux:7
 
 ENV autotoolsdir=/opt/autotools
-
-ENV m4ver=1.4.19
-ENV m4dir=m4-${m4ver}
-ENV m4file=${m4dir}.tar.gz
-ENV m4url=https://ftp.gnu.org/gnu/m4/${m4file}
-ENV m4sha256=3be4a26d825ffdfda52a56fc43246456989a3630093cced3fbddf4771ee58a70
+ENV gnudl=https://ftp.gnu.org/gnu
 
 ENV autoconfver=2.72
 ENV autoconfdir=autoconf-${autoconfver}
 ENV autoconffile=${autoconfdir}.tar.gz
-ENV autoconfurl=https://ftp.gnu.org/gnu/autoconf/${autoconffile}
+ENV autoconfurl=${gnudl}/autoconf/${autoconffile}
 ENV autoconfsha256=afb181a76e1ee72832f6581c0eddf8df032b83e2e0239ef79ebedc4467d92d6e
 
 ENV automakever=1.17
 ENV automakedir=automake-${automakever}
 ENV automakefile=${automakedir}.tar.gz
-ENV automakeurl=https://ftp.gnu.org/gnu/automake/${automakefile}
+ENV automakeurl=${gnudl}/automake/${automakefile}
 ENV automakesha256=397767d4db3018dd4440825b60c64258b636eaf6bf99ac8b0897f06c89310acd
 
 ENV libtoolver=2.5.3
 ENV libtooldir=libtool-${libtoolver}
 ENV libtoolfile=${libtooldir}.tar.gz
-ENV libtoolurl=https://ftp.gnu.org/gnu/libtool/${libtoolfile}
+ENV libtoolurl=${gnudl}/libtool/${libtoolfile}
 ENV libtoolsha256=9322bd8f6bc848fda3e385899dd1934957169652acef716d19d19d24053abb95
+
+ENV m4ver=1.4.19
+ENV m4dir=m4-${m4ver}
+ENV m4file=${m4dir}.tar.gz
+ENV m4url=${gnudl}/m4/${m4file}
+ENV m4sha256=3be4a26d825ffdfda52a56fc43246456989a3630093cced3fbddf4771ee58a70
 
 ENV pkgconfigver=0.29.2
 ENV pkgconfigdir=pkg-config-${pkgconfigver}

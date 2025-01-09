@@ -22,7 +22,7 @@ ENV cwvar=${cwtop}/var
 ENV cwprofd=/etc/profile.d/crosware.sh
 ENV ult=/usr/local/tmp
 
-# only 64-bit intel for now
+# only 64-bit for now
 RUN uname -m | grep -qE '^(x86_64|aarch64)$'
 
 # fresh git checkout
@@ -31,9 +31,9 @@ RUN rm -rf ${cwtop}/.git ${cwtop}/recipes ${cwtop}/scripts \
     && tar -C / -xvf /tmp/crosware.tar \
     && rm -f /tmp/crosware.tar
 
-# install jgitsh and make sure it's default
+# install zulu, jgitsh and make sure it's default
 RUN source /etc/profile \
-    && for i in jgitsh ccache busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils tini libxml2 xmlstarlet baseutils ; do crosware check-installed $i || crosware install $i ; done \
+    && for i in jgitsh zulu17musl ; do crosware check-installed $i || crosware install $i ; done \
     && source /etc/profile \
     && ccache -C || true \
     && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
@@ -41,15 +41,16 @@ RUN source /etc/profile \
     && sed -i s/CW_GIT_CMD=git/CW_GIT_CMD=jgitsh/g ${cwprofd} \
     && sed -i s/CW_USE_JGIT=false/CW_USE_JGIT=true/g ${cwprofd} \
     && sed -i s/CW_USE_JAVA=false/CW_USE_JAVA=true/g ${cwprofd} \
-    && echo 'export CW_EXT_JAVA=true' >> ${cwprofd}
+    && echo 'export CW_EXT_JAVA=true' >> ${cwprofd} \
+    && mkdir -p /usr/local/bin \
+    && ln -sf ${cwsw}/jgitsh7/current/bin/jgitsh7 /usr/local/bin/jgitsh \
+    && ln -sf ${cwsw}/jgitsh7/current/bin/jgit /usr/local/bin/jgit
 
-# install zulu, update, etc.
+# install updates, a bunch of common stuff, dump info, etc.
 RUN source /etc/profile \
-    && crosware install zulu11musl \
-    && source /etc/profile \
     && crosware update \
     && crosware upgrade-all || true \
-    && for i in vimnetbsdcurses tmux ; do crosware check-installed $i || crosware install $i ; done \
+    && for i in ccache busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils tini libxml2 xmlstarlet baseutils vimnetbsdcurses tmux lunzip xz ; do crosware check-installed $i || crosware install $i ; done \
     && ccache -C || true \
     && mkdir -p /usr/local/bin \
     && ln -sf ${cwtop}/scripts/jgit /usr/local/bin/jgit \
@@ -63,7 +64,17 @@ RUN source /etc/profile \
     && cd ${cwtop}/tmp/dotfiles/ \
     && for f in dot_* ; do install -m 644 ${f} ${HOME}/${f//dot_/.} ; done \
     && cd ${cwtop}/tmp/vimrcs/ \
-    && bash install-on-chrome-os.sh
+    && bash install-on-chrome-os.sh \
+    && cd ${cwtop}/tmp/ \
+    && echo 'listing installed' \
+    && time crosware list-installed > ${cwtop}/tmp/installed.out \
+    && echo 'dumping expanded recipes' \
+    && time crosware list-recipe-reqs-expanded > ${cwtop}/tmp/exp.out \
+    && echo 'dumping a full shell "set"' \
+    && time crosware set > ${cwtop}/tmp/crosware.set.out \
+    && echo 'dumping git info' \
+    && jgitsh ls-files > ${cwtop}/tmp/git_ls-files.out \
+    && jgitsh rev-parse HEAD > ${cwtop}/tmp/git_commit.out
 
 RUN source /etc/profile \
     && javac -version 2>&1 | grep -i ^javac

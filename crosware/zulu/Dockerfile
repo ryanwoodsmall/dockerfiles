@@ -33,9 +33,8 @@ RUN rm -rf ${cwtop}/.git ${cwtop}/recipes ${cwtop}/scripts \
 
 # install zulu, jgitsh and make sure it's default
 RUN source /etc/profile \
-    && for i in jgitsh zulu17musl ; do crosware check-installed $i || crosware install $i ; done \
+    && for i in jgitsh7 zulu17musl ; do crosware check-installed $i || crosware install $i ; done \
     && source /etc/profile \
-    && ccache -C || true \
     && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
     && rmdir ${cwdl}/*/ \
     && sed -i s/CW_GIT_CMD=git/CW_GIT_CMD=jgitsh/g ${cwprofd} \
@@ -43,17 +42,17 @@ RUN source /etc/profile \
     && sed -i s/CW_USE_JAVA=false/CW_USE_JAVA=true/g ${cwprofd} \
     && echo 'export CW_EXT_JAVA=true' >> ${cwprofd} \
     && mkdir -p /usr/local/bin \
+    && rm -f /usr/local/bin/jgit{,sh} \
     && ln -sf ${cwsw}/jgitsh7/current/bin/jgitsh7 /usr/local/bin/jgitsh \
-    && ln -sf ${cwsw}/jgitsh7/current/bin/jgit /usr/local/bin/jgit
+    && ln -sf ${cwsw}/jgitsh7/current/bin/jgit7 /usr/local/bin/jgit
 
 # install updates, a bunch of common stuff, dump info, etc.
 RUN source /etc/profile \
     && crosware update \
     && crosware upgrade-all || true \
-    && for i in ccache busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils tini libxml2 xmlstarlet baseutils vimnetbsdcurses tmux lunzip xz ; do crosware check-installed $i || crosware install $i ; done \
+    && for i in busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils tini libxml2 xmlstarlet baseutils vimnetbsdcurses tmux lunzip xz ccache ; do crosware check-installed $i || crosware install $i ; done \
+    && source /etc/profile \
     && ccache -C || true \
-    && mkdir -p /usr/local/bin \
-    && ln -sf ${cwtop}/scripts/jgit /usr/local/bin/jgit \
     && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
     && rmdir ${cwdl}/*/
 

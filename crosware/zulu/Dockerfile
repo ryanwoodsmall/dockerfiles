@@ -50,7 +50,7 @@ RUN source /etc/profile \
 RUN source /etc/profile \
     && crosware update \
     && crosware upgrade-all || true \
-    && for i in busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils tini libxml2 xmlstarlet baseutils vimnetbsdcurses tmux lunzip xz ccache ; do crosware check-installed $i || crosware install $i ; done \
+    && for i in busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils tini libxml2 xmlstarlet baseutils vimnetbsdcurses tmux lunzip xz ccache bashtiny ; do crosware check-installed $i || crosware install $i ; done \
     && source /etc/profile \
     && ccache -C || true \
     && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \

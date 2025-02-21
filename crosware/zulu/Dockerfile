@@ -33,7 +33,7 @@ RUN rm -rf ${cwtop}/.git ${cwtop}/recipes ${cwtop}/scripts \
 
 # install zulu, jgitsh and make sure it's default
 RUN source /etc/profile \
-    && for i in jgitsh7 zulu17musl ; do crosware check-installed $i || crosware install $i ; done \
+    && for i in jgitsh7 zulu21musl ; do crosware check-installed $i || crosware install $i ; done \
     && source /etc/profile \
     && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
     && rmdir ${cwdl}/*/ \

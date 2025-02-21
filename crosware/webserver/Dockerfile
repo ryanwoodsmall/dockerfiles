@@ -10,7 +10,7 @@ RUN . /etc/profile \
     && pushd ${cwtop} \
     && rm -rf recipes \
     && bash ${cwtop}/scripts/update-crosware-from-tar.sh \
-    && crosware install tini \
+    && test -e ${cwsw}/tini/current/sbin/tini || crosware install tini \
     && cp ${cwsw}/tini/current/sbin/tini /usr/sbin/ \
     && rm -rf cgi-bin \
     && bash ${cwtop}/scripts/install-busybox-cgi-helpers.sh \

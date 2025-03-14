@@ -14,21 +14,26 @@ RUN apt-get update \
        golang-github-pelletier-go-toml \
        jo \
        jq \
-       jq \
        less \
        libxml2-utils \
        moreutils \
        openssh-client \
        procps \
        psmisc \
+       rlwrap \
        screen \
        sudo \
        tidy \
        tini \
+       tmux \
+       unzip \
        vim-nox \
        wget \
        xmlstarlet \
+       xz-utils \
        yq \
+       zip \
+    && apt purge -y nano vim-minimal || true \
     && groupadd -g 1000 user \
     && useradd -m -d /home/user -s /bin/bash -g 1000 -u 1000 user \
     && echo 'user ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/zz_local

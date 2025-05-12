@@ -47,13 +47,14 @@
 
 set -eu
 
-v="ryanwoodsmall"
-c="crosware"
-b="${c}build"
-u="https://raw.githubusercontent.com/${v}/dockerfiles/master/${c}/Dockerfile"
-a="$(docker info | awk -F: '/Architecture/{print $2}' | tr -d ' ')"
-o="-c 'CMD [\"/usr/bin/bash\",\"-il\"]' -c 'WORKDIR /usr/local/crosware'"
-t="${a}"
+: ${v:="ryanwoodsmall"}
+: ${c:="crosware"}
+: ${b:="${c}build"}
+: ${r:="master"}
+: ${u:="https://raw.githubusercontent.com/${v}/dockerfiles/${r}/${c}/Dockerfile"}
+: ${a:="$(docker info | awk -F: '/Architecture/{print $2}' | tr -d ' ')"}
+: ${o:="-c 'CMD [\"/usr/bin/bash\",\"-il\"]' -c 'WORKDIR /usr/local/crosware'"}
+: ${t:="${a}"}
 if [[ ${a} =~ ^aarch64 ]] ; then
 	t="arm64v8"
 elif [[ ${a} =~ ^arm ]] ; then

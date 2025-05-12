@@ -27,14 +27,14 @@
 #
 
 # start from the musl busybox container
-FROM busybox:musl as BUSYBOX
+FROM busybox:musl AS busybox
 
 # and we need a couple things from alpine as well
-FROM alpine:latest as ALPINE
+FROM alpine:latest AS alpine
 
 # XXX - bookworm!!!
 # bootstrap, build some stuff for the container, then clean up
-FROM debian:bullseye as BUILDER
+FROM debian:bullseye AS builder
 RUN set -eu \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt update \
@@ -66,15 +66,15 @@ RUN set -eu \
 
 # get the busybox binary and install it as usual under /bin/ and as /bin/sh
 FROM scratch
-COPY --from=BUILDER /stow/busybox /bin/
-COPY --from=BUILDER /stow/busybox /bin/sh
+COPY --from=builder /stow/busybox /bin/
+COPY --from=builder /stow/busybox /bin/sh
 # get /etc user/group passwd/shadow files
-COPY --from=BUSYBOX /etc/group /etc/
-COPY --from=BUSYBOX /etc/passwd /etc/
-COPY --from=BUSYBOX /etc/shadow /etc/
+COPY --from=busybox /etc/group /etc/
+COPY --from=busybox /etc/passwd /etc/
+COPY --from=busybox /etc/shadow /etc/
 # get /etc services/protocols from alpine
-COPY --from=ALPINE /etc/protocols /etc/
-COPY --from=ALPINE /etc/services /etc/
+COPY --from=alpine /etc/protocols /etc/
+COPY --from=alpine /etc/services /etc/
 # shuffle /bin -> /usr/bin and create symlinks and required directories
 RUN /bin/busybox mkdir -p /usr/bin \
     && /bin/busybox cp /bin/busybox /usr/bin/ \
@@ -92,17 +92,17 @@ RUN mkdir -p /home /root /tmp /var/spool/mail /var/www /etc/profile.d /usr/local
     && ln -s /run /var/ \
     && rm -f /usr/bin/bash
 # toybox - lspci, lsusb work well with /etc/{pci,usb}.ids, microcom is a little more stable than busybox ime
-COPY --from=BUILDER /stow/toybox /usr/bin/
+COPY --from=builder /stow/toybox /usr/bin/
 RUN for p in toybox ; do for a in $(${p}) ; do test -e /usr/bin/${a} || ln -s ${p} /usr/bin/${a} ; done ; done \
     && for p in lsusb lspci microcom ; do rm -f /usr/bin/${p} ; ln -sf toybox /usr/bin/${p} ; done
 # bash
-COPY --from=BUILDER /stow/bash /usr/bin/
+COPY --from=builder /stow/bash /usr/bin/
 RUN rm -f /usr/bin/sh \
     && ln -s bash /usr/bin/sh
 # files/directories to be copied with no setup
-COPY --from=BUILDER /stow/curl /usr/bin/
+COPY --from=builder /stow/curl /usr/bin/
 # crosware and permissions
-COPY --from=BUILDER /usr/local/crosware /usr/local/crosware
+COPY --from=builder /usr/local/crosware /usr/local/crosware
 # dropbear
 RUN ln -s /usr/local/crosware/software/dropbear/current/bin/dropbearmulti /usr/bin/ \
     && for d in $(/usr/bin/dropbearmulti 2>&1 | tr ' ' '\n' | grep "^'.*'" | tr -d "'" | sort) ; do ln -s dropbearmulti /usr/bin/${d} ; done \

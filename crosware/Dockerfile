@@ -39,7 +39,7 @@ RUN ln -sf /bin/bash /bin/sh
 RUN set -euo pipefail \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt update \
-    && apt install -y bash binutils bzip2 curl file git xz-utils \
+    && apt install -y bash binutils bzip2 curl file git wget xz-utils \
     && mkdir -p /usr/local \
     && cd /usr/local \
     && rm -rf crosware \

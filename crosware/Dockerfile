@@ -35,7 +35,8 @@ FROM alpine:latest AS alpine
 # XXX - bookworm!!!
 # bootstrap, build some stuff for the container, then clean up
 FROM debian:bullseye AS builder
-RUN set -eu \
+RUN ln -sf /bin/bash /bin/sh
+RUN set -euo pipefail \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt update \
     && apt install -y bash binutils bzip2 curl file git xz-utils \
@@ -46,7 +47,7 @@ RUN set -eu \
     && cd crosware \
     && git gc --aggressive \
     && env CW_GIT_CMD=git CW_USE_JAVA=false CW_USE_JGIT=false ./bin/crosware bootstrap \
-    && for i in $(bash /usr/local/crosware/scripts/container-packages.sh) ; do ./bin/crosware check-installed ${i} || ./bin/crosware reinstall ${i} ; echo ${i} : ${?} ; done \
+    && for i in $(bash /usr/local/crosware/scripts/container-packages.sh) ; do ./bin/crosware check-installed ${i} || ./bin/crosware reinstall ${i} ; r=$? ; echo ${i} : ${r} ; test $r -ne 0 && exit 1 || true ; done \
     && rm -rf /stow \
     && mkdir -p /stow \
     && cp ./software/busybox/current/bin/busybox /stow/ \

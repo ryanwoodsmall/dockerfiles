@@ -22,7 +22,7 @@
 # XXX - java 21!!!
 #
 
-FROM debian:bookworm
+FROM debian:trixie
 
 ARG user=jenkins
 ARG group=jenkins
@@ -32,7 +32,7 @@ ARG AGENT_WORKDIR=/home/${user}/agent
 ARG VERSION=3309.v27b_9314fd1a_4
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 
 USER root
 
@@ -41,8 +41,8 @@ RUN groupadd -g ${gid} ${group} \
 
 RUN apt-get update \
     && apt-get dist-upgrade -y \
-    && apt-get install -y openjdk-17-jdk-headless curl wget bash procps docker.io xmlstarlet git jq \
-    && ln -sf $(find /usr/lib/jvm/ -type d -name java-17-openjdk\* | head -1) /usr/lib/jvm/java-17-openjdk \
+    && apt-get install -y openjdk-21-jdk-headless curl wget bash procps docker.io xmlstarlet git jq \
+    && ln -sf $(find /usr/lib/jvm/ -type d -name java-21-openjdk\* | head -1) /usr/lib/jvm/java-21-openjdk \
     && usermod -a -G docker ${user}
 
 RUN echo 'installing jenkins agent bits' \

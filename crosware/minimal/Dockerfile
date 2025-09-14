@@ -18,8 +18,8 @@ COPY --from=crosware /etc/inputrc /etc/
 RUN chmod 755 /usr/bin/* \
     && cd /usr/bin \
     && ln -sf /usr/bin/bash /usr/bin/sh \
-    && for a in $(/usr/bin/busybox --list) ; do test -e /usr/bin/${a} || ln -sf /usr/bin/busybox /usr/bin/${a} ; done \
-    && for a in $(/usr/bin/toybox) ; do test -e /usr/bin/${a} || ln -sf /usr/bin/toybox /usr/bin/${a} ; done
+    && for a in $(/usr/bin/busybox --list) ; do test -e /usr/bin/${a} || /usr/bin/busybox ln -sf /usr/bin/busybox /usr/bin/${a} ; done \
+    && for a in $(/usr/bin/toybox) ; do test -e /usr/bin/${a} || /usr/bin/busybox ln -sf /usr/bin/toybox /usr/bin/${a} ; done
 
 RUN cd /bin \
     && /usr/bin/busybox ln -sf /usr/bin/busybox /bin/busybox \
@@ -30,9 +30,10 @@ RUN cd /bin \
     && /usr/bin/busybox ln -sf /usr/bin/bash /bin/sh
 
 RUN cd / \
-    && /usr/bin/busybox rm -rf /bin /sbin \
+    && /usr/bin/busybox rm -rf /bin /sbin /usr/sbin \
     && /usr/bin/busybox ln -sf /usr/bin /bin \
-    && /usr/bin/busybox ln -sf /usr/bin /sbin
+    && /usr/bin/busybox ln -sf /usr/bin /sbin \
+    && /usr/bin/busybox ln -sf /usr/bin /usr/sbin
 
 ENV cwtop=/usr/local/crosware
 

@@ -60,9 +60,6 @@ RUN set -euo pipefail \
     && ./bin/crosware list-installed | egrep -v '^(cacertificates|dropbear|elvis|less|neatvi|rlwrap|tinyscheme|mbedtls.*|bearssl|(bootstrap|)make|bim|git|(s|u|9)base|x509cert|plan9port9p|u9fs|px5g|shellish|alpinemuslutils|htermutils|cryanc|gawk|sed|busybox|toybox|bash|patch|jo|jq|ag|pv|entr|byacc|flex|m4|pkgconfig|slibtool|lshsftpserver|configgit|gettexttiny|zlib|xz|otools|outils|tini|rsyncminimal|unzip|zip|pkgconf) : ' | cut -f1 -d: | xargs ./bin/crosware uninstall \
     && for d in builds downloads ; do cd $d ; git clean -fdx ; cd - ; done \
     && find software/ -type f -exec file {} + | awk -F: '/\/bin\/.*:.*ELF/{print $1}' | xargs strip --strip-all \
-    && ln -sf /usr/bin/bash ./software/bash/current/bin/bash \
-    && ln -sf /usr/bin/busybox ./software/busybox/current/bin/busybox \
-    && ln -sf /usr/bin/toybox ./software/toybox/current/bin/toybox \
     && git ls-files | xargs realpath | sort -u > ./tmp/git_ls-files.out
 
 # get the busybox binary and install it as usual under /bin/ and as /bin/sh

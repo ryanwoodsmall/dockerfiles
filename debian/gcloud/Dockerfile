@@ -11,6 +11,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
        curl \
        dropbear-bin \
        file \
+       git \
        gojq \
        golang-github-pelletier-go-toml \
        jo \

@@ -19,7 +19,6 @@
 # XXX - checksum? looks like artifactory (X-Checksum-Sha1/X-Checksum-Sha256/X-Checksum-Md5) and maven central (X-Checksum-MD5/X-Checksum-SHA1) output checksums in headers
 # XXX - should this just pull in /usr/share/jenkins/agent.jar from upstream jenkins/agent?
 # XXX - tini?
-# XXX - java 21!!!
 #
 
 FROM debian:trixie
@@ -29,7 +28,7 @@ ARG group=jenkins
 ARG uid=1000
 ARG gid=1000
 ARG AGENT_WORKDIR=/home/${user}/agent
-ARG VERSION=3309.v27b_9314fd1a_4
+ARG VERSION=3327.v868139a_d00e0
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk

@@ -9,6 +9,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt install -y \
        busybox \
        curl \
+       docker-cli \
        dropbear-bin \
        file \
        git \

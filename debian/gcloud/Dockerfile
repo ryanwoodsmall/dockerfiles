@@ -36,7 +36,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
        xz-utils \
        yq \
        zip \
-    && apt purge -y nano vim-tiny || true \
+    && apt purge -y bash-completion nano vim-tiny || true \
     && groupadd -g 1000 user \
     && useradd -m -d /home/user -s /bin/bash -g 1000 -u 1000 user \
     && echo 'user ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/zz_local

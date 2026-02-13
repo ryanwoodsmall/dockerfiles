@@ -50,9 +50,12 @@ RUN source /etc/profile \
 RUN source /etc/profile \
     && crosware update \
     && crosware upgrade-all || true \
-    && for i in busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils tini libxml2 xmlstarlet baseutils vimnetbsdcurses tmux lunzip xz ccache bashtiny ; do crosware check-installed $i || crosware install $i ; done \
+    && for i in busybox toybox sed gawk m4 flex pkgconfig byacc reflex shellish htermutils diffutils tini libxml2 xmlstarlet baseutils vimnetbsdcurses tmux lunzip xz ccache bashtiny shellish ; do crosware check-installed $i || crosware install $i ; done \
     && source /etc/profile \
     && ccache -C || true \
+    && mkdir -p /usr/local/bin \
+    && ln -sf ${cwsw}/shellish/current/shell-ish-master/bin/gopherweather.sh /usr/local/bin/ \
+    && ln -sf ${cwsw}/shellish/current/shell-ish-master/bin/weather.sh /usr/local/bin/ \
     && find ${cwdl}/*/ ${ult}/ -type f | xargs rm -f \
     && rmdir ${cwdl}/*/
 

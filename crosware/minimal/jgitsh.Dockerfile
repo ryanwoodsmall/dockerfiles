@@ -4,7 +4,7 @@ ENV CW_GIT_CMD=jgit
 ENV cwtop=/usr/local/crosware
 RUN cd ${cwtop} \
     && . ${cwtop}/etc/profile \
-    && `${cwtop}/scripts/tcrs zulu21musl ${jgitsh}` \
+    && `${cwtop}/scripts/tcrs zulu25musl ${jgitsh}` \
     && test -e /usr/local/bin || mkdir -p /usr/local/bin \
     && ln -sf ${cwtop}/scripts/jgit /usr/local/bin/jgit \
     && ln -sf $(which ${jgitsh}) /usr/local/bin/${jgitsh} \

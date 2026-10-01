@@ -9,6 +9,6 @@ RUN cd ${cwtop} \
     && ln -sf ${cwtop}/scripts/jgit /usr/local/bin/jgit \
     && ln -sf $(which ${jgitsh}) /usr/local/bin/${jgitsh} \
     && ln -sf /usr/local/bin/${jgitsh} /usr/local/bin/jgitsh \
-    && echo CW_GIT_CMD=${CW_GIT_CMD} | tee ${cwtop}/etc/local.d/zz_${jgitsh} \
+    && echo CW_GIT_CMD=${CW_GIT_CMD} | tee ${cwtop}/etc/local.d/zz_${jgitsh}.sh \
     && rm -rf ${cwtop}/.git \
     && bash ${cwtop}/scripts/reconstitute-git.sh

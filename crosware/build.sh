@@ -44,6 +44,8 @@
 #   crosware-downloads : /usr/local/crosware/downloads
 #   crosware-tmp : /usr/local/crosware/tmp
 #
+# XXX - check for curl, variablize opts?
+#
 
 set -eu
 
@@ -75,7 +77,7 @@ docker rm "${b}" || true
 
 docker image rm "${b}" || true
 
-docker build --force-rm --no-cache --tag "${b}" "${u}"
+docker build --force-rm --no-cache --tag "${b}" - < <(curl -kLs "${u}")
 
 docker run --name "${b}" "${b}" bash -c 'uname -m ; curl --version ; bash --version ; set | egrep "(TYPE|BASH)"'
 

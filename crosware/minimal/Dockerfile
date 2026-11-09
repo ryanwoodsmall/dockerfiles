@@ -55,9 +55,10 @@ RUN cd / \
     && ln -sf /run /var/ \
     && mkdir -p ${cwtop}/tmp \
     && cd ${cwtop}/tmp \
-    && curl -kLo update-crosware-from-zip.sh https://github.com/ryanwoodsmall/crosware/raw/master/scripts/update-crosware-from-zip.sh \
-    && bash update-crosware-from-zip.sh \
+    && curl -kLo update-crosware-from-zip.sh https://github.com/ryanwoodsmall/crosware/raw/master/scripts/update-crosware-from-zip.sh || exit 1 \
+    && bash update-crosware-from-zip.sh || exit 2 \
     && rm -f update-crosware-from-zip.sh \
+    && test -e /usr/local/crosware/etc/profile || exit 3 \
     && mkdir -p /etc/profile.d \
     && echo 'for i in /etc/profile.d/*.sh ; do . ${i} ; done' >> /etc/profile \
     && echo "export cwtop=${cwtop}" >> /etc/profile.d/crosware.sh \
@@ -65,8 +66,8 @@ RUN cd / \
     && echo 'test -z "${BASH_VERSION}" && true || . "${cwtop}/etc/profile"' >> /etc/profile.d/crosware.sh \
     && echo 'export PS1="\u@crosware-$(uname -m) \W \$ "' >> /etc/profile.d/crosware.sh \
     && echo 'export PATH="${HOME}/bin:${PATH}"' >> /etc/profile.d/crosware.sh \
-    && ${cwtop}/bin/crosware install cacertificates statictoolchain alpinemuslutils tini shellish dropbearminimal ccache \
-    && bash ${cwtop}/scripts/install-dotfiles.sh \
+    && ${cwtop}/bin/crosware install cacertificates statictoolchain alpinemuslutils tini shellish dropbearminimal ccache || exit 4 \
+    && bash ${cwtop}/scripts/install-dotfiles.sh || exit 5 \
     && cat ~/.exrc > /etc/vi.exrc \
     && rm -f /usr/local/tmp/* ${cwtop}/downloads/*/* \
     && test -e /usr/local/bin || mkdir -p /usr/local/bin

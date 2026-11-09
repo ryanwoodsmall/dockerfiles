@@ -72,8 +72,6 @@ RUN source /etc/profile \
     && time crosware list-installed > ${cwtop}/tmp/installed.out \
     && echo 'dumping expanded recipes' \
     && time crosware list-recipe-reqs-expanded > ${cwtop}/tmp/exp.out \
-    && echo 'dumping a full shell "set"' \
-    && time crosware set > ${cwtop}/tmp/crosware.set.out \
     && echo 'dumping git info' \
     && jgitsh ls-files > ${cwtop}/tmp/git_ls-files.out \
     && jgitsh rev-parse HEAD > ${cwtop}/tmp/git_commit.out

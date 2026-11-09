@@ -32,9 +32,9 @@ FROM busybox:musl AS busybox
 # and we need a couple things from alpine as well
 FROM alpine:latest AS alpine
 
-# XXX - bookworm!!!
+# XXX - trixie !!!
 # bootstrap, build some stuff for the container, then clean up
-FROM debian:bullseye AS builder
+FROM debian:bookworm AS builder
 RUN ln -sf /bin/bash /bin/sh
 RUN set -euo pipefail \
     && export DEBIAN_FRONTEND=noninteractive \
